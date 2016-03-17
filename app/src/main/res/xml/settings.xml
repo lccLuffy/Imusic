@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Category1">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="demo1"
+            android:title="SwitchPreferenceCompat" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="demo2"
+            android:summary="ssssssss"
+            android:title="SwitchPreferenceCompat" />
+        <Preference android:title="main">
+            <intent
+                android:targetClass="com.lcc.imusic.MainActivity"
+                android:targetPackage="com.lcc.imusic" />
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen>
