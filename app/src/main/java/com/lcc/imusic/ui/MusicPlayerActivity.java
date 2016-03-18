@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.base.MusicBindActivity;
+import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
 import com.lcc.imusic.service.MusicPlayService;
 
@@ -30,7 +31,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
         musicServiceBind.setMusicInfoCallBack(new MusicPlayService.MusicInfoCallBack() {
             @Override
-            public void onReady(MusicPlayerView.MusicItem musicItem) {
+            public void onReady(MusicItem musicItem) {
                 setCurrentMusicItem(musicItem);
                 final int totalTime = musicServiceBind.getTotalTime();
                 musicPlayerView.setTotalProgress(totalTime);
@@ -42,7 +43,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
         });
     }
 
-    private void setCurrentMusicItem(MusicPlayerView.MusicItem musicItem)
+    private void setCurrentMusicItem(MusicItem musicItem)
     {
         setTitle(musicItem.title);
         toolbar.setSubtitle(musicItem.artist);

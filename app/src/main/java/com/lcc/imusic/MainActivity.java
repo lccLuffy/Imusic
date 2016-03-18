@@ -17,7 +17,7 @@ import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.base.AccountDelegate;
 import com.lcc.imusic.base.AttachFragment;
 import com.lcc.imusic.base.MusicBindActivity;
-import com.lcc.imusic.musicplayer.MusicPlayerView;
+import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.lcc.imusic.ui.setting.SettingActivity;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -148,14 +148,10 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         setCurrentMusicItem(musicServiceBind.getPlayingMusic());
     }
 
-    private void setCurrentMusicItem(MusicPlayerView.MusicItem musicItem)
+    private void setCurrentMusicItem(MusicItem musicItem)
     {
         playBarTitle.setText(musicItem.title);
         playBarSubtitle.setText(musicItem.artist);
-    }
-    public List<MusicPlayerView.MusicItem> getMusicList()
-    {
-        return musicServiceBind.getLocalMusicList();
     }
 
     private AttachFragment.OnBindActivity onBindActivity;

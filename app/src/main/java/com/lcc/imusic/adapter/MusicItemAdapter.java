@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lcc.imusic.R;
-import com.lcc.imusic.musicplayer.MusicPlayerView;
+import com.lcc.imusic.bean.MusicItem;
 import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 import com.lcc.state_refresh_recyclerview.Recycler.NiceViewHolder;
 
@@ -17,14 +17,14 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/17.
  */
-public class MusicItemAdapter extends NiceAdapter<MusicPlayerView.MusicItem>{
+public class MusicItemAdapter extends NiceAdapter<MusicItem>{
     LayoutInflater layoutInflater;
     public MusicItemAdapter(Context context) {
         super(context);
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public MusicPlayerView.MusicItem getData(int position)
+    public MusicItem getData(int position)
     {
         return data.get(position);
     }
@@ -35,7 +35,7 @@ public class MusicItemAdapter extends NiceAdapter<MusicPlayerView.MusicItem>{
         return new Holder(layoutInflater.inflate(R.layout.item_music,parent,false));
     }
 
-    class Holder extends NiceViewHolder<MusicPlayerView.MusicItem>
+    class Holder extends NiceViewHolder<MusicItem>
     {
         @Bind(R.id.music_display_name)
         TextView displayName;
@@ -50,7 +50,7 @@ public class MusicItemAdapter extends NiceAdapter<MusicPlayerView.MusicItem>{
         }
 
         @Override
-        public void onBindData(MusicPlayerView.MusicItem data) {
+        public void onBindData(MusicItem data) {
             displayName.setText(data.title);
             musician.setText(data.artist);
         }

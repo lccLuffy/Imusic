@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.MusicItemAdapter;
 import com.lcc.imusic.base.AttachFragment;
+import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 import com.lcc.state_refresh_recyclerview.Recycler.StateRecyclerView;
 
@@ -32,17 +33,13 @@ public class HotMusicianFragment extends AttachFragment {
         stateRecyclerView.setAdapter(musicItemAdapter);
         musicItemAdapter.getLoadMoreFooter().showNoMoreView();
         stateRecyclerView.setEnabled(false);
-
-        if(mainActivity.isBind())
-        {
-            musicItemAdapter.initData(mainActivity.getMusicList());
-            musicItemAdapter.setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(int position) {
-                    mainActivity.playMusic(position);
-                }
-            });
-        }
+        musicItemAdapter.initData(LocalMusicProvider.getMusicProvider(context).provideMusics());
+        musicItemAdapter.setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                mainActivity.playMusic(position);
+            }
+        });
     }
     @Override
     public int getLayoutId() {

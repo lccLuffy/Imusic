@@ -1,4 +1,4 @@
-package com.lcc.imusic.Bean;
+package com.lcc.imusic.bean;
 
 import java.util.List;
 

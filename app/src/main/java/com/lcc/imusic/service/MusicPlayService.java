@@ -3,22 +3,19 @@ package com.lcc.imusic.service;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.provider.MediaStore;
-import android.provider.MediaStore.Audio.Media;
 import android.support.v7.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.lcc.imusic.R;
-import com.lcc.imusic.musicplayer.MusicPlayerView;
+import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.model.LocalMusicProvider;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,12 +27,8 @@ public class MusicPlayService extends Service {
     public static final String ACTION_MUSIC_NEXT = "com.lcc.music.next";
 
     private int currentIndex = -1;
-    private static String[] projection = {
-            Media.DISPLAY_NAME,
-            Media.ARTIST,
-            Media.DATA
-    };
-    List<MusicPlayerView.MusicItem> localMusicList = new ArrayList<>();
+
+    List<MusicItem> localMusicList;
 
     private MediaPlayer mediaPlayer;
     private Timer timer;
@@ -46,26 +39,7 @@ public class MusicPlayService extends Service {
 
     private void initLocalMusicList()
     {
-        localMusicList = new ArrayList<>();
-
-        Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,null,null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-        if(cursor == null)
-            return;
-        cursor.moveToFirst();
-        int count = cursor.getCount();
-        for(int i=0;i < count;i++){
-            String name = cursor.getString(0);
-            String artist = cursor.getString(1);
-            String path = cursor.getString(2);
-            MusicPlayerView.MusicItem musicItem = new MusicPlayerView.MusicItem();
-            musicItem.path = path;
-            musicItem.title = name;
-            musicItem.artist = artist;
-            localMusicList.add(musicItem);
-            cursor.moveToNext();
-        }
-        cursor.close();
+        localMusicList = LocalMusicProvider.getMusicProvider(getApplicationContext()).provideMusics();
     }
 
     @Override
@@ -165,10 +139,6 @@ public class MusicPlayService extends Service {
 
     public class MusicServiceBind extends Binder
     {
-        public List<MusicPlayerView.MusicItem> getLocalMusicList()
-        {
-            return localMusicList;
-        }
         public void playMusic(int index)
         {
             MusicPlayService.this.playMusic(index);
@@ -206,7 +176,7 @@ public class MusicPlayService extends Service {
             MusicPlayService.this.musicInfoCallBack = callBack;
         }
 
-        public MusicPlayerView.MusicItem getPlayingMusic()
+        public MusicItem getPlayingMusic()
         {
             return localMusicList.get(currentIndex);
         }
@@ -264,7 +234,7 @@ public class MusicPlayService extends Service {
 
     public interface MusicInfoCallBack
     {
-        void onReady(MusicPlayerView.MusicItem musicItem);
+        void onReady(MusicItem musicItem);
         void onProgress(int currentTime);
     }
 }

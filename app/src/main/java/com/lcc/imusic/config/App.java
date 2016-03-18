@@ -27,6 +27,7 @@ public class App extends Application{
 
         Intent intent = new Intent(this, MusicPlayService.class);
         startService(intent);
+        Logger.i("Application onCreate");
     }
     public static App getApp()
     {

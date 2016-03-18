@@ -3,8 +3,7 @@ package com.lcc.imusic.base;
 import android.content.Context;
 
 import com.lcc.imusic.MainActivity;
-import com.lcc.imusic.musicplayer.MusicPlayerView;
-import com.lcc.imusic.service.MusicPlayService;
+import com.lcc.imusic.bean.MusicItem;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -31,6 +30,6 @@ public abstract class AttachFragment extends BaseFragment{
 
     public interface OnBindActivity
     {
-        void onMusicList(List<MusicPlayerView.MusicItem> list);
+        void onMusicList(List<MusicItem> list);
     }
 }

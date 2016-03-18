@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
 
-import java.io.Serializable;
 import java.util.Locale;
 
 /**
@@ -26,13 +25,9 @@ import java.util.Locale;
 public class MusicPlayerView extends FrameLayout implements CompoundButton.OnCheckedChangeListener,View.OnClickListener {
 
 
-    private Animation animation;
-
     private ImageView iv_cover;
 
     private CheckBox cb_play;
-    private ImageView iv_prev;
-    private ImageView iv_next;
 
 
     private SeekBar seekBar;
@@ -44,12 +39,6 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     private MusicPlayerCallBack musicPlayerCallBack;
 
     private final String test_url = "http://m1.music.126.net/jt_bjt-DDWhFI9btE2b8tw==/7901090557280522.mp3";
-
-    public static class MusicItem implements Serializable {
-        public String title;
-        public String path;
-        public String artist;
-    }
 
     public MusicPlayerView(Context context) {
         super(context);
@@ -76,7 +65,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         addView(panel);
 
         iv_cover = (ImageView) panel.findViewById(R.id.cover);
-        animation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        Animation animation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setRepeatCount(-1);
         animation.setDuration(10000);
         animation.setInterpolator(new LinearInterpolator());
@@ -89,8 +78,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         seekBar = (SeekBar) panel.findViewById(R.id.seekBar);
 
         cb_play = (CheckBox) panel.findViewById(R.id.btn_play);
-        iv_prev = (ImageView) panel.findViewById(R.id.btn_prev);
-        iv_next = (ImageView) panel.findViewById(R.id.btn_next);
+        ImageView iv_prev = (ImageView) panel.findViewById(R.id.btn_prev);
+        ImageView iv_next = (ImageView) panel.findViewById(R.id.btn_next);
 
         iv_prev.setOnClickListener(this);
         iv_next.setOnClickListener(this);

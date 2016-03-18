@@ -1,6 +1,6 @@
 package com.lcc.imusic.api;
 
-import com.lcc.imusic.Bean.Song;
+import com.lcc.imusic.bean.Song;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
