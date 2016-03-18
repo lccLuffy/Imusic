@@ -20,7 +20,6 @@ public abstract class AttachFragment extends BaseFragment{
         {
             mainActivity = (MainActivity) context;
         }
-        Logger.i("onAttach");
     }
 
     @Override

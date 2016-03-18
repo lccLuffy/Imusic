@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/playBar_wrap"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="?attr/selectableItemBackground"
-    android:orientation="horizontal">
+    android:background="@drawable/playbar_bg"
+    android:orientation="horizontal"
+    app:layout_behavior="@string/footer_behavior">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -32,8 +34,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
-                android:ellipsize="end"
-                android:lines="1" />
+                android:ellipsize="marquee"
+                android:lines="1"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true" />
 
             <TextView
                 android:id="@+id/playBar_subtitle"

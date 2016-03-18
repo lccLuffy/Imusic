@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="music_play_bg">#15272d</color>
+    <color name="play_bar_normal">#eeeeeeee</color>
+    <color name="play_bar_pressed">#eedddddd</color>
 </resources>

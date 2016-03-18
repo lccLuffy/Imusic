@@ -12,4 +12,10 @@ import java.util.List;
 public interface MusicProvider {
     @NonNull
     List<MusicItem> provideMusics();
+
+    MusicItem getPlayingMusic();
+
+    void setPlayingMusic(MusicItem music);
+
+    void setPlayingMusic(int index);
 }

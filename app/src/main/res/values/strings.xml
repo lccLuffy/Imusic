@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Imusic</string>
     <string name="action_settings">Settings</string>
+    <string name="exit">退出</string>
+    <string name="footer_behavior" translatable="false">com.lcc.imusic.wiget.FooterBehavior</string>
+
 </resources>

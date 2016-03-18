@@ -5,6 +5,10 @@ package com.lcc.imusic.bean;
  */
 public class MusicItem {
     public String title;
-    public String path;
+    public String data;
     public String artist;
+    /**
+     * in second
+     */
+    public int duration;
 }

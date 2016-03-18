@@ -4,13 +4,13 @@ package com.lcc.imusic.ui.home;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.MusicItemAdapter;
 import com.lcc.imusic.base.AttachFragment;
 import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
-import com.lcc.state_refresh_recyclerview.Recycler.StateRecyclerView;
 
 import butterknife.Bind;
 
@@ -20,19 +20,18 @@ import butterknife.Bind;
  */
 public class HotMusicianFragment extends AttachFragment {
 
-    @Bind(R.id.stateRecyclerView)
-    StateRecyclerView stateRecyclerView;
+    @Bind(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     MusicItemAdapter musicItemAdapter;
 
     @Override
-    public void initialize(@Nullable Bundle savedInstanceState) {
-        super.initialize(savedInstanceState);
-        stateRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+    public void initialize(@Nullable Bundle savedInstanceState)
+    {
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         musicItemAdapter = new MusicItemAdapter(context);
-        stateRecyclerView.setAdapter(musicItemAdapter);
+        recyclerView.setAdapter(musicItemAdapter);
         musicItemAdapter.getLoadMoreFooter().showNoMoreView();
-        stateRecyclerView.setEnabled(false);
         musicItemAdapter.initData(LocalMusicProvider.getMusicProvider(context).provideMusics());
         musicItemAdapter.setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
             @Override

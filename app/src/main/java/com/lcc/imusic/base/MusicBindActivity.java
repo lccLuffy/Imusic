@@ -45,10 +45,9 @@ public abstract class MusicBindActivity extends BaseActivity {
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }
 
-    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind)
-    {
+    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind){}
 
-    }
+    protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind){}
 
     public void addOnBindMusicServiceListener(@NonNull OnBindMusicServiceListener listener)
     {
@@ -66,6 +65,7 @@ public abstract class MusicBindActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unBind(musicServiceBind);
         unbindService(serviceConnection);
     }
     protected class MusicServiceConnection implements ServiceConnection

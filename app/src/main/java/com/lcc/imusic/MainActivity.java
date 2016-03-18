@@ -15,15 +15,16 @@ import android.widget.TextView;
 
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.base.AccountDelegate;
-import com.lcc.imusic.base.AttachFragment;
 import com.lcc.imusic.base.MusicBindActivity;
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.model.LocalMusicProvider;
+import com.lcc.imusic.model.MusicProvider;
+import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.lcc.imusic.ui.setting.SettingActivity;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +63,15 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
 
     private AccountDelegate accountDelegate;
 
+    MusicProvider musicProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
-
+        musicProvider = LocalMusicProvider.getMusicProvider(this);
         accountDelegate = new AccountDelegate(this,toolbar,this);
         accountDelegate.init();
+
         playBar_wrap.setOnClickListener(this);
         playBarPlayToggle.setOnCheckedChangeListener(this);
         playBarPlayNext.setOnClickListener(this);
@@ -88,17 +91,17 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    @Override
-    public void onAttachFragment(android.support.v4.app.Fragment fragment) {
-        super.onAttachFragment(fragment);
-        Logger.i("onAttachFragment");
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingActivity.class));
+            return true;
+        }
+        if (id == R.id.action_exit) {
+            finish();
+            stopService(new Intent(this, MusicPlayService.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -119,6 +122,18 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(isBind())
+        {
+            if(musicServiceBind.isPlaying())
+            {
+                setCurrentMusicItem(musicProvider.getPlayingMusic());
+            }
+        }
+    }
+
+    @Override
     public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
         return false;
     }
@@ -136,16 +151,24 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
                 break;
             case R.id.playBar_next:
                 musicServiceBind.next();
-                setCurrentMusicItem(musicServiceBind.getPlayingMusic());
+                setCurrentMusicItem(musicProvider.getPlayingMusic());
                 break;
         }
     }
 
+    @Override
+    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
+        if(musicServiceBind.isPlaying())
+        {
+            setCurrentMusicItem(musicProvider.getPlayingMusic());
+            playBarPlayToggle.setChecked(true);
+        }
+    }
 
     public void playMusic(int id) {
         musicServiceBind.playMusic(id);
         playBarPlayToggle.setChecked(true);
-        setCurrentMusicItem(musicServiceBind.getPlayingMusic());
+        setCurrentMusicItem(musicProvider.getPlayingMusic());
     }
 
     private void setCurrentMusicItem(MusicItem musicItem)
@@ -154,11 +177,6 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         playBarSubtitle.setText(musicItem.artist);
     }
 
-    private AttachFragment.OnBindActivity onBindActivity;
-
-    public void setOnBindActivity(AttachFragment.OnBindActivity onBindActivity){
-        this.onBindActivity = onBindActivity;
-    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

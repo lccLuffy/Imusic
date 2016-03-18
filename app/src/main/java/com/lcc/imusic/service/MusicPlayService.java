@@ -14,8 +14,11 @@ import android.widget.RemoteViews;
 import com.lcc.imusic.R;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.LocalMusicProvider;
+import com.lcc.imusic.model.MusicProvider;
+import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,18 +31,18 @@ public class MusicPlayService extends Service {
 
     private int currentIndex = -1;
 
-    List<MusicItem> localMusicList;
-
     private MediaPlayer mediaPlayer;
     private Timer timer;
     private ProgressTask progressTask;
     private IBinder binder;
 
-    private MusicInfoCallBack musicInfoCallBack;
+    private List<MusicInfoCallBack> musicInfoCallBacks;
+
+    MusicProvider musicProvider;
 
     private void initLocalMusicList()
     {
-        localMusicList = LocalMusicProvider.getMusicProvider(getApplicationContext()).provideMusics();
+        musicProvider = LocalMusicProvider.getMusicProvider(getApplicationContext());
     }
 
     @Override
@@ -85,6 +88,14 @@ public class MusicPlayService extends Service {
         MediaListener mediaListener = new MediaListener();
         mediaPlayer.setOnPreparedListener(mediaListener);
         mediaPlayer.setOnCompletionListener(mediaListener);
+        mediaPlayer.setOnBufferingUpdateListener(mediaListener);
+        mediaPlayer.setOnErrorListener(mediaListener);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -94,7 +105,7 @@ public class MusicPlayService extends Service {
 
     public void nextMusic()
     {
-        if(currentIndex + 1 < localMusicList.size())
+        if(currentIndex + 1 < musicProvider.provideMusics().size())
         {
             playMusic(currentIndex + 1);
         }
@@ -124,13 +135,16 @@ public class MusicPlayService extends Service {
             try
             {
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource(localMusicList.get(index).path);
+                musicProvider.setPlayingMusic(index);
+                currentIndex = index;
+                mediaPlayer.setDataSource(musicProvider.provideMusics().get(index).data);
                 mediaPlayer.prepareAsync();
             } catch (IOException e) {
                 e.printStackTrace();
+                Logger.e(e,"IOException");
             }
         }
-        currentIndex = index;
+
     }
     public void pauseMusic()
     {
@@ -171,14 +185,17 @@ public class MusicPlayService extends Service {
         {
             prevMusic();
         }
-        public void setMusicInfoCallBack(MusicInfoCallBack callBack)
+        public MusicInfoCallBack addMusicInfoCallBack(MusicInfoCallBack callBack)
         {
-            MusicPlayService.this.musicInfoCallBack = callBack;
+            if(musicInfoCallBacks == null)
+                musicInfoCallBacks = new ArrayList<>();
+            musicInfoCallBacks.add(callBack);
+            return callBack;
         }
 
-        public MusicItem getPlayingMusic()
+        public void removeMusicInfoCallBack(MusicInfoCallBack callBack)
         {
-            return localMusicList.get(currentIndex);
+            musicInfoCallBacks.remove(callBack);
         }
 
         public void seekTo(int second)
@@ -187,27 +204,41 @@ public class MusicPlayService extends Service {
         }
     }
     private class MediaListener implements MediaPlayer.OnPreparedListener
-        ,MediaPlayer.OnCompletionListener
+        ,MediaPlayer.OnCompletionListener,MediaPlayer.OnBufferingUpdateListener
+        ,MediaPlayer.OnErrorListener
     {
         @Override
         public void onPrepared(MediaPlayer mp)
         {
-            if(musicInfoCallBack != null)
+            if(musicInfoCallBacks != null)
             {
-                musicInfoCallBack.onReady(localMusicList.get(currentIndex));
+                for (MusicInfoCallBack callBack : musicInfoCallBacks)
+                {
+                    callBack.onReady(musicProvider.provideMusics().get(currentIndex));
+                }
             }
             if(progressTask == null)
             {
                 progressTask = new ProgressTask();
                 timer.schedule(new ProgressTask(), 0, 1000);
             }
-
             mp.start();
         }
 
         @Override
         public void onCompletion(MediaPlayer mp) {
             nextMusic();
+        }
+
+        @Override
+        public void onBufferingUpdate(MediaPlayer mp, int percent) {
+            Logger.i("onBufferingUpdate:%d%",percent);
+        }
+
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            Logger.i("onError:what:%d,extra:%d",what,extra);
+            return false;
         }
     }
 
@@ -219,17 +250,38 @@ public class MusicPlayService extends Service {
         }
         @Override
         public void run() {
-            if(musicInfoCallBack != null)
+            if(musicInfoCallBacks != null)
             {
                 final int current = mediaPlayer.getCurrentPosition() / 1000;
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        musicInfoCallBack.onProgress(current);
-                    }
-                });
+                for (final MusicInfoCallBack callBack : musicInfoCallBacks)
+                {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onProgress(current);
+                        }
+                    });
+                }
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.release();
+        timer.cancel();
+        binder = null;
+        progressTask = null;
+        if(musicInfoCallBacks != null)
+        {
+            musicInfoCallBacks.clear();
+            musicInfoCallBacks = null;
+        }
+        timer = null;
+        musicProvider = null;
+        mediaPlayer = null;
+        Logger.i("MusicPlayService onDestroy");
     }
 
     public interface MusicInfoCallBack

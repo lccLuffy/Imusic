@@ -4,19 +4,25 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/music_display_name"
         style="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name" />
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="name"
+        android:textSize="16dp" />
 
     <TextView
         android:id="@+id/music_musician"
         style="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="author" />
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="author"
+        android:textSize="14dp" />
 </LinearLayout>

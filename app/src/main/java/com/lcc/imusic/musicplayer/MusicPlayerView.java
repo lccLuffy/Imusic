@@ -1,6 +1,8 @@
 package com.lcc.imusic.musicplayer;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
+import com.orhanobut.logger.Logger;
 
 import java.util.Locale;
 
@@ -28,6 +31,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     private ImageView iv_cover;
 
     private CheckBox cb_play;
+
 
 
     private SeekBar seekBar;
@@ -54,7 +58,11 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         super(context, attrs, defStyleAttr);
         init();
     }
-
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public MusicPlayerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
     public void setMusicPlayerCallBack(MusicPlayerCallBack musicPlayerCallBack)
     {
         this.musicPlayerCallBack = musicPlayerCallBack;
@@ -131,12 +139,22 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     private boolean fromUser = false;
     public void setPlayBtnState(boolean state)
     {
-        fromUser = true;
-        cb_play.setChecked(state);
+        if(cb_play.isChecked() != state)
+        {
+            fromUser = true;
+            cb_play.setChecked(state);
+        }
     }
 
     public void setProgress(int second)
     {
+        /*if(Math.abs(second - seekBar.getProgress()) > 10)
+        {
+            ObjectAnimator animator = ObjectAnimator
+                    .ofInt(seekBar,"progress",second)
+                    .setDuration(100);
+            animator.start();
+        }*/
         seekBar.setProgress(second);
         setCurrentTime(second);
     }
@@ -146,6 +164,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         seekBar.setMax(totalProgress);
         setTotalTime(totalProgress);
     }
+
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
