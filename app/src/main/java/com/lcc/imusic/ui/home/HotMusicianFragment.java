@@ -8,10 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.MusicItemAdapter;
 import com.lcc.imusic.base.AttachFragment;
-import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 import com.lcc.state_refresh_recyclerview.Recycler.StateRecyclerView;
-import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 
@@ -35,19 +33,17 @@ public class HotMusicianFragment extends AttachFragment {
         musicItemAdapter.getLoadMoreFooter().showNoMoreView();
         stateRecyclerView.setEnabled(false);
 
+        if(mainActivity.isBind())
+        {
+            musicItemAdapter.initData(mainActivity.getMusicList());
+            musicItemAdapter.setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    mainActivity.playMusic(position);
+                }
+            });
+        }
     }
-
-    @Override
-    public void onBind(final MusicPlayService.MusicServiceBind musicServiceBind) {
-        musicItemAdapter.initData(musicServiceBind.getLocalMusicList());
-        musicItemAdapter.setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                musicServiceBind.playMusic(position);
-            }
-        });
-    }
-
     @Override
     public int getLayoutId() {
         return R.layout.test_fragment;
@@ -57,4 +53,5 @@ public class HotMusicianFragment extends AttachFragment {
     public String toString() {
         return "热门音乐人";
     }
+
 }

@@ -171,8 +171,12 @@ public class MusicPlayService extends Service {
         }
         public void playMusic(int index)
         {
-
             MusicPlayService.this.playMusic(index);
+        }
+
+        public void start()
+        {
+            mediaPlayer.start();
         }
 
         public void pause()
@@ -200,6 +204,11 @@ public class MusicPlayService extends Service {
         public void setMusicInfoCallBack(MusicInfoCallBack callBack)
         {
             MusicPlayService.this.musicInfoCallBack = callBack;
+        }
+
+        public MusicPlayerView.MusicItem getPlayingMusic()
+        {
+            return localMusicList.get(currentIndex);
         }
 
         public void seekTo(int second)

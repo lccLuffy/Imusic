@@ -20,13 +20,18 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
     @Override
     protected void onBind(final MusicPlayService.MusicServiceBind musicServiceBind) {
+        boolean isPlay = false;
+        musicPlayerView.setPlayBtnState(isPlay = musicServiceBind.isPlaying());
+        if(isPlay)
+        {
+            setCurrentMusicItem(musicServiceBind.getPlayingMusic());
+        }
         musicPlayerView.setMusicPlayerCallBack(new MusicPlayerCallBackImpl());
-        musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
+
         musicServiceBind.setMusicInfoCallBack(new MusicPlayService.MusicInfoCallBack() {
             @Override
             public void onReady(MusicPlayerView.MusicItem musicItem) {
-                setTitle(musicItem.title);
-                toolbar.setSubtitle(musicItem.artist);
+                setCurrentMusicItem(musicItem);
                 final int totalTime = musicServiceBind.getTotalTime();
                 musicPlayerView.setTotalProgress(totalTime);
             }
@@ -35,7 +40,12 @@ public class MusicPlayerActivity extends MusicBindActivity {
                 musicPlayerView.setProgress(currentTime);
             }
         });
-        musicServiceBind.playMusic(0);
+    }
+
+    private void setCurrentMusicItem(MusicPlayerView.MusicItem musicItem)
+    {
+        setTitle(musicItem.title);
+        toolbar.setSubtitle(musicItem.artist);
     }
 
     @Override
