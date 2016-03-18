@@ -1,12 +1,17 @@
 package com.lcc.imusic.base;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.service.MusicPlayService;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -26,10 +31,28 @@ public abstract class AccountActivity extends BaseActivity{
     protected Drawer drawer;
     protected AccountHeader header;
     protected ProfileDrawerItem profileDrawerItem;
+
+    protected MusicPlayService.MusicServiceBind musicServiceBind;
+    private ServiceConnection serviceConnection;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initAccount();
+        Intent intent = new Intent(this, MusicPlayService.class);
+        serviceConnection = new MusicServiceConnection();
+        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+    }
+
+    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind)
+    {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
     }
 
     private void initAccount() {
@@ -99,5 +122,18 @@ public abstract class AccountActivity extends BaseActivity{
     public List<IDrawerItem> onCreateMenuItem()
     {
         return new ArrayList<IDrawerItem>();
+    }
+    protected class MusicServiceConnection implements ServiceConnection
+    {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            musicServiceBind = (MusicPlayService.MusicServiceBind) service;
+            onBind(musicServiceBind);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
     }
 }

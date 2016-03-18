@@ -30,7 +30,7 @@ public class MainActivity extends AccountActivity {
     @Bind(R.id.viewPager)
     ViewPager viewPager;
 
-    MusicPlayService.MyBind myBind;
+    MusicPlayService.MusicServiceBind musicServiceBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

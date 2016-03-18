@@ -1,5 +1,6 @@
 package com.lcc.imusic.service;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,9 +11,11 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Media;
+import android.support.v7.app.NotificationCompat;
+import android.widget.RemoteViews;
 
+import com.lcc.imusic.R;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
-import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,15 +24,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MusicPlayService extends Service {
+
+    public static final String ACTION_MUSIC_PLAY = "com.lcc.music.play";
+    public static final String ACTION_MUSIC_PAUSE = "com.lcc.music.pause";
+    public static final String ACTION_MUSIC_NEXT = "com.lcc.music.next";
+
     private int currentIndex = -1;
     private static String[] projection = {
-            Media._ID,
             Media.DISPLAY_NAME,
-            Media.DATA,
-            Media.ALBUM,
             Media.ARTIST,
-            Media.DURATION,
-            Media.SIZE,
+            Media.DATA
     };
     List<MusicPlayerView.MusicItem> localMusicList = new ArrayList<>();
 
@@ -51,8 +55,8 @@ public class MusicPlayService extends Service {
         cursor.moveToFirst();
         int count = cursor.getCount();
         for(int i=0;i < count;i++){
-            String name = cursor.getString(1);
-            String artist = cursor.getString(4);
+            String name = cursor.getString(0);
+            String artist = cursor.getString(1);
             String path = cursor.getString(2);
             MusicPlayerView.MusicItem musicItem = new MusicPlayerView.MusicItem();
             musicItem.path = path;
@@ -73,6 +77,32 @@ public class MusicPlayService extends Service {
         initMediaPlayer();
 
         initLocalMusicList();
+
+
+        RemoteViews contentView = new RemoteViews(getPackageName(),R.layout.notification_play_panel);
+
+        /**
+         * play
+         */
+        Intent play = new Intent(ACTION_MUSIC_PLAY);
+        PendingIntent playIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, play, 0);
+        contentView.setOnClickPendingIntent(R.id.notification_play,playIntent);
+
+
+        /**
+         * next
+         */
+        Intent next = new Intent(ACTION_MUSIC_NEXT);
+        PendingIntent nextIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, next, 0);
+        contentView.setOnClickPendingIntent(R.id.notification_next,nextIntent);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat
+                .Builder(getApplicationContext());
+
+        builder.setContent(contentView)
+                .setSmallIcon(R.mipmap.ic_launcher);
+        startForeground(1, builder.build());
     }
 
     private void initMediaPlayer()
@@ -85,7 +115,7 @@ public class MusicPlayService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return binder == null ? (binder = new MyBind()) : binder;
+        return binder == null ? (binder = new MusicServiceBind()) : binder;
     }
 
 
@@ -94,6 +124,10 @@ public class MusicPlayService extends Service {
         if(currentIndex + 1 < localMusicList.size())
         {
             playMusic(currentIndex + 1);
+        }
+        else
+        {
+            playMusic(0);
         }
     }
     public void prevMusic()
@@ -130,7 +164,7 @@ public class MusicPlayService extends Service {
         mediaPlayer.pause();
     }
 
-    public class MyBind extends Binder
+    public class MusicServiceBind extends Binder
     {
         public List<MusicPlayerView.MusicItem> getLocalMusicList()
         {
@@ -217,7 +251,6 @@ public class MusicPlayService extends Service {
                     }
                 });
             }
-
         }
     }
 
