@@ -1,4 +1,4 @@
-package com.lcc.imusic.service;
+package com.lcc.imusic.api;
 
 import com.lcc.imusic.Bean.Song;
 

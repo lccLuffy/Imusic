@@ -1,14 +1,13 @@
 package com.lcc.imusic.config;
 
 import android.app.Application;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
-import com.bumptech.glide.module.GlideModule;
+import com.lcc.imusic.service.MusicPlayService;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.orhanobut.logger.Logger;
@@ -25,6 +24,9 @@ public class App extends Application{
         app = this;
         Logger.init("main");
         DrawerImageLoader.init(new ImageLoader());
+
+        Intent intent = new Intent(this, MusicPlayService.class);
+        startService(intent);
     }
     public static App getApp()
     {
