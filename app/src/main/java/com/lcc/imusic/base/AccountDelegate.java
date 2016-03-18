@@ -1,12 +1,15 @@
 package com.lcc.imusic.base;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.ui.setting.SettingActivity;
+import com.lcc.imusic.ui.user.UserCenterActivity;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -15,6 +18,7 @@ import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import java.util.List;
 
@@ -43,6 +47,14 @@ public class AccountDelegate {
                 .withActivity(activity)
                 .withHeaderBackground(R.mipmap.user_info_bg)
                 .addProfiles(profileDrawerItem = new ProfileDrawerItem().withEmail("username").withName("email@example.com"))
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                        activity.startActivity(new Intent(activity, UserCenterActivity.class));
+                        drawer.closeDrawer();
+                        return true;
+                    }
+                })
                 .build();
 
         final PrimaryDrawerItem setting = new PrimaryDrawerItem()
@@ -54,6 +66,12 @@ public class AccountDelegate {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if(drawerItem == setting)
+                        {
+                            activity.startActivity(new Intent(activity, SettingActivity.class));
+                            drawer.closeDrawer();
+                            return true;
+                        }
                         return accountListener.onDrawerMenuSelected(view, position, drawerItem);
                     }
                 })

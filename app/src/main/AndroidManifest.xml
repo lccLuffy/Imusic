@@ -38,6 +38,17 @@
             android:name=".service.MusicPlayService"
             android:enabled="true"
             android:exported="true" />
+
+        <!--<receiver
+            android:name=".service.MusicControllerReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.lcc.music.play" />
+                <action android:name="com.lcc.music.next" />
+                <action android:name="com.lcc.music.pause" />
+            </intent-filter>
+        </receiver>-->
     </application>
 
 </manifest>

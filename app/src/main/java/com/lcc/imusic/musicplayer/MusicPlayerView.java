@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
-import com.orhanobut.logger.Logger;
 
 import java.util.Locale;
 

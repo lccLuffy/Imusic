@@ -2,7 +2,10 @@ package com.lcc.imusic.service;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Handler;
@@ -25,8 +28,7 @@ import java.util.TimerTask;
 
 public class MusicPlayService extends Service {
 
-    public static final String ACTION_MUSIC_PLAY = "com.lcc.music.play";
-    public static final String ACTION_MUSIC_PAUSE = "com.lcc.music.pause";
+    public static final String ACTION_MUSIC_PLAY_OR_PAUSE = "com.lcc.music.play";
     public static final String ACTION_MUSIC_NEXT = "com.lcc.music.next";
 
     private int currentIndex = -1;
@@ -38,30 +40,56 @@ public class MusicPlayService extends Service {
 
     private List<MusicInfoCallBack> musicInfoCallBacks;
 
+    MusicControllerReceiver musicControllerReceiver;
+
     MusicProvider musicProvider;
 
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initMediaPlayer();
+        initLocalMusicList();
+    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+
+    private void initMediaPlayer()
+    {
+        mediaPlayer = new MediaPlayer();
+        MediaListener mediaListener = new MediaListener();
+        mediaPlayer.setOnPreparedListener(mediaListener);
+        mediaPlayer.setOnCompletionListener(mediaListener);
+        mediaPlayer.setOnBufferingUpdateListener(mediaListener);
+        mediaPlayer.setOnErrorListener(mediaListener);
+    }
     private void initLocalMusicList()
     {
         musicProvider = LocalMusicProvider.getMusicProvider(getApplicationContext());
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
 
-        timer = new Timer();
+    RemoteViews contentView;
+    public void initNotification()
+    {
+        musicControllerReceiver = new MusicControllerReceiver();
 
-        initMediaPlayer();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_MUSIC_NEXT);
+        intentFilter.addAction(ACTION_MUSIC_PLAY_OR_PAUSE);
 
-        initLocalMusicList();
+        registerReceiver(musicControllerReceiver,intentFilter);
 
-
-        RemoteViews contentView = new RemoteViews(getPackageName(),R.layout.notification_play_panel);
-
+        contentView = new RemoteViews(getPackageName(), R.layout.notification_play_panel);
         /**
          * play
          */
-        Intent play = new Intent(ACTION_MUSIC_PLAY);
+        Intent play = new Intent(ACTION_MUSIC_PLAY_OR_PAUSE);
         PendingIntent playIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, play, 0);
         contentView.setOnClickPendingIntent(R.id.notification_play,playIntent);
 
@@ -77,25 +105,10 @@ public class MusicPlayService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat
                 .Builder(getApplicationContext());
 
+        builder.setOngoing(true);
         builder.setContent(contentView)
                 .setSmallIcon(R.mipmap.ic_launcher);
         startForeground(1, builder.build());
-    }
-
-    private void initMediaPlayer()
-    {
-        mediaPlayer = new MediaPlayer();
-        MediaListener mediaListener = new MediaListener();
-        mediaPlayer.setOnPreparedListener(mediaListener);
-        mediaPlayer.setOnCompletionListener(mediaListener);
-        mediaPlayer.setOnBufferingUpdateListener(mediaListener);
-        mediaPlayer.setOnErrorListener(mediaListener);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -121,6 +134,9 @@ public class MusicPlayService extends Service {
             playMusic(currentIndex - 1);
         }
     }
+
+
+
     public void playMusic(int index)
     {
         if(currentIndex == index)
@@ -151,6 +167,18 @@ public class MusicPlayService extends Service {
         mediaPlayer.pause();
     }
 
+    public void startMusic()
+    {
+        if(currentIndex != -1)
+        {
+            mediaPlayer.start();
+        }
+        else
+        {
+            playMusic(0);
+        }
+    }
+
     public class MusicServiceBind extends Binder
     {
         public void playMusic(int index)
@@ -160,7 +188,7 @@ public class MusicPlayService extends Service {
 
         public void start()
         {
-            mediaPlayer.start();
+            startMusic();
         }
 
         public void pause()
@@ -220,11 +248,21 @@ public class MusicPlayService extends Service {
             if(progressTask == null)
             {
                 progressTask = new ProgressTask();
+                timer = new Timer();
                 timer.schedule(new ProgressTask(), 0, 1000);
             }
             mp.start();
+            if(!hasShowNotification)
+            {
+                hasShowNotification = true;
+                initNotification();
+            }
+            MusicItem item = musicProvider.getPlayingMusic();
+            contentView.setCharSequence(R.id.notification_title,"setText",item.title);
+            contentView.setCharSequence(R.id.notification_subtitle,"setText",item.artist);
+            Logger.i("contentView set value "+item.title);
         }
-
+        private boolean hasShowNotification = false;
         @Override
         public void onCompletion(MediaPlayer mp) {
             nextMusic();
@@ -269,16 +307,26 @@ public class MusicPlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mediaPlayer.release();
-        timer.cancel();
-        binder = null;
-        progressTask = null;
+        if(musicControllerReceiver != null)
+        {
+            unregisterReceiver(musicControllerReceiver);
+            musicControllerReceiver = null;
+        }
+        if(timer != null)
+        {
+            timer.cancel();
+            timer = null;
+        }
         if(musicInfoCallBacks != null)
         {
             musicInfoCallBacks.clear();
             musicInfoCallBacks = null;
         }
-        timer = null;
+
+        mediaPlayer.release();
+        binder = null;
+        progressTask = null;
+        contentView = null;
         musicProvider = null;
         mediaPlayer = null;
         Logger.i("MusicPlayService onDestroy");
@@ -288,5 +336,20 @@ public class MusicPlayService extends Service {
     {
         void onReady(MusicItem musicItem);
         void onProgress(int currentTime);
+    }
+
+    public class MusicControllerReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(ACTION_MUSIC_NEXT.equals(action))
+            {
+                nextMusic();
+            }
+            else if(ACTION_MUSIC_PLAY_OR_PAUSE.equals(action))
+            {
+                startMusic();
+            }
+        }
     }
 }

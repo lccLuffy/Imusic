@@ -21,7 +21,6 @@ import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
-import com.lcc.imusic.ui.setting.SettingActivity;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -75,7 +74,7 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         playBar_wrap.setOnClickListener(this);
         playBarPlayToggle.setOnCheckedChangeListener(this);
         playBarPlayNext.setOnClickListener(this);
-        accountDelegate.setAvatar("http://static.oschina.net/uploads/img/201304/17033908_N1hN.jpg");
+        accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
     }
 
     private void init()
@@ -95,10 +94,6 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingActivity.class));
-            return true;
-        }
         if (id == R.id.action_exit) {
             finish();
             stopService(new Intent(this, MusicPlayService.class));

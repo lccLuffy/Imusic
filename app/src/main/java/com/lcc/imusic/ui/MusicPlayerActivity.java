@@ -9,7 +9,6 @@ import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
 import com.lcc.imusic.service.MusicPlayService;
-import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 
@@ -76,9 +75,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
     {
         @Override
         public void start() {
-            Logger.i("MusicPlayerActivity start");
-
-            musicServiceBind.playMusic(0);
+            musicServiceBind.start();
         }
 
         @Override

@@ -42,7 +42,7 @@ public class LocalMusicProvider implements MusicProvider {
 
         localMusicList.add(musicItem);*/
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,null,null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+                projection,Media.DURATION +" > 20000",null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         if(cursor == null)
             return;
 
