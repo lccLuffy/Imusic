@@ -111,11 +111,9 @@ public class MusicPlayService extends Service {
             {
                 mediaPlayer.start();
             }
-            Logger.i("playMusic resume");
         }
         else
         {
-            Logger.i("playMusic init");
             try
             {
                 mediaPlayer.reset();
