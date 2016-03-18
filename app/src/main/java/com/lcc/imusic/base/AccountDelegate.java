@@ -1,17 +1,12 @@
 package com.lcc.imusic.base;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.IBinder;
+import android.app.Activity;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.lcc.imusic.R;
-import com.lcc.imusic.service.MusicPlayService;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -21,43 +16,31 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by lcc_luffy on 2016/3/17.
+ * Created by lcc_luffy on 2016/3/18.
  */
-public abstract class AccountActivity extends BaseActivity{
+public class AccountDelegate {
+    private Toolbar toolbar;
+    private Activity activity;
+
+    private AccountListener accountListener;
+
     protected Drawer drawer;
     protected AccountHeader header;
     protected ProfileDrawerItem profileDrawerItem;
 
-    protected MusicPlayService.MusicServiceBind musicServiceBind;
-    private ServiceConnection serviceConnection;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initAccount();
-        Intent intent = new Intent(this, MusicPlayService.class);
-        serviceConnection = new MusicServiceConnection();
-        bindService(intent, serviceConnection, BIND_AUTO_CREATE);
-    }
-
-    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind)
+    public AccountDelegate(@NonNull Activity activity,@NonNull Toolbar toolbar,@NonNull AccountListener listener)
     {
-
+        this.activity = activity;
+        this.toolbar = toolbar;
+        this.accountListener = listener;
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(serviceConnection);
-    }
-
-    private void initAccount() {
+    public void init()
+    {
         header = new AccountHeaderBuilder()
-                .withActivity(this)
+                .withActivity(activity)
                 .withHeaderBackground(R.mipmap.user_info_bg)
                 .addProfiles(profileDrawerItem = new ProfileDrawerItem().withEmail("username").withName("email@example.com"))
                 .build();
@@ -66,12 +49,12 @@ public abstract class AccountActivity extends BaseActivity{
                 .withName("设置");
         drawer = new DrawerBuilder()
                 .withToolbar(toolbar)
-                .withActivity(this)
-                .withDrawerItems(onCreateMenuItem())
+                .withActivity(activity)
+                .withDrawerItems(accountListener.onCreateMenuItem())
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        return onDrawerMenuSelected(view,position,drawerItem);
+                        return accountListener.onDrawerMenuSelected(view, position, drawerItem);
                     }
                 })
                 .withFooterDivider(true)
@@ -91,7 +74,6 @@ public abstract class AccountActivity extends BaseActivity{
         profileDrawerItem.withEmail(email);
         header.updateProfile(profileDrawerItem);
     }
-
 
     public void setAvatar(String url)
     {
@@ -118,22 +100,22 @@ public abstract class AccountActivity extends BaseActivity{
         return false;
     }
 
-    @NonNull
-    public List<IDrawerItem> onCreateMenuItem()
+    public void setAccountListener(AccountListener accountListener)
     {
-        return new ArrayList<IDrawerItem>();
+        this.accountListener = accountListener;
     }
-    protected class MusicServiceConnection implements ServiceConnection
+    public void destroy()
     {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            musicServiceBind = (MusicPlayService.MusicServiceBind) service;
-            onBind(musicServiceBind);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
+        drawer = null;
+        header = null;
+        profileDrawerItem = null;
+        accountListener = null;
+        activity = null;
+        toolbar = null;
+    }
+    public interface AccountListener
+    {
+        boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem);
+        @NonNull List<IDrawerItem> onCreateMenuItem();
     }
 }

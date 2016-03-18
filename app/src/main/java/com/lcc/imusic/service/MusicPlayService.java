@@ -118,7 +118,6 @@ public class MusicPlayService extends Service {
         return binder == null ? (binder = new MusicServiceBind()) : binder;
     }
 
-
     public void nextMusic()
     {
         if(currentIndex + 1 < localMusicList.size())

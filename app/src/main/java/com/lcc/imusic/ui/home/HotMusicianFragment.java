@@ -1,17 +1,17 @@
 package com.lcc.imusic.ui.home;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.MusicItemAdapter;
-import com.lcc.imusic.base.BaseFragment;
-import com.lcc.imusic.ui.MusicPlayerActivity;
+import com.lcc.imusic.base.AttachFragment;
+import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 import com.lcc.state_refresh_recyclerview.Recycler.StateRecyclerView;
+import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 
@@ -19,7 +19,7 @@ import butterknife.Bind;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class HotMusicianFragment extends BaseFragment {
+public class HotMusicianFragment extends AttachFragment {
 
     @Bind(R.id.stateRecyclerView)
     StateRecyclerView stateRecyclerView;
@@ -34,12 +34,16 @@ public class HotMusicianFragment extends BaseFragment {
         stateRecyclerView.setAdapter(musicItemAdapter);
         musicItemAdapter.getLoadMoreFooter().showNoMoreView();
         stateRecyclerView.setEnabled(false);
+
+    }
+
+    @Override
+    public void onBind(final MusicPlayService.MusicServiceBind musicServiceBind) {
+        musicItemAdapter.initData(musicServiceBind.getLocalMusicList());
         musicItemAdapter.setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Intent intent = new Intent(context, MusicPlayerActivity.class);
-                intent.putExtra("music", musicItemAdapter.getData(position));
-                startActivity(intent);
+                musicServiceBind.playMusic(position);
             }
         });
     }
