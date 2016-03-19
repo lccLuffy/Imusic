@@ -134,7 +134,6 @@ public class BottomSheetDialog extends AppCompatDialog {
 
         @Override
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
         }
     };
 
