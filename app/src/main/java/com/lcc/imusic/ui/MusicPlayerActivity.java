@@ -9,6 +9,8 @@ import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
 import com.lcc.imusic.service.MusicPlayService;
+import com.lcc.imusic.wiget.MusicListDialog;
+import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 
 import butterknife.Bind;
 
@@ -25,6 +27,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
         musicProvider = LocalMusicProvider.getMusicProvider(this);
         setCurrentMusicItem(musicProvider.getPlayingMusic());
+
     }
 
     @Override
@@ -63,7 +66,14 @@ public class MusicPlayerActivity extends MusicBindActivity {
             setTitle(musicItem.title);
             toolbar.setSubtitle(musicItem.artist);
             musicPlayerView.setTotalProgress(musicItem.duration);
+            musicPlayerView.setPlayBtnState(true);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        musicListDialog = null;
     }
 
     @Override
@@ -73,6 +83,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
     private class MusicPlayerCallBackImpl implements MusicPlayerView.MusicPlayerCallBack
     {
+
         @Override
         public void start() {
             musicServiceBind.start();
@@ -93,6 +104,13 @@ public class MusicPlayerActivity extends MusicBindActivity {
             musicPlayerView.setProgress(0);
             musicServiceBind.prev();
         }
+
+        @Override
+        public void onShowMusicSrc() {
+            checkDialogIsNull();
+            musicListDialog.show();
+        }
+
         @Override
         public void onSliderChanged(int second) {
             musicPlayerView.setProgress(second);
@@ -101,6 +119,22 @@ public class MusicPlayerActivity extends MusicBindActivity {
         @Override
         public void onSliderFinished(int currentSecond) {
             musicServiceBind.seekTo(currentSecond);
+        }
+    }
+    private MusicListDialog musicListDialog;
+    private void checkDialogIsNull() {
+        if(musicListDialog == null)
+        {
+            musicListDialog = new MusicListDialog(this);
+
+            musicListDialog.init().getAdapter().initData(musicProvider.provideMusics());
+
+            musicListDialog.getAdapter().setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    musicServiceBind.playMusic(position);
+                }
+            });
         }
     }
 }

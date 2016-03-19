@@ -71,7 +71,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         View panel = LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
         addView(panel);
 
-        iv_cover = (ImageView) panel.findViewById(R.id.cover);
+        iv_cover = (ImageView) panel.findViewById(R.id.musicView_cover);
         Animation animation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setRepeatCount(-1);
         animation.setDuration(10000);
@@ -79,18 +79,20 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         iv_cover.startAnimation(animation);
 
 
-        tv_totalTime = (TextView) panel.findViewById(R.id.totalTime);
-        tv_currentTime = (TextView) panel.findViewById(R.id.currentTime);
+        tv_totalTime = (TextView) panel.findViewById(R.id.musicView_totalTime);
+        tv_currentTime = (TextView) panel.findViewById(R.id.musicView_currentTime);
 
-        seekBar = (SeekBar) panel.findViewById(R.id.seekBar);
+        seekBar = (SeekBar) panel.findViewById(R.id.musicView_seekBar);
 
-        cb_play = (CheckBox) panel.findViewById(R.id.btn_play);
-        ImageView iv_prev = (ImageView) panel.findViewById(R.id.btn_prev);
-        ImageView iv_next = (ImageView) panel.findViewById(R.id.btn_next);
+        cb_play = (CheckBox) panel.findViewById(R.id.musicView_play);
+        ImageView iv_prev = (ImageView) panel.findViewById(R.id.musicView_prev);
+        ImageView iv_next = (ImageView) panel.findViewById(R.id.musicView_next);
+        ImageView musicView_src = (ImageView) panel.findViewById(R.id.musicView_src);
+
 
         iv_prev.setOnClickListener(this);
         iv_next.setOnClickListener(this);
-
+        musicView_src.setOnClickListener(this);
 
         cb_play.setOnCheckedChangeListener(this);
 
@@ -189,11 +191,14 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         {
             switch (v.getId())
             {
-                case R.id.btn_prev:
+                case R.id.musicView_prev:
                     musicPlayerCallBack.prev();
                     break;
-                case R.id.btn_next:
+                case R.id.musicView_next:
                     musicPlayerCallBack.next();
+                    break;
+                case R.id.musicView_src:
+                    musicPlayerCallBack.onShowMusicSrc();
                     break;
             }
         }
@@ -204,6 +209,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         void pause();
         void next();
         void prev();
+        void onShowMusicSrc();
         void onSliderChanged(int second);
         void onSliderFinished(int currentSecond);
     }

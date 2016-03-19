@@ -62,6 +62,7 @@ public class AccountDelegate {
         drawer = new DrawerBuilder()
                 .withToolbar(toolbar)
                 .withActivity(activity)
+                .withDisplayBelowStatusBar(false)
                 .withDrawerItems(accountListener.onCreateMenuItem())
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -79,6 +80,8 @@ public class AccountDelegate {
                 .withAccountHeader(header)
                 .build();
         drawer.addStickyFooterItem(setting);
+        drawer.getDrawerLayout().setFitsSystemWindows(true);
+        drawer.getSlider().setFitsSystemWindows(true);
     }
 
     public void setUsername(String username)

@@ -3,6 +3,7 @@ package com.lcc.imusic.base;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +33,9 @@ public abstract class BaseActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
+
+        BottomSheetBehavior bottomSheetBehavior;
+
 
         if(!((this instanceof MainActivity) || actionBar == null))
         {

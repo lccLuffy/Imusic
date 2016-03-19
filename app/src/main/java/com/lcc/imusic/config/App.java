@@ -25,8 +25,12 @@ public class App extends Application{
         Logger.init("main");
         DrawerImageLoader.init(new ImageLoader());
 
+        /*setTheme(R.style.AppThemeNight);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);*/
+
         Intent intent = new Intent(this, MusicPlayService.class);
         startService(intent);
+
         Logger.i("Application onCreate");
     }
     public static App getApp()

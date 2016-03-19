@@ -8,7 +8,9 @@
     android:background="@drawable/playbar_bg"
     android:orientation="horizontal"
     app:layout_behavior="@string/footer_behavior">
-
+    <!--app:behavior_hideable="false"
+    android.support.design.widget.BottomSheetBehavior
+    app:behavior_peekHeight="60dp"-->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -61,6 +63,7 @@
             android:id="@+id/playBar_playList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:contentDescription="@null"
             android:src="@mipmap/playbar_btn_playlist" />
 
@@ -68,6 +71,7 @@
             android:id="@+id/playBar_playToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:background="@drawable/draw_playbar_play_toggle"
             android:button="@null"
             android:contentDescription="@null" />
@@ -76,6 +80,7 @@
             android:id="@+id/playBar_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:contentDescription="@null"
             android:src="@mipmap/playbar_btn_next" />
     </LinearLayout>

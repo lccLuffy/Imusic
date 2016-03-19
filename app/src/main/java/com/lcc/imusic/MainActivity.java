@@ -21,6 +21,8 @@ import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
+import com.lcc.imusic.wiget.MusicListDialog;
+import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -74,6 +76,7 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         playBar_wrap.setOnClickListener(this);
         playBarPlayToggle.setOnCheckedChangeListener(this);
         playBarPlayNext.setOnClickListener(this);
+        playBarPlayList.setOnClickListener(this);
         accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
     }
 
@@ -137,6 +140,22 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         return R.layout.activity_main;
     }
 
+    private MusicListDialog musicListDialog;
+    private void checkDialogIsNull() {
+        if(musicListDialog == null)
+        {
+            musicListDialog = new MusicListDialog(this);
+
+            musicListDialog.init().getAdapter().initData(musicProvider.provideMusics());
+
+            musicListDialog.getAdapter().setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    playMusic(position);
+                }
+            });
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId())
@@ -147,6 +166,10 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
             case R.id.playBar_next:
                 musicServiceBind.next();
                 setCurrentMusicItem(musicProvider.getPlayingMusic());
+                break;
+            case R.id.playBar_playList:
+                checkDialogIsNull();
+                musicListDialog.show();
                 break;
         }
     }

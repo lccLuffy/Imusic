@@ -6,7 +6,7 @@
     android:background="@color/music_play_bg">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/cover"
+        android:id="@+id/musicView_cover"
         android:layout_width="260dp"
         android:layout_height="260dp"
         android:layout_centerHorizontal="true"
@@ -29,7 +29,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/currentTime"
+                android:id="@+id/musicView_currentTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -40,13 +40,13 @@
                 android:textSize="12dp" />
 
             <SeekBar
-                android:id="@+id/seekBar"
+                android:id="@+id/musicView_seekBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="9" />
 
             <TextView
-                android:id="@+id/totalTime"
+                android:id="@+id/musicView_totalTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -64,12 +64,25 @@
             android:orientation="horizontal">
 
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <ImageView
-                    android:id="@+id/btn_prev"
+                    android:id="@+id/musicView_love"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/play_icn_love" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/musicView_prev"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_gravity="center"
@@ -78,12 +91,12 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <CheckBox
-                    android:id="@+id/btn_play"
+                    android:id="@+id/musicView_play"
                     android:layout_width="86dp"
                     android:layout_height="86dp"
                     android:layout_gravity="center"
@@ -93,17 +106,30 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <ImageView
-                    android:id="@+id/btn_next"
+                    android:id="@+id/musicView_next"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_gravity="center"
                     android:clickable="true"
                     android:src="@drawable/draw_next_btn" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/musicView_src"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/play_icn_src" />
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
