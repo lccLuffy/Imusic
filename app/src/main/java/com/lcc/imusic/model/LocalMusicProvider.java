@@ -11,16 +11,19 @@ import com.lcc.imusic.bean.MusicItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 /**
  * Created by lcc_luffy on 2016/3/18.
  */
 public class LocalMusicProvider implements MusicProvider {
     List<MusicItem> localMusicList;
     private static String[] projection = {
-            Media.DISPLAY_NAME,
+            Media.TITLE,
             Media.ARTIST,
             Media.DATA,
-            Media.DURATION
+            Media.DURATION,
+            Media.ALBUM,
     };
     private static MusicProvider musicProvider;
     public static MusicProvider getMusicProvider(Context context)
@@ -55,7 +58,7 @@ public class LocalMusicProvider implements MusicProvider {
             int duration = cursor.getInt(3) / 1000;
             MusicItem musicItem = new MusicItem();
             musicItem.data = path;
-            musicItem.title = name;
+            musicItem.title = name+String.format(Locale.CHINA," - %s",cursor.getString(4));
             musicItem.artist = artist;
             musicItem.duration = duration;
             localMusicList.add(musicItem);

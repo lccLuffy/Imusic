@@ -10,11 +10,12 @@ import android.widget.ImageView;
 /**
  * Created by lcc_luffy on 2016/3/19.
  */
-public class NeedleImageView extends ImageView{
+public class NeedleImageView extends ImageView {
     public NeedleImageView(Context context) {
         super(context);
         init();
     }
+
     public NeedleImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -30,6 +31,7 @@ public class NeedleImageView extends ImageView{
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
+
     private void init() {
         setPivotX(30);
         setPivotY(30);
@@ -38,16 +40,15 @@ public class NeedleImageView extends ImageView{
 
     private final Interpolator interpolator = new FastOutLinearInInterpolator();
 
-    public void pause()
-    {
+    public void pause() {
         animate()
                 .rotation(-40)
                 .setInterpolator(interpolator)
                 .setDuration(500)
                 .start();
     }
-    public void resume()
-    {
+
+    public void resume() {
         animate()
                 .rotation(0)
                 .setInterpolator(interpolator)

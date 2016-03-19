@@ -5,8 +5,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="music_play_bg">#15272d</color>
-    <color name="play_bar_normal">#faeeeeee</color>
-    <color name="play_bar_pressed">#fadddddd</color>
+    <color name="play_bar_normal">#eaeeeeee</color>
+    <color name="play_bar_pressed">#eadddddd</color>
 
 
     <!-- OVERWRITE THESE COLORS FOR A DARK THEME -->

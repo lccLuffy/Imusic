@@ -34,12 +34,10 @@ public class FooterBehavior extends CoordinatorLayout.Behavior<View> {
 
     @Override
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dx, int dy, int[] consumed) {
-        if(!isHided && !isHiding && dy > 2)
-        {
+        if (!isHided && !isHiding && dy > 2) {
             hide(child);
         }
-        if(!isShowing && !isShown && dy < -2)
-        {
+        if (!isShowing && !isShown && dy < -2) {
             show(child);
         }
     }

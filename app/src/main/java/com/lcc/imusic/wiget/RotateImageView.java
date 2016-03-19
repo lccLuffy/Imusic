@@ -9,9 +9,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by lcc_luffy on 2016/3/19.
  */
-public class RotateImageView extends CircleImageView implements Runnable{
+public class RotateImageView extends CircleImageView implements Runnable {
     private boolean canPost = true;
     private boolean running = true;
+
     public RotateImageView(Context context) {
         super(context);
     }
@@ -25,7 +26,8 @@ public class RotateImageView extends CircleImageView implements Runnable{
 
     }
 
-    int width,height;
+    int width, height;
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -37,23 +39,20 @@ public class RotateImageView extends CircleImageView implements Runnable{
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.rotate(degree,width,height);
-        if(running && canPost)
-        {
+        canvas.rotate(degree, width, height);
+        if (running && canPost) {
             canPost = false;
-            postDelayed(this,16);
+            postDelayed(this, 16);
         }
         super.onDraw(canvas);
 
     }
 
-    public void pause()
-    {
+    public void pause() {
         running = false;
     }
 
-    public void resume()
-    {
+    public void resume() {
         running = true;
         canPost = true;
         invalidate();
@@ -63,8 +62,7 @@ public class RotateImageView extends CircleImageView implements Runnable{
     public void run() {
         canPost = true;
         degree += 0.5f;
-        if(degree >= 360)
-        {
+        if (degree >= 360) {
             degree = 0.0f;
         }
         invalidate();

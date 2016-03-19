@@ -13,7 +13,7 @@ import com.lcc.imusic.adapter.MusicItemAdapter;
 /**
  * Created by lcc_luffy on 2016/3/19.
  */
-public class MusicListDialog extends BottomSheetDialog{
+public class MusicListDialog extends BottomSheetDialog {
     public MusicListDialog(@NonNull Context context) {
         super(context);
     }
@@ -28,9 +28,8 @@ public class MusicListDialog extends BottomSheetDialog{
 
     private MusicItemAdapter adapter;
 
-    public MusicListDialog init()
-    {
-        View content = getLayoutInflater().inflate(R.layout.dialog_bottom_music_play,null);
+    public MusicListDialog init() {
+        View content = getLayoutInflater().inflate(R.layout.dialog_bottom_music_play, null);
 
         RecyclerView recyclerView = (RecyclerView) content.findViewById(R.id.dialog_recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -42,9 +41,8 @@ public class MusicListDialog extends BottomSheetDialog{
     }
 
     @NonNull
-    public MusicItemAdapter getAdapter()
-    {
-        if(adapter == null)
+    public MusicItemAdapter getAdapter() {
+        if (adapter == null)
             adapter = new MusicItemAdapter(getContext());
         return adapter;
     }

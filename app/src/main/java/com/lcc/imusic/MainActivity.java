@@ -78,6 +78,9 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         playBarPlayNext.setOnClickListener(this);
         playBarPlayList.setOnClickListener(this);
         accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
+
+        toolbar.inflateMenu(R.menu.toolbar_menu);
+
     }
 
     private void init()
@@ -91,6 +94,9 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        /*MenuItem menuItem = menu.add("Music");
+        menuItem.setIcon(R.mipmap.actionbar_music_selected);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
         return true;
     }
 
@@ -189,7 +195,6 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
 
     public void playMusic(int id) {
         musicServiceBind.playMusic(id);
-        playBarPlayToggle.setChecked(true);
     }
 
     private void setCurrentMusicItem(MusicItem musicItem)
