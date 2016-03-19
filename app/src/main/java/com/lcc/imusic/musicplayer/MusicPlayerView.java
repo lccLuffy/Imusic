@@ -185,12 +185,12 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         if(isChecked)
         {
             iv_cover.resume();
-            needleImageView.quickResume();
+            needleImageView.resume();
         }
         else
         {
             iv_cover.pause();
-            needleImageView.quickPause();
+            needleImageView.pause();
         }
 
         if(musicPlayerCallBack != null)
