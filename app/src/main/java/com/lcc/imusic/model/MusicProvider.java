@@ -15,7 +15,7 @@ public interface MusicProvider {
 
     MusicItem getPlayingMusic();
 
-    void setPlayingMusic(MusicItem music);
-
     void setPlayingMusic(int index);
+
+    int getPlayingMusicIndex();
 }

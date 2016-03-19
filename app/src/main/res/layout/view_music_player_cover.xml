@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.lcc.imusic.wiget.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/musicView_cover"
+    android:layout_width="260dp"
+    android:layout_height="260dp"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="50dp"
+    android:src="@mipmap/mycover"
+    app:civ_border_color="#30ffffff"
+    app:civ_border_width="5dp" />

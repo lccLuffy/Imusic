@@ -46,7 +46,7 @@ public class NeedleImageView extends ImageView {
         animate()
                 .rotation(-40)
                 .setInterpolator(interpolator)
-                .setDuration(500)
+                .setDuration(350)
                 .start();
     }
 
@@ -66,7 +66,7 @@ public class NeedleImageView extends ImageView {
         animate()
                 .rotation(0)
                 .setInterpolator(interpolator)
-                .setDuration(500)
+                .setDuration(350)
                 .start();
     }
 }

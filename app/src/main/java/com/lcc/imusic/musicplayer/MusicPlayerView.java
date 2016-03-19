@@ -3,6 +3,8 @@ package com.lcc.imusic.musicplayer;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +17,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
+import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.wiget.NeedleImageView;
 import com.lcc.imusic.wiget.RotateImageView;
+import com.lcc.imusic.wiget.StateImageView;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -25,12 +30,13 @@ import java.util.Locale;
  */
 public class MusicPlayerView extends FrameLayout implements CompoundButton.OnCheckedChangeListener,View.OnClickListener {
 
+    private ViewPager viewPager;
+
+    private MusicViewAdapter musicViewAdapter;
 
     private RotateImageView iv_cover;
 
     private CheckBox cb_play;
-
-
 
     private SeekBar seekBar;
 
@@ -38,6 +44,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     private TextView tv_currentTime;
 
     private NeedleImageView needleImageView;
+
+    private StateImageView stateImageView;
 
     private MusicPlayerCallBack musicPlayerCallBack;
 
@@ -74,7 +82,6 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         iv_cover = (RotateImageView) panel.findViewById(R.id.musicView_cover);
         needleImageView = (NeedleImageView) panel.findViewById(R.id.musicView_needleImageView);
 
-
         tv_totalTime = (TextView) panel.findViewById(R.id.musicView_totalTime);
         tv_currentTime = (TextView) panel.findViewById(R.id.musicView_currentTime);
 
@@ -85,6 +92,18 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         ImageView iv_next = (ImageView) panel.findViewById(R.id.musicView_next);
         ImageView musicView_src = (ImageView) panel.findViewById(R.id.musicView_src);
 
+        viewPager = (ViewPager) panel.findViewById(R.id.musicView_viewPage);
+
+
+
+        stateImageView = (StateImageView) panel.findViewById(R.id.musicView_playState);
+        stateImageView.setOnStateChangeListener(new StateImageView.OnStateChangeListener() {
+            @Override
+            public void onStateChange(int playType) {
+                if(musicPlayerCallBack != null)
+                    musicPlayerCallBack.onPlayTypeChange(playType);
+            }
+        });
 
         iv_prev.setOnClickListener(this);
         iv_next.setOnClickListener(this);
@@ -143,18 +162,61 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
             cb_play.setChecked(state);
         }
     }
+    public void setPlayType(int playType)
+    {
+        stateImageView.setState(playType);
+    }
 
     public void setProgress(int second)
     {
-        /*if(Math.abs(second - seekBar.getProgress()) > 10)
-        {
-            ObjectAnimator animator = ObjectAnimator
-                    .ofInt(seekBar,"progress",second)
-                    .setDuration(100);
-            animator.start();
-        }*/
         seekBar.setProgress(second);
         setCurrentTime(second);
+    }
+
+    public void setPageIndex(int index)
+    {
+        viewPager.setCurrentItem(index);
+        this.currentPlayingMusic = index;
+    }
+
+    private int currentPlayingMusic;
+    public void setMusicList(@NonNull List<MusicItem> musicList,int currentPlayingMusic)
+    {
+        this.currentPlayingMusic = currentPlayingMusic;
+        viewPager.setAdapter(musicViewAdapter = new MusicViewAdapter(musicList,getContext()));
+        viewPager.addOnPageChangeListener(new OnPageSelected());
+        viewPager.setCurrentItem(currentPlayingMusic);
+
+    }
+
+    private class OnPageSelected implements ViewPager.OnPageChangeListener
+    {
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if(musicPlayerCallBack != null && position != currentPlayingMusic)
+            {
+                musicPlayerCallBack.onPageSelected(position);
+            }
+            currentPlayingMusic = position;
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            if(state != ViewPager.SCROLL_STATE_IDLE)
+            {
+                needleImageView.pause();
+            }
+            else
+            {
+                needleImageView.resume();
+            }
+        }
     }
 
     public void setTotalProgress(int totalProgress)
@@ -223,9 +285,11 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
             switch (v.getId())
             {
                 case R.id.musicView_prev:
+                    setPageIndex(currentPlayingMusic - 1);
                     musicPlayerCallBack.prev();
                     break;
                 case R.id.musicView_next:
+                    setPageIndex(currentPlayingMusic + 1);
                     musicPlayerCallBack.next();
                     break;
                 case R.id.musicView_src:
@@ -236,12 +300,54 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     }
     public interface MusicPlayerCallBack
     {
+        /**
+         * 开始按钮被按下
+         */
         void start();
+
+        /**
+         * 暂停按钮被按下
+         */
         void pause();
+
+        /**
+         * 下一首按钮被按下
+         */
         void next();
+
+        /**
+         * 上一首按钮被按下
+         */
         void prev();
+
+        /**
+         * 播放列表按钮被按下
+         */
         void onShowMusicSrc();
+
+        /**
+         * 进度条进度改变
+         * @param second
+         */
         void onSliderChanged(int second);
+
+        /**
+         * 进度条滑动完成
+         * @param currentSecond
+         */
         void onSliderFinished(int currentSecond);
+
+        /**
+         * LOOP,ONE,RANDOM
+         * @param playType
+         */
+        void onPlayTypeChange(int playType);
+
+        /**
+         * ViewPage 滑动时调用
+         * @param position
+         */
+        void onPageSelected(int position);
+
     }
 }

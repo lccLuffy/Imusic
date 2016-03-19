@@ -18,15 +18,21 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
+import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MusicPlayService extends Service {
+
+    public static final int PLAY_TYPE_LOOP = 1;
+    public static final int PLAY_TYPE_ONE = 2;
+    public static final int PLAY_TYPE_RANDOM = 3;
 
     public static final String ACTION_MUSIC_PLAY_OR_PAUSE = "com.lcc.music.play";
     public static final String ACTION_MUSIC_NEXT = "com.lcc.music.next";
@@ -41,11 +47,13 @@ public class MusicPlayService extends Service {
     private List<MusicReadyListener> musicReadyListeners;
     private List<MusicProgressListener> musicProgressListeners;
 
-    MusicControllerReceiver musicControllerReceiver;
+    private MusicControllerReceiver musicControllerReceiver;
 
-    MusicProvider musicProvider;
+    private MusicProvider musicProvider;
 
+    private Random random;
 
+    private int playType = PLAY_TYPE_LOOP;
 
     @Override
     public void onCreate() {
@@ -109,6 +117,9 @@ public class MusicPlayService extends Service {
         builder.setOngoing(true);
         builder.setContent(contentView)
                 .setSmallIcon(R.mipmap.ic_launcher);
+        Intent intent = new Intent(getApplicationContext(), MusicPlayerActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,intent,0);
+        builder.setContentIntent(pendingIntent);
         startForeground(1, builder.build());
     }
 
@@ -119,7 +130,11 @@ public class MusicPlayService extends Service {
 
     public void nextMusic()
     {
-        if(currentIndex + 1 < musicProvider.provideMusics().size())
+        if (playType == PLAY_TYPE_RANDOM)
+        {
+            playMusic(getPlayIndexWithType());
+        }
+        else if(currentIndex + 1 < musicProvider.provideMusics().size())
         {
             playMusic(currentIndex + 1);
         }
@@ -128,15 +143,36 @@ public class MusicPlayService extends Service {
             playMusic(0);
         }
     }
+
+    private int getPlayIndexWithType()
+    {
+        switch (playType)
+        {
+            case PLAY_TYPE_ONE:
+                return currentIndex;
+            case PLAY_TYPE_RANDOM:
+                if(random == null)
+                    random = new Random();
+                return random.nextInt(musicProvider.provideMusics().size());
+        }
+        return currentIndex + 1;
+    }
+
     public void prevMusic()
     {
-        if(currentIndex >= 1)
+        if (playType == PLAY_TYPE_RANDOM)
+        {
+            playMusic(getPlayIndexWithType());
+        }
+        else if(currentIndex >= 1)
         {
             playMusic(currentIndex - 1);
         }
+        else
+        {
+            playMusic(musicProvider.provideMusics().size() - 1);
+        }
     }
-
-
 
     public void playMusic(int index)
     {
@@ -156,6 +192,10 @@ public class MusicPlayService extends Service {
             } catch (IOException e) {
                 e.printStackTrace();
                 Logger.e(e,"IOException");
+            }
+            catch (Throwable throwable)
+            {
+                Logger.e(throwable,"Throwable");
             }
         }
 
@@ -244,6 +284,14 @@ public class MusicPlayService extends Service {
         {
             mediaPlayer.seekTo(second * 1000);
         }
+        public int getPlayType()
+        {
+            return playType;
+        }
+        public void setPlayType(int playType)
+        {
+            MusicPlayService.this.playType = playType;
+        }
     }
     private class MediaListener implements MediaPlayer.OnPreparedListener
         ,MediaPlayer.OnCompletionListener,MediaPlayer.OnBufferingUpdateListener
@@ -279,7 +327,7 @@ public class MusicPlayService extends Service {
         private boolean hasShowNotification = false;
         @Override
         public void onCompletion(MediaPlayer mp) {
-            nextMusic();
+            playMusic(getPlayIndexWithType());
         }
 
         @Override

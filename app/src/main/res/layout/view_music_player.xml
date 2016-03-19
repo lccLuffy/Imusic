@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
-       
+
 
         <com.lcc.imusic.wiget.RotateImageView
             android:id="@+id/musicView_cover"
@@ -18,8 +18,16 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"
             android:src="@mipmap/mycover"
+            android:visibility="gone"
             app:civ_border_color="#30ffffff"
             app:civ_border_width="5dp" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/musicView_viewPage"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp" />
 
         <com.lcc.imusic.wiget.NeedleImageView
             android:id="@+id/musicView_needleImageView"
@@ -86,14 +94,19 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <CheckBox
+                <com.lcc.imusic.wiget.StateImageView
+                    android:id="@+id/musicView_playState"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center" />
+                <!--<CheckBox
                     android:id="@+id/musicView_love"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
                     android:background="@drawable/draw_love"
                     android:button="@null"
-                    android:checked="false" />
+                    android:checked="false" />-->
             </FrameLayout>
 
             <FrameLayout

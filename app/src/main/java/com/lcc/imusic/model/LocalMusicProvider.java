@@ -18,6 +18,7 @@ import java.util.Locale;
  */
 public class LocalMusicProvider implements MusicProvider {
     List<MusicItem> localMusicList;
+    private int playingMusicIndex;
     private static String[] projection = {
             Media.TITLE,
             Media.ARTIST,
@@ -85,13 +86,15 @@ public class LocalMusicProvider implements MusicProvider {
     }
 
     private MusicItem playingMusic;
-    @Override
-    public void setPlayingMusic(MusicItem music) {
-        playingMusic = music;
-    }
 
     @Override
     public void setPlayingMusic(int index) {
+        playingMusicIndex = index;
         playingMusic = localMusicList.get(index);
+    }
+
+    @Override
+    public int getPlayingMusicIndex() {
+        return playingMusicIndex;
     }
 }

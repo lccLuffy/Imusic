@@ -10,6 +10,7 @@ import com.lcc.imusic.model.MusicProvider;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.wiget.MusicListDialog;
+import com.lcc.imusic.wiget.StateImageView;
 import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 
 import butterknife.Bind;
@@ -34,8 +35,9 @@ public class MusicPlayerActivity extends MusicBindActivity {
     protected void onBind(final MusicPlayService.MusicServiceBind musicServiceBind)
     {
         musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
-
+        musicPlayerView.setPlayType(musicServiceBind.getPlayType());
         musicPlayerView.setMusicPlayerCallBack(new MusicPlayerCallBackImpl());
+        musicPlayerView.setMusicList(musicProvider.provideMusics(),musicProvider.getPlayingMusicIndex());
         musicInfoListener = new MusicInfoListener();
         musicServiceBind.addMusicProgressListener(musicInfoListener);
         musicServiceBind.addMusicReadyListener(musicInfoListener);
@@ -67,6 +69,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
             musicInfoListener = null;
         }
     }
+
 
     private void setCurrentMusicItem(MusicItem musicItem)
     {
@@ -129,6 +132,17 @@ public class MusicPlayerActivity extends MusicBindActivity {
         public void onSliderFinished(int currentSecond) {
             musicServiceBind.seekTo(currentSecond);
         }
+
+        @Override
+        public void onPlayTypeChange(int playType) {
+            musicServiceBind.setPlayType(playType);
+            toast(StateImageView.state2String(playType));
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            musicServiceBind.playMusic(position);
+        }
     }
     private MusicListDialog musicListDialog;
     private void checkDialogIsNull() {
@@ -142,6 +156,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
                 @Override
                 public void onItemClick(int position) {
                     musicServiceBind.playMusic(position);
+                    musicPlayerView.setPageIndex(position);
                 }
             });
         }
