@@ -102,11 +102,12 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                isUserSliding = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                isUserSliding = false;
                 musicPlayerCallBack.onSliderFinished(seekBar.getProgress());
             }
         });
@@ -162,6 +163,17 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         setTotalTime(totalProgress);
     }
 
+
+    private boolean isUserSliding = false;
+    public boolean isUserSliding()
+    {
+        return isUserSliding;
+    }
+
+    public boolean isPaused()
+    {
+        return !cb_play.isChecked();
+    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

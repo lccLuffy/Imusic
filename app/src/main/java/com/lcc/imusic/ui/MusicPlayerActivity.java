@@ -28,7 +28,6 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
         musicProvider = LocalMusicProvider.getMusicProvider(this);
         setCurrentMusicItem(musicProvider.getPlayingMusic());
-
     }
 
     @Override
@@ -44,10 +43,12 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
     private class MusicInfoListener implements MusicPlayService.MusicReadyListener,MusicPlayService.MusicProgressListener
     {
-
         @Override
         public void onProgress(int second) {
-            musicPlayerView.setProgress(second);
+            if(!(musicPlayerView.isUserSliding() || musicPlayerView.isPaused()))
+            {
+                musicPlayerView.setProgress(second);
+            }
         }
 
         @Override
