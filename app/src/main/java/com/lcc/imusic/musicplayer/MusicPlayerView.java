@@ -15,11 +15,9 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.wiget.NeedleImageView;
-import com.lcc.imusic.wiget.RotateImageView;
 import com.lcc.imusic.wiget.StateImageView;
 
 import java.util.List;
@@ -33,8 +31,6 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     private ViewPager viewPager;
 
     private MusicViewAdapter musicViewAdapter;
-
-    private RotateImageView iv_cover;
 
     private CheckBox cb_play;
 
@@ -79,7 +75,6 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         View panel = LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
         addView(panel);
 
-        iv_cover = (RotateImageView) panel.findViewById(R.id.musicView_cover);
         needleImageView = (NeedleImageView) panel.findViewById(R.id.musicView_needleImageView);
 
         tv_totalTime = (TextView) panel.findViewById(R.id.musicView_totalTime);
@@ -131,11 +126,6 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
             }
         });
     }
-
-    public void setCover(String url) {
-        Glide.with(getContext()).load(url).into(iv_cover);
-    }
-
     /**
      * in second
      * @param totalTime
@@ -156,6 +146,10 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     private boolean fromUser = false;
     public void setPlayBtnState(boolean state)
     {
+        if(!state)
+        {
+            provideMusicViewAdapter().rotate = false;
+        }
         if(cb_play.isChecked() != state)
         {
             fromUser = true;
@@ -183,10 +177,18 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     public void setMusicList(@NonNull List<MusicItem> musicList,int currentPlayingMusic)
     {
         this.currentPlayingMusic = currentPlayingMusic;
-        viewPager.setAdapter(musicViewAdapter = new MusicViewAdapter(musicList,getContext()));
+        provideMusicViewAdapter().setData(musicList,getContext());
+        viewPager.setAdapter(provideMusicViewAdapter());
         viewPager.addOnPageChangeListener(new OnPageSelected());
         viewPager.setCurrentItem(currentPlayingMusic);
+    }
 
+    @NonNull
+    private MusicViewAdapter provideMusicViewAdapter()
+    {
+        if(musicViewAdapter == null)
+            musicViewAdapter = new MusicViewAdapter();
+        return musicViewAdapter;
     }
 
     private class OnPageSelected implements ViewPager.OnPageChangeListener
@@ -240,16 +242,16 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-        if(fromUser )
+        if(fromUser)
         {
             if(isChecked)
             {
-                iv_cover.resume();
+                provideMusicViewAdapter().resume(viewPager.getCurrentItem());
                 needleImageView.quickResume();
             }
             else
             {
-                iv_cover.pause();
+                provideMusicViewAdapter().pause(viewPager.getCurrentItem());
                 needleImageView.quickPause();
             }
             fromUser = false;
@@ -258,12 +260,12 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
         if(isChecked)
         {
-            iv_cover.resume();
+            provideMusicViewAdapter().resume(viewPager.getCurrentItem());
             needleImageView.resume();
         }
         else
         {
-            iv_cover.pause();
+            provideMusicViewAdapter().pause(viewPager.getCurrentItem());
             needleImageView.pause();
         }
 
@@ -285,8 +287,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
             switch (v.getId())
             {
                 case R.id.musicView_prev:
-                    setPageIndex(currentPlayingMusic - 1);
                     musicPlayerCallBack.prev();
+                    setPageIndex(currentPlayingMusic - 1);
                     break;
                 case R.id.musicView_next:
                     setPageIndex(currentPlayingMusic + 1);

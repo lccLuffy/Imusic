@@ -7,6 +7,7 @@ public class MusicItem {
     public String title;
     public String data;
     public String artist;
+    public String cover;
     /**
      * in second
      */

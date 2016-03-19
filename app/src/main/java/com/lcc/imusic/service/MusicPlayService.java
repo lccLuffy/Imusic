@@ -47,6 +47,8 @@ public class MusicPlayService extends Service {
     private List<MusicReadyListener> musicReadyListeners;
     private List<MusicProgressListener> musicProgressListeners;
 
+    public static boolean HAS_STATED = false;
+
     private MusicControllerReceiver musicControllerReceiver;
 
     private MusicProvider musicProvider;
@@ -58,6 +60,7 @@ public class MusicPlayService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        HAS_STATED = true;
         initMediaPlayer();
         initLocalMusicList();
     }
@@ -397,6 +400,7 @@ public class MusicPlayService extends Service {
         musicProvider = null;
         mediaPlayer = null;
         Logger.i("MusicPlayService onDestroy");
+        HAS_STATED = false;
     }
 
 

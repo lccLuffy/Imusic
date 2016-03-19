@@ -89,6 +89,11 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        if(!MusicPlayService.HAS_STATED)
+        {
+            Intent intent = new Intent(this, MusicPlayService.class);
+            startService(intent);
+        }
     }
 
     @Override

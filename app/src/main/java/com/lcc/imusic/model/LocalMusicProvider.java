@@ -12,6 +12,7 @@ import com.lcc.imusic.bean.MusicItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by lcc_luffy on 2016/3/18.
@@ -26,6 +27,11 @@ public class LocalMusicProvider implements MusicProvider {
             Media.DURATION,
             Media.ALBUM,
     };
+
+    private String url1 = "http://www.n63.com/zutu/n63/?N=X2hiJTI2MC4tJTI4LSUyRiU1RCU1QzElMkJZJTJBMCU1QjAlNUQlMkIlMkElMkMtJTVFJTI4JTI4JTI5JTJGJTJDWiUyQiU1QyUyQjElMkMwWSUyNyUyQzBZ&v=.jpg";
+    private String url2 = "http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg";
+
+    private String url3 = "http://img.666ccc.com/SpecialPic3/pic2010/19642.jpg";
     private static MusicProvider musicProvider;
     public static MusicProvider getMusicProvider(Context context)
     {
@@ -34,6 +40,7 @@ public class LocalMusicProvider implements MusicProvider {
         return musicProvider;
     }
 
+    Random random = new Random(System.currentTimeMillis());
     private LocalMusicProvider(@NonNull Context context)
     {
         localMusicList = new ArrayList<>();
@@ -62,6 +69,15 @@ public class LocalMusicProvider implements MusicProvider {
             musicItem.title = name+String.format(Locale.CHINA," - %s",cursor.getString(4));
             musicItem.artist = artist;
             musicItem.duration = duration;
+
+            int r = random.nextInt(3);
+            if(r == 0)
+                musicItem.cover = url1;
+            else if (r == 1)
+                musicItem.cover = url2;
+            else
+                musicItem.cover = url3;
+
             localMusicList.add(musicItem);
             cursor.moveToNext();
         }

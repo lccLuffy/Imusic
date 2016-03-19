@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true">
 
 
-        <com.lcc.imusic.wiget.RotateImageView
+        <!--<com.lcc.imusic.wiget.RotateImageView
             android:id="@+id/musicView_cover"
             android:layout_width="260dp"
             android:layout_height="260dp"
@@ -20,7 +20,7 @@
             android:src="@mipmap/mycover"
             android:visibility="gone"
             app:civ_border_color="#30ffffff"
-            app:civ_border_width="5dp" />
+            app:civ_border_width="5dp" />-->
 
         <android.support.v4.view.ViewPager
             android:id="@+id/musicView_viewPage"
