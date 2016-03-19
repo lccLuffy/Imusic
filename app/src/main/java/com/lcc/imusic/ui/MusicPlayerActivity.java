@@ -20,7 +20,8 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
     MusicProvider musicProvider;
 
-    MusicPlayService.MusicInfoCallBack callBack;
+    MusicInfoListener musicInfoListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,26 +37,33 @@ public class MusicPlayerActivity extends MusicBindActivity {
         musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
 
         musicPlayerView.setMusicPlayerCallBack(new MusicPlayerCallBackImpl());
+        musicInfoListener = new MusicInfoListener();
+        musicServiceBind.addMusicProgressListener(musicInfoListener);
+        musicServiceBind.addMusicReadyListener(musicInfoListener);
+    }
 
-        callBack = musicServiceBind.addMusicInfoCallBack(new MusicPlayService.MusicInfoCallBack() {
-            @Override
-            public void onReady(MusicItem musicItem) {
-                setCurrentMusicItem(musicItem);
-            }
-            @Override
-            public void onProgress(int currentTime) {
-                musicPlayerView.setProgress(currentTime);
-            }
-        });
+    private class MusicInfoListener implements MusicPlayService.MusicReadyListener,MusicPlayService.MusicProgressListener
+    {
+
+        @Override
+        public void onProgress(int second) {
+            musicPlayerView.setProgress(second);
+        }
+
+        @Override
+        public void onMusicReady(MusicItem musicItem) {
+            setCurrentMusicItem(musicItem);
+        }
     }
 
 
     @Override
     protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-        if(callBack != null)
+        if(musicInfoListener != null)
         {
-            musicServiceBind.removeMusicInfoCallBack(callBack);
-            callBack = null;
+            musicServiceBind.removeMusicProgressListener(musicInfoListener);
+            musicServiceBind.removeMusicReadyListener(musicInfoListener);
+            musicInfoListener = null;
         }
     }
 

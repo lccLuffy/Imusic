@@ -38,7 +38,8 @@ public class MusicPlayService extends Service {
     private ProgressTask progressTask;
     private IBinder binder;
 
-    private List<MusicInfoCallBack> musicInfoCallBacks;
+    private List<MusicReadyListener> musicReadyListeners;
+    private List<MusicProgressListener> musicProgressListeners;
 
     MusicControllerReceiver musicControllerReceiver;
 
@@ -213,19 +214,28 @@ public class MusicPlayService extends Service {
         {
             prevMusic();
         }
-        public MusicInfoCallBack addMusicInfoCallBack(MusicInfoCallBack callBack)
+        public void addMusicReadyListener(MusicReadyListener listener)
         {
-            if(musicInfoCallBacks == null)
-                musicInfoCallBacks = new ArrayList<>();
-            musicInfoCallBacks.add(callBack);
-            return callBack;
+            if(musicReadyListeners == null)
+                musicReadyListeners = new ArrayList<>();
+            musicReadyListeners.add(listener);
         }
 
-        public void removeMusicInfoCallBack(MusicInfoCallBack callBack)
+        public void removeMusicReadyListener(MusicReadyListener listener)
         {
-            musicInfoCallBacks.remove(callBack);
+            musicReadyListeners.remove(listener);
         }
 
+        public void addMusicProgressListener(MusicProgressListener listener)
+        {
+            if(musicProgressListeners == null)
+                musicProgressListeners = new ArrayList<>();
+            musicProgressListeners.add(listener);
+        }
+        public void removeMusicProgressListener(MusicProgressListener listener)
+        {
+            musicProgressListeners.remove(listener);
+        }
         public void seekTo(int second)
         {
             mediaPlayer.seekTo(second * 1000);
@@ -238,11 +248,11 @@ public class MusicPlayService extends Service {
         @Override
         public void onPrepared(MediaPlayer mp)
         {
-            if(musicInfoCallBacks != null)
+            if(musicReadyListeners != null)
             {
-                for (MusicInfoCallBack callBack : musicInfoCallBacks)
+                for (MusicReadyListener listener : musicReadyListeners)
                 {
-                    callBack.onReady(musicProvider.provideMusics().get(currentIndex));
+                    listener.onMusicReady(musicProvider.provideMusics().get(currentIndex));
                 }
             }
             if(progressTask == null)
@@ -288,15 +298,15 @@ public class MusicPlayService extends Service {
         }
         @Override
         public void run() {
-            if(musicInfoCallBacks != null)
+            if(musicProgressListeners != null)
             {
                 final int current = mediaPlayer.getCurrentPosition() / 1000;
-                for (final MusicInfoCallBack callBack : musicInfoCallBacks)
+                for (final MusicProgressListener listener : musicProgressListeners)
                 {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onProgress(current);
+                            listener.onProgress(current);
                         }
                     });
                 }
@@ -317,10 +327,15 @@ public class MusicPlayService extends Service {
             timer.cancel();
             timer = null;
         }
-        if(musicInfoCallBacks != null)
+        if(musicReadyListeners != null)
         {
-            musicInfoCallBacks.clear();
-            musicInfoCallBacks = null;
+            musicReadyListeners.clear();
+            musicReadyListeners = null;
+        }
+        if(musicProgressListeners != null)
+        {
+            musicProgressListeners.clear();
+            musicProgressListeners = null;
         }
 
         mediaPlayer.release();
@@ -332,11 +347,6 @@ public class MusicPlayService extends Service {
         Logger.i("MusicPlayService onDestroy");
     }
 
-    public interface MusicInfoCallBack
-    {
-        void onReady(MusicItem musicItem);
-        void onProgress(int currentTime);
-    }
 
     public class MusicControllerReceiver extends BroadcastReceiver {
         @Override
@@ -351,5 +361,13 @@ public class MusicPlayService extends Service {
                 startMusic();
             }
         }
+    }
+    public interface MusicReadyListener
+    {
+        void onMusicReady(MusicItem musicItem);
+    }
+    public interface MusicProgressListener
+    {
+        void onProgress(int second);
     }
 }

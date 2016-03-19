@@ -165,7 +165,6 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
                 break;
             case R.id.playBar_next:
                 musicServiceBind.next();
-                setCurrentMusicItem(musicProvider.getPlayingMusic());
                 break;
             case R.id.playBar_playList:
                 checkDialogIsNull();
@@ -181,12 +180,23 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
             setCurrentMusicItem(musicProvider.getPlayingMusic());
             playBarPlayToggle.setChecked(true);
         }
+        if(musicReadyListener == null)
+            musicReadyListener = new MusicReadyListener();
+        musicServiceBind.addMusicReadyListener(musicReadyListener);
+    }
+
+    @Override
+    protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
+        if(musicReadyListener != null)
+        {
+            musicServiceBind.removeMusicReadyListener(musicReadyListener);
+            musicReadyListener = null;
+        }
     }
 
     public void playMusic(int id) {
         musicServiceBind.playMusic(id);
         playBarPlayToggle.setChecked(true);
-        setCurrentMusicItem(musicProvider.getPlayingMusic());
     }
 
     private void setCurrentMusicItem(MusicItem musicItem)
@@ -195,6 +205,16 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         playBarSubtitle.setText(musicItem.artist);
     }
 
+    MusicPlayService.MusicReadyListener musicReadyListener;
+
+    private class MusicReadyListener implements MusicPlayService.MusicReadyListener
+    {
+
+        @Override
+        public void onMusicReady(MusicItem musicItem) {
+            setCurrentMusicItem(musicItem);
+        }
+    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
