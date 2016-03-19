@@ -68,12 +68,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <ImageView
+                <CheckBox
                     android:id="@+id/musicView_love"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/play_icn_love" />
+                    android:background="@drawable/draw_love"
+                    android:button="@null"
+                    android:checked="false" />
             </FrameLayout>
 
             <FrameLayout
@@ -129,7 +131,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/play_icn_src" />
+                    android:src="@drawable/draw_music_list_btn" />
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
