@@ -9,14 +9,18 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class BeautyView extends View {
     private int width;
     private int height;
-    private int xCount = 10;
-    private int yCount = 5;
+    private int xCount = 12;
+    private int yCount = 7;
     private int xSize,ySize;
-    int i = 0 ,j = 0;
     private Paint paint;
+    private List<Line> lines;
     public BeautyView(Context context) {
         super(context);
         init();
@@ -41,6 +45,7 @@ public class BeautyView extends View {
         paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStrokeWidth(5);
+
     }
 
 
@@ -54,23 +59,15 @@ public class BeautyView extends View {
     }
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawLine(0, 0, width, height, paint);
-        for (i = 0; i < xCount; i++)
+        if(!ready || isInEditMode())
+            return;
+        for (Line line : lines)
         {
-            for (j = 0; i < yCount; j++)
-            {
-                if(i + j % 2 == 0)
-                {
-                    canvas.drawLine(i * xSize, j * ySize, i * xSize + xSize, j * ySize + ySize, paint);
-                }
-                else
-                {
-                    canvas.drawLine(i * xSize + xSize, j * ySize, i * xSize, j * ySize + ySize, paint);
-                }
-            }
+            line.draw(canvas);
         }
     }
 
+    private boolean ready = false;
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -78,5 +75,72 @@ public class BeautyView extends View {
         height = getHeight();
         xSize = width / xCount;
         ySize = height / yCount;
+
+        lines = new ArrayList<>();
+        for (int i = 0; i < xCount; i++)
+        {
+            for (int j = 0; j < yCount; j++)
+            {
+                lines.add(new Line(i * xSize,j*ySize,xSize,ySize));
+            }
+        }
+
+        ready = true;
+    }
+    private static Random random = new Random();
+    private static Point point = new Point();
+    public class Line
+    {
+        private int xSize;
+        private int ySize;
+        private int xHalfSize;
+        private int yHalfSize;
+        private int startX;
+        private int startY;
+        private int stopX;
+        private int stopY;
+
+        private int centerX,centerY;
+
+        public Line(int startX, int startY ,int xSize, int ySize) {
+            this.ySize = ySize;
+            this.xSize = xSize;
+            xHalfSize = xSize / 2;
+            yHalfSize = ySize / 2;
+
+
+            this.startX = startX + xHalfSize;
+            this.startY = startY;
+
+            stopX = startX;
+            stopY = startY + ySize;
+
+            centerX = (startX + stopX) / 2;
+            centerY = (startY + stopY) / 2;
+
+            double degree = Math.atan2(centerY - point.y,centerX - point.x);
+            rotate(degree);
+        }
+        public void draw(Canvas canvas)
+        {
+            canvas.drawLine(startX,startY,stopX,stopY,paint);
+        }
+        public void rotate(double degree)
+        {
+            double sin = Math.sin(degree);
+            double cos = Math.cos(degree);
+            double xx = (startX - centerX) * cos - (startY - centerY) *sin + centerX;
+            double yy = (startX - centerX) * sin + (startY - centerY) *cos + centerY;
+            startX = (int) xx;
+            startY = (int) yy;
+            stopX = (int) (centerX * 2 - xx);
+            stopY = (int) (centerY * 2 - yy);
+        }
+    }
+
+    public static class Point
+    {
+        public int x;
+        public int y;
     }
 }

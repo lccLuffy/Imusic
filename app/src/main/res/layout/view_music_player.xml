@@ -9,10 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
-
-        <com.lcc.imusic.wiget.BeautyView
-            android:layout_width="match_parent"
-            android:layout_height="310dp" />
+       
 
         <com.lcc.imusic.wiget.RotateImageView
             android:id="@+id/musicView_cover"
