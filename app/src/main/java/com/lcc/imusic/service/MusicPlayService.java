@@ -142,10 +142,7 @@ public class MusicPlayService extends Service {
     {
         if(currentIndex == index)
         {
-            if(!mediaPlayer.isPlaying())
-            {
-                mediaPlayer.start();
-            }
+            startMusic();
         }
         else
         {
@@ -173,6 +170,13 @@ public class MusicPlayService extends Service {
         if(currentIndex != -1)
         {
             mediaPlayer.start();
+            if(musicReadyListeners != null)
+            {
+                for (MusicReadyListener listener : musicReadyListeners)
+                {
+                    listener.onMusicReady(musicProvider.provideMusics().get(currentIndex));
+                }
+            }
         }
         else
         {
@@ -248,6 +252,7 @@ public class MusicPlayService extends Service {
         @Override
         public void onPrepared(MediaPlayer mp)
         {
+            mp.start();
             if(musicReadyListeners != null)
             {
                 for (MusicReadyListener listener : musicReadyListeners)
@@ -261,7 +266,7 @@ public class MusicPlayService extends Service {
                 timer = new Timer();
                 timer.schedule(new ProgressTask(), 0, 1000);
             }
-            mp.start();
+
             if(!hasShowNotification)
             {
                 hasShowNotification = true;
@@ -270,7 +275,6 @@ public class MusicPlayService extends Service {
             MusicItem item = musicProvider.getPlayingMusic();
             contentView.setCharSequence(R.id.notification_title,"setText",item.title);
             contentView.setCharSequence(R.id.notification_subtitle,"setText",item.artist);
-            Logger.i("contentView set value "+item.title);
         }
         private boolean hasShowNotification = false;
         @Override

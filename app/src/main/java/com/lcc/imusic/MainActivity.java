@@ -26,6 +26,7 @@ import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,10 +125,7 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         super.onResume();
         if(isBind())
         {
-            if(musicServiceBind.isPlaying())
-            {
-                setCurrentMusicItem(musicProvider.getPlayingMusic());
-            }
+            setCurrentMusicItem(musicProvider.getPlayingMusic());
         }
     }
 
@@ -178,7 +176,6 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         if(musicServiceBind.isPlaying())
         {
             setCurrentMusicItem(musicProvider.getPlayingMusic());
-            playBarPlayToggle.setChecked(true);
         }
         if(musicReadyListener == null)
             musicReadyListener = new MusicReadyListener();
@@ -203,28 +200,39 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     {
         playBarTitle.setText(musicItem.title);
         playBarSubtitle.setText(musicItem.artist);
+        if(musicServiceBind != null && musicServiceBind.isPlaying())
+        {
+            playBarPlayToggle.setChecked(true);
+        }
+        else
+        {
+            playBarPlayToggle.setChecked(false);
+        }
     }
 
     MusicPlayService.MusicReadyListener musicReadyListener;
 
     private class MusicReadyListener implements MusicPlayService.MusicReadyListener
     {
-
         @Override
         public void onMusicReady(MusicItem musicItem) {
             setCurrentMusicItem(musicItem);
+            Logger.i("onMusicReady");
         }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(isChecked)
+        if(musicServiceBind != null)
         {
-            musicServiceBind.start();
-        }
-        else
-        {
-            musicServiceBind.pause();
+            if(isChecked)
+            {
+                musicServiceBind.start();
+            }
+            else
+            {
+                musicServiceBind.pause();
+            }
         }
     }
 }

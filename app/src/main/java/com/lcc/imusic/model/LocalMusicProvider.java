@@ -72,7 +72,13 @@ public class LocalMusicProvider implements MusicProvider {
     @Nullable
     @Override
     public MusicItem getPlayingMusic() {
-        return playingMusic;
+        if(playingMusic != null)
+            return playingMusic;
+        if(localMusicList != null && !localMusicList.isEmpty())
+        {
+            return localMusicList.get(0);
+        }
+        return null;
     }
 
     private MusicItem playingMusic;
