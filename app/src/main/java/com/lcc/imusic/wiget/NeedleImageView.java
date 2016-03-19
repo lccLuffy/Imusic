@@ -35,12 +35,14 @@ public class NeedleImageView extends ImageView {
     private void init() {
         setPivotX(30);
         setPivotY(30);
-        setRotation(-40);
+        quickPause();
     }
 
     private final Interpolator interpolator = new FastOutLinearInInterpolator();
 
     public void pause() {
+        if(getRotation() == -40)
+            return;
         animate()
                 .rotation(-40)
                 .setInterpolator(interpolator)
@@ -48,7 +50,19 @@ public class NeedleImageView extends ImageView {
                 .start();
     }
 
+    public void quickPause()
+    {
+        setRotation(-40);
+    }
+
+    public void quickResume()
+    {
+        setRotation(0);
+    }
+
     public void resume() {
+        if(getRotation() == 0)
+            return;
         animate()
                 .rotation(0)
                 .setInterpolator(interpolator)

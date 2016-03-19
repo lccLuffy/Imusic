@@ -46,6 +46,7 @@ public class FooterBehavior extends CoordinatorLayout.Behavior<View> {
         isHiding = true;
         view.animate()
                 .translationY(view.getHeight())
+                .alpha(0.4f)
                 .setDuration(duration)
                 .setInterpolator(interpolator)
                 .setListener(new AnimatorListenerAdapter() {
@@ -65,6 +66,7 @@ public class FooterBehavior extends CoordinatorLayout.Behavior<View> {
         view.setVisibility(View.VISIBLE);
         view.animate()
                 .translationY(0)
+                .alpha(1)
                 .setDuration(duration)
                 .setInterpolator(interpolator)
                 .setListener(new AnimatorListenerAdapter() {

@@ -165,21 +165,34 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+        if(fromUser )
+        {
+            if(isChecked)
+            {
+                iv_cover.resume();
+                needleImageView.quickResume();
+            }
+            else
+            {
+                iv_cover.pause();
+                needleImageView.quickPause();
+            }
+            fromUser = false;
+            return;
+        }
+
         if(isChecked)
         {
             iv_cover.resume();
-            needleImageView.resume();
+            needleImageView.quickResume();
         }
         else
         {
             iv_cover.pause();
-            needleImageView.pause();
+            needleImageView.quickPause();
         }
-        if(fromUser )
-        {
-            fromUser = false;
-            return;
-        }
+
         if(musicPlayerCallBack != null)
         {
             if (isChecked) {
