@@ -6,9 +6,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -18,6 +15,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
+import com.lcc.imusic.wiget.NeedleImageView;
+import com.lcc.imusic.wiget.RotateImageView;
 
 import java.util.Locale;
 
@@ -27,7 +26,7 @@ import java.util.Locale;
 public class MusicPlayerView extends FrameLayout implements CompoundButton.OnCheckedChangeListener,View.OnClickListener {
 
 
-    private ImageView iv_cover;
+    private RotateImageView iv_cover;
 
     private CheckBox cb_play;
 
@@ -38,6 +37,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     private TextView tv_totalTime;
     private TextView tv_currentTime;
 
+    private NeedleImageView needleImageView;
 
     private MusicPlayerCallBack musicPlayerCallBack;
 
@@ -71,12 +71,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         View panel = LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
         addView(panel);
 
-        iv_cover = (ImageView) panel.findViewById(R.id.musicView_cover);
-        Animation animation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setRepeatCount(-1);
-        animation.setDuration(10000);
-        animation.setInterpolator(new LinearInterpolator());
-        iv_cover.startAnimation(animation);
+        iv_cover = (RotateImageView) panel.findViewById(R.id.musicView_cover);
+        needleImageView = (NeedleImageView) panel.findViewById(R.id.musicView_needleImageView);
 
 
         tv_totalTime = (TextView) panel.findViewById(R.id.musicView_totalTime);
@@ -169,6 +165,16 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked)
+        {
+            iv_cover.resume();
+            needleImageView.resume();
+        }
+        else
+        {
+            iv_cover.pause();
+            needleImageView.pause();
+        }
         if(fromUser )
         {
             fromUser = false;

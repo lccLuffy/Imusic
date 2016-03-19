@@ -6,7 +6,7 @@
 
     <color name="music_play_bg">#15272d</color>
     <color name="play_bar_normal">#faeeeeee</color>
-    <color name="play_bar_pressed">#dadddddd</color>
+    <color name="play_bar_pressed">#fadddddd</color>
 
 
     <!-- OVERWRITE THESE COLORS FOR A DARK THEME -->

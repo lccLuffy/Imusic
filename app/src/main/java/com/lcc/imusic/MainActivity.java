@@ -26,7 +26,6 @@ import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,9 +82,9 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
 
     private void init()
     {
+        actionBar.setDisplayShowTitleEnabled(false);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -173,10 +172,7 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
 
     @Override
     protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-        if(musicServiceBind.isPlaying())
-        {
-            setCurrentMusicItem(musicProvider.getPlayingMusic());
-        }
+        setCurrentMusicItem(musicProvider.getPlayingMusic());
         if(musicReadyListener == null)
             musicReadyListener = new MusicReadyListener();
         musicServiceBind.addMusicReadyListener(musicReadyListener);
@@ -198,15 +194,18 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
 
     private void setCurrentMusicItem(MusicItem musicItem)
     {
-        playBarTitle.setText(musicItem.title);
-        playBarSubtitle.setText(musicItem.artist);
-        if(musicServiceBind != null && musicServiceBind.isPlaying())
+        if(musicItem != null)
         {
-            playBarPlayToggle.setChecked(true);
-        }
-        else
-        {
-            playBarPlayToggle.setChecked(false);
+            playBarTitle.setText(musicItem.title);
+            playBarSubtitle.setText(musicItem.artist);
+            if(musicServiceBind != null && musicServiceBind.isPlaying())
+            {
+                playBarPlayToggle.setChecked(true);
+            }
+            else
+            {
+                playBarPlayToggle.setChecked(false);
+            }
         }
     }
 
@@ -217,7 +216,6 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         @Override
         public void onMusicReady(MusicItem musicItem) {
             setCurrentMusicItem(musicItem);
-            Logger.i("onMusicReady");
         }
     }
 
