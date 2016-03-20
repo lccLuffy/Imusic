@@ -3,24 +3,28 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/abc_scrubber_track_mtrl_alpha" />
+        android:drawable="@color/md_grey_100" />
     <item android:id="@android:id/secondaryProgress">
-        <scale android:scaleWidth="100%">
+        <scale
+            android:scaleHeight="1dp"
+            android:scaleWidth="100%">
             <selector>
                 <item android:state_enabled="false">
                     <color android:color="@android:color/transparent" />
                 </item>
-                <item android:drawable="@drawable/abc_scrubber_primary_mtrl_alpha" />
+                <item android:drawable="@color/md_grey_400" />
             </selector>
         </scale>
     </item>
     <item android:id="@android:id/progress">
-        <scale android:scaleWidth="100%">
+        <scale
+            android:scaleHeight="1dp"
+            android:scaleWidth="100%">
             <selector>
                 <item android:state_enabled="false">
                     <color android:color="@android:color/transparent" />
                 </item>
-                <item android:drawable="@drawable/abc_scrubber_primary_mtrl_alpha" />
+                <item android:drawable="@color/md_red_300" />
             </selector>
         </scale>
     </item>

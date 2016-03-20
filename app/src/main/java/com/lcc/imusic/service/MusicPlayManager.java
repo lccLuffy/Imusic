@@ -1,5 +1,7 @@
 package com.lcc.imusic.service;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.Random;
 
 /**
@@ -104,6 +106,7 @@ public class MusicPlayManager {
     }
 
     private int changeIndex(int index) {
+        Logger.i("index %d :",index);
         currentIndex = index;
         return currentIndex;
     }

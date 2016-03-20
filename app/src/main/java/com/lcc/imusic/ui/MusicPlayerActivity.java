@@ -141,7 +141,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
         @Override
         public void onSliderChanged(int second) {
-            musicPlayerView.setProgress(second);
+
         }
 
         @Override
