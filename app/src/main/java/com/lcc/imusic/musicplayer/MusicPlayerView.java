@@ -3,8 +3,6 @@ package com.lcc.imusic.musicplayer;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,24 +13,23 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lcc.imusic.R;
-import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.wiget.NeedleImageView;
+import com.lcc.imusic.wiget.RotateImageView;
 import com.lcc.imusic.wiget.StateImageView;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by lcc_luffy on 2016/3/16.
  */
-public class MusicPlayerView extends FrameLayout implements CompoundButton.OnCheckedChangeListener,View.OnClickListener {
-
-    private ViewPager viewPager;
-
-    private MusicViewAdapter musicViewAdapter;
+public class MusicPlayerView extends FrameLayout implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private CheckBox cb_play;
+
+    private RotateImageView cover;
 
     private SeekBar seekBar;
 
@@ -61,13 +58,14 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         super(context, attrs, defStyleAttr);
         init();
     }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public MusicPlayerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
-    public void setMusicPlayerCallBack(MusicPlayerCallBack musicPlayerCallBack)
-    {
+
+    public void setMusicPlayerCallBack(MusicPlayerCallBack musicPlayerCallBack) {
         this.musicPlayerCallBack = musicPlayerCallBack;
     }
 
@@ -87,15 +85,13 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         ImageView iv_next = (ImageView) panel.findViewById(R.id.musicView_next);
         ImageView musicView_src = (ImageView) panel.findViewById(R.id.musicView_src);
 
-        viewPager = (ViewPager) panel.findViewById(R.id.musicView_viewPage);
-
-
+        cover = (RotateImageView) panel.findViewById(R.id.musicView_cover);
 
         stateImageView = (StateImageView) panel.findViewById(R.id.musicView_playState);
         stateImageView.setOnStateChangeListener(new StateImageView.OnStateChangeListener() {
             @Override
             public void onStateChange(int playType) {
-                if(musicPlayerCallBack != null)
+                if (musicPlayerCallBack != null)
                     musicPlayerCallBack.onPlayTypeChange(playType);
             }
         });
@@ -126,156 +122,99 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
             }
         });
     }
+
     /**
      * in second
+     *
      * @param totalTime
      */
-    private void setTotalTime(int totalTime)
-    {
+    private void setTotalTime(int totalTime) {
         tv_totalTime.setText(String.format(Locale.CHINA, "%d:%02d", totalTime / 60, totalTime % 60));
     }
+
     /**
      * in second
+     *
      * @param currentTime
      */
-    private void setCurrentTime(int currentTime)
-    {
+    private void setCurrentTime(int currentTime) {
         tv_currentTime.setText(String.format(Locale.CHINA, "%d:%02d", currentTime / 60, currentTime % 60));
     }
 
+    public void setCover(String cover_url) {
+        Glide.with(getContext())
+                .load(cover_url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(cover);
+    }
+
     private boolean fromUser = false;
-    public void setPlayBtnState(boolean state)
-    {
-        if(!state)
-        {
-            provideMusicViewAdapter().rotate = false;
+
+    public void setPlayBtnState(boolean state) {
+        if (state) {
+            cover.resume();
+        } else {
+            cover.pause();
         }
-        if(cb_play.isChecked() != state)
-        {
+        if (cb_play.isChecked() != state) {
             fromUser = true;
             cb_play.setChecked(state);
         }
     }
-    public void setPlayType(int playType)
-    {
+
+    public void setPlayType(int playType) {
         stateImageView.setState(playType);
     }
 
-    public void setProgress(int second)
-    {
+    public void setProgress(int second) {
         seekBar.setProgress(second);
         setCurrentTime(second);
     }
 
-    public void setSecondaryProgress(int percent)
-    {
+    public void setSecondaryProgress(int percent) {
         seekBar.setSecondaryProgress((int) (percent * 1.0f / 100 * seekBar.getMax()));
     }
 
-    public void setPageIndex(int index)
-    {
-        viewPager.setCurrentItem(index);
-        this.currentPlayingMusic = index;
-    }
-
-    private int currentPlayingMusic;
-    public void setMusicList(@NonNull List<MusicItem> musicList,int currentPlayingMusic)
-    {
-        this.currentPlayingMusic = currentPlayingMusic;
-        provideMusicViewAdapter().setData(musicList,getContext());
-        viewPager.setAdapter(provideMusicViewAdapter());
-        viewPager.addOnPageChangeListener(new OnPageSelected());
-        viewPager.setCurrentItem(currentPlayingMusic);
-    }
-
-    @NonNull
-    private MusicViewAdapter provideMusicViewAdapter()
-    {
-        if(musicViewAdapter == null)
-            musicViewAdapter = new MusicViewAdapter();
-        return musicViewAdapter;
-    }
-
-    private class OnPageSelected implements ViewPager.OnPageChangeListener
-    {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            /*if(musicPlayerCallBack != null && position != currentPlayingMusic)
-            {
-                musicPlayerCallBack.onPageSelected(position);
-            }*/
-            currentPlayingMusic = position;
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            if(state != ViewPager.SCROLL_STATE_IDLE)
-            {
-                needleImageView.pause();
-            }
-            else
-            {
-                needleImageView.resume();
-            }
-        }
-    }
-
-    public void setTotalProgress(int totalProgress)
-    {
+    public void setTotalProgress(int totalProgress) {
         seekBar.setMax(totalProgress);
         setTotalTime(totalProgress);
     }
 
 
     private boolean isUserSliding = false;
-    public boolean isUserSliding()
-    {
+
+    public boolean isUserSliding() {
         return isUserSliding;
     }
 
-    public boolean isPaused()
-    {
+    public boolean isPaused() {
         return !cb_play.isChecked();
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-        if(fromUser)
-        {
-            if(isChecked)
-            {
-                provideMusicViewAdapter().resume(viewPager.getCurrentItem());
+        if (fromUser) {
+            if (isChecked) {
+                cover.resume();
                 needleImageView.quickResume();
-            }
-            else
-            {
-                provideMusicViewAdapter().pause(viewPager.getCurrentItem());
+            } else {
+                cover.pause();
                 needleImageView.quickPause();
             }
             fromUser = false;
             return;
         }
 
-        if(isChecked)
-        {
-            provideMusicViewAdapter().resume(viewPager.getCurrentItem());
+        if (isChecked) {
+            cover.resume();
             needleImageView.resume();
-        }
-        else
-        {
-            provideMusicViewAdapter().pause(viewPager.getCurrentItem());
+        } else {
+            cover.pause();
             needleImageView.pause();
         }
 
-        if(musicPlayerCallBack != null)
-        {
+        if (musicPlayerCallBack != null) {
             if (isChecked) {
                 musicPlayerCallBack.start();
             } else {
@@ -284,19 +223,15 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         }
 
     }
+
     @Override
-    public void onClick(View v)
-    {
-        if (musicPlayerCallBack != null)
-        {
-            switch (v.getId())
-            {
+    public void onClick(View v) {
+        if (musicPlayerCallBack != null) {
+            switch (v.getId()) {
                 case R.id.musicView_prev:
                     musicPlayerCallBack.prev();
-                    setPageIndex(currentPlayingMusic - 1);
                     break;
                 case R.id.musicView_next:
-                    setPageIndex(currentPlayingMusic + 1);
                     musicPlayerCallBack.next();
                     break;
                 case R.id.musicView_src:
@@ -305,8 +240,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
             }
         }
     }
-    public interface MusicPlayerCallBack
-    {
+
+    public interface MusicPlayerCallBack {
         /**
          * 开始按钮被按下
          */
@@ -334,27 +269,24 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
         /**
          * 进度条进度改变
+         *
          * @param second
          */
         void onSliderChanged(int second);
 
         /**
          * 进度条滑动完成
+         *
          * @param currentSecond
          */
         void onSliderFinished(int currentSecond);
 
         /**
          * LOOP,ONE,RANDOM
+         *
          * @param playType
          */
         void onPlayTypeChange(int playType);
-
-        /**
-         * ViewPage 滑动时调用
-         * @param position
-         */
-        void onPageSelected(int position);
 
     }
 }

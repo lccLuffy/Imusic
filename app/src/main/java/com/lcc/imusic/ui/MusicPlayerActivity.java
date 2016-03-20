@@ -36,7 +36,6 @@ public class MusicPlayerActivity extends MusicBindActivity {
         musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
         musicPlayerView.setPlayType(musicServiceBind.getPlayType());
         musicPlayerView.setMusicPlayerCallBack(new MusicPlayerCallBackImpl());
-        musicPlayerView.setMusicList(musicProvider.provideMusics(), musicProvider.getPlayingMusicIndex());
         musicInfoListener = new MusicInfoListener();
         musicServiceBind.addMusicProgressListener(musicInfoListener);
         musicServiceBind.addMusicReadyListener(musicInfoListener);
@@ -88,6 +87,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
             setTitle(musicItem.title);
             toolbar.setSubtitle(musicItem.artist);
             musicPlayerView.setTotalProgress(musicItem.duration);
+            musicPlayerView.setCover(musicItem.cover);
             if(musicServiceBind != null)
                 musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
         }
@@ -147,11 +147,6 @@ public class MusicPlayerActivity extends MusicBindActivity {
             musicServiceBind.setPlayType(playType);
             toast(StateImageView.state2String(playType));
         }
-
-        @Override
-        public void onPageSelected(int position) {
-            musicServiceBind.play(position);
-        }
     }
 
     private MusicListDialog musicListDialog;
@@ -166,7 +161,6 @@ public class MusicPlayerActivity extends MusicBindActivity {
                 @Override
                 public void onItemClick(int position) {
                     musicServiceBind.play(position);
-                    musicPlayerView.setPageIndex(position);
                 }
             });
         }

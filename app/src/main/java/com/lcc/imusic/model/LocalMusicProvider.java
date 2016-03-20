@@ -46,15 +46,7 @@ public class LocalMusicProvider implements MusicProvider {
     private LocalMusicProvider(@NonNull Context context) {
         localMusicList = new ArrayList<>();
 
-        /*for (Ro.MusicBean musicBean : getRo()) {
-            MusicItem musicItem = new MusicItem();
-            musicItem.title = musicBean.title;
-            musicItem.data = "http://storage.googleapis.com/automotive-media/" + musicBean.source;
-            musicItem.cover = "http://storage.googleapis.com/automotive-media/" + musicBean.image;
-            musicItem.artist = musicBean.artist;
-            musicItem.duration = musicBean.duration;
-            localMusicList.add(musicItem);
-        }*/
+
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, Media.DURATION + " > 20000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         if (cursor == null)
@@ -85,6 +77,16 @@ public class LocalMusicProvider implements MusicProvider {
             cursor.moveToNext();
         }
         cursor.close();
+
+        for (Ro.MusicBean musicBean : getRo()) {
+            MusicItem musicItem = new MusicItem();
+            musicItem.title = musicBean.title;
+            musicItem.data = "http://storage.googleapis.com/automotive-media/" + musicBean.source;
+            musicItem.cover = "http://storage.googleapis.com/automotive-media/" + musicBean.image;
+            musicItem.artist = musicBean.artist;
+            musicItem.duration = musicBean.duration;
+            localMusicList.add(musicItem);
+        }
     }
 
     @NonNull
