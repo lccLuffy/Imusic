@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.utils.Json;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,20 +38,17 @@ public class LocalMusicProvider implements MusicProvider {
             musicProvider = new LocalMusicProvider(context);
         return musicProvider;
     }
-
+    private final String test_url = "http://m1.music.126.net/jt_bjt-DDWhFI9btE2b8tw==/7901090557280522.mp3";
     Random random = new Random(System.currentTimeMillis());
 
     private LocalMusicProvider(@NonNull Context context) {
         localMusicList = new ArrayList<>();
-        for (Ro.MusicBean musicBean : getRo()) {
-            MusicItem musicItem = new MusicItem();
-            musicItem.title = musicBean.title;
-            musicItem.data = "http://storage.googleapis.com/automotive-media/" + musicBean.source;
-            musicItem.cover = "http://storage.googleapis.com/automotive-media/" + musicBean.image;
-            musicItem.artist = musicBean.artist;
-            musicItem.duration = musicBean.duration;
-            localMusicList.add(musicItem);
-        }
+
+        MusicItem item = new MusicItem();
+        item.data = test_url;
+        item.title = "7901090557280522";
+        item.artist = "jt_bjt";
+        localMusicList.add(item);
 
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, Media.DURATION + " > 20000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
@@ -117,183 +113,4 @@ public class LocalMusicProvider implements MusicProvider {
     public int getPlayingMusicIndex() {
         return playingMusicIndex;
     }
-
-
-    public static class Ro {
-        public List<MusicBean> music;
-
-        public static class MusicBean {
-            public String title;
-            public String album;
-            public String artist;
-            public String genre;
-            public String source;
-            public String image;
-            public int trackNumber;
-            public int totalTrackCount;
-            public int duration;
-            public String site;
-        }
-    }
-
-    List<Ro.MusicBean> getRo() {
-        return Json.fromJson(json, Ro.class).music;
-    }
-
-    String json = "{\"music\" : [ \n" +
-            "\t{ \"title\" : \"Jazz in Paris\",\n" +
-            "\t  \"album\" : \"Jazz & Blues\",\n" +
-            "\t  \"artist\" : \"Media Right Productions\",\n" +
-            "\t  \"genre\" : \"Jazz & Blues\",\n" +
-            "\t  \"source\" : \"Jazz_In_Paris.mp3\",\n" +
-            "\t  \"image\" : \"album_art.jpg\",\n" +
-            "\t  \"trackNumber\" : 1,\n" +
-            "\t  \"totalTrackCount\" : 6,\n" +
-            "\t  \"duration\" : 103,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"The Messenger\",\n" +
-            "\t  \"album\" : \"Jazz & Blues\",\n" +
-            "\t  \"artist\" : \"Silent Partner\",\n" +
-            "\t  \"genre\" : \"Jazz & Blues\",\n" +
-            "\t  \"source\" : \"The_Messenger.mp3\",\n" +
-            "\t  \"image\" : \"album_art.jpg\",\n" +
-            "\t  \"trackNumber\" : 2,\n" +
-            "\t  \"totalTrackCount\" : 6,\n" +
-            "\t  \"duration\" : 132,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Talkies\",\n" +
-            "\t  \"album\" : \"Jazz & Blues\",\n" +
-            "\t  \"artist\" : \"Huma-Huma\",\n" +
-            "\t  \"genre\" : \"Jazz & Blues\",\n" +
-            "\t  \"source\" : \"Talkies.mp3\",\n" +
-            "\t  \"image\" : \"album_art.jpg\",\n" +
-            "\t  \"trackNumber\" : 3,\n" +
-            "\t  \"totalTrackCount\" : 6,\n" +
-            "\t  \"duration\" : 162,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"On the Bach\",\n" +
-            "\t  \"album\" : \"Cinematic\",\n" +
-            "\t  \"artist\" : \"Jingle Punks\",\n" +
-            "\t  \"genre\" : \"Cinematic\",\n" +
-            "\t  \"source\" : \"On_the_Bach.mp3\",\n" +
-            "\t  \"image\" : \"album_art.jpg\",\n" +
-            "\t  \"trackNumber\" : 4,\n" +
-            "\t  \"totalTrackCount\" : 6,\n" +
-            "\t  \"duration\" : 66,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"The Story Unfolds\",\n" +
-            "\t  \"album\" : \"Cinematic\",\n" +
-            "\t  \"artist\" : \"Jingle Punks\",\n" +
-            "\t  \"genre\" : \"Cinematic\",\n" +
-            "\t  \"source\" : \"The_Story_Unfolds.mp3\",\n" +
-            "\t  \"image\" : \"album_art.jpg\",\n" +
-            "\t  \"trackNumber\" : 5,\n" +
-            "\t  \"totalTrackCount\" : 6,\n" +
-            "\t  \"duration\" : 91,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Drop and Roll\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock\",\n" +
-            "\t  \"artist\" : \"Silent Partner\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"Drop_and_Roll.mp3\",\n" +
-            "\t  \"image\" : \"album_art_2.jpg\",\n" +
-            "\t  \"trackNumber\" : 1,\n" +
-            "\t  \"totalTrackCount\" : 7,\n" +
-            "\t  \"duration\" : 121,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Motocross\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock\",\n" +
-            "\t  \"artist\" : \"Topher Mohr and Alex Elena\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"Motocross.mp3\",\n" +
-            "\t  \"image\" : \"album_art_2.jpg\",\n" +
-            "\t  \"trackNumber\" : 2,\n" +
-            "\t  \"totalTrackCount\" : 7,\n" +
-            "\t  \"duration\" : 182,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Wish You'd Come True\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock\",\n" +
-            "\t  \"artist\" : \"The 126ers\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"Wish_You_d_Come_True.mp3\",\n" +
-            "\t  \"image\" : \"album_art_2.jpg\",\n" +
-            "\t  \"trackNumber\" : 3,\n" +
-            "\t  \"totalTrackCount\" : 7,\n" +
-            "\t  \"duration\" : 169,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Awakening\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock\",\n" +
-            "\t  \"artist\" : \"Silent Partner\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"Awakening.mp3\",\n" +
-            "\t  \"image\" : \"album_art_2.jpg\",\n" +
-            "\t  \"trackNumber\" : 4,\n" +
-            "\t  \"totalTrackCount\" : 7,\n" +
-            "\t  \"duration\" : 220,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Home\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock\",\n" +
-            "\t  \"artist\" : \"Letter Box\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"Home.mp3\",\n" +
-            "\t  \"image\" : \"album_art_2.jpg\",\n" +
-            "\t  \"trackNumber\" : 5,\n" +
-            "\t  \"totalTrackCount\" : 7,\n" +
-            "\t  \"duration\" : 213,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Tell The Angels\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock\",\n" +
-            "\t  \"artist\" : \"Letter Box\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"Tell_The_Angels.mp3\",\n" +
-            "\t  \"image\" : \"album_art_2.jpg\",\n" +
-            "\t  \"trackNumber\" : 6,\n" +
-            "\t  \"totalTrackCount\" : 7,\n" +
-            "\t  \"duration\" : 208,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Hey Sailor\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock\",\n" +
-            "\t  \"artist\" : \"Letter Box\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"Hey_Sailor.mp3\",\n" +
-            "\t  \"image\" : \"album_art_2.jpg\",\n" +
-            "\t  \"trackNumber\" : 7,\n" +
-            "\t  \"totalTrackCount\" : 7,\n" +
-            "\t  \"duration\" : 193,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"Keys To The Kingdom\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock 2\",\n" +
-            "\t  \"artist\" : \"The 126ers\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"Keys_To_The_Kingdom.mp3\",\n" +
-            "\t  \"image\" : \"album_art_3.jpg\",\n" +
-            "\t  \"trackNumber\" : 1,\n" +
-            "\t  \"totalTrackCount\" : 2,\n" +
-            "\t  \"duration\" : 221,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t},\n" +
-            "\t{ \"title\" : \"The Coldest Shoulder\",\n" +
-            "\t  \"album\" : \"Youtube Audio Library Rock 2\",\n" +
-            "\t  \"artist\" : \"The 126ers\",\n" +
-            "\t  \"genre\" : \"Rock\",\n" +
-            "\t  \"source\" : \"The_Coldest_Shoulder.mp3\",\n" +
-            "\t  \"image\" : \"album_art_3.jpg\",\n" +
-            "\t  \"trackNumber\" : 2,\n" +
-            "\t  \"totalTrackCount\" : 2,\n" +
-            "\t  \"duration\" : 160,\n" +
-            "\t  \"site\" : \"https://www.youtube.com/audiolibrary/music\"\n" +
-            "\t}\n" +
-            "]}";
 }

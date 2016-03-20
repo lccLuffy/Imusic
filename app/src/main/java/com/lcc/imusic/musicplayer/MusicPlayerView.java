@@ -43,8 +43,6 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
     private MusicPlayerCallBack musicPlayerCallBack;
 
-    private final String test_url = "http://m1.music.126.net/jt_bjt-DDWhFI9btE2b8tw==/7901090557280522.mp3";
-
     private RelativeLayout panel;
 
     public MusicPlayerView(Context context) {

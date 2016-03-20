@@ -1,32 +1,17 @@
 package com.lcc.imusic.service;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.NotificationCompat;
-import android.widget.RemoteViews;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.lcc.imusic.R;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
-import com.lcc.imusic.ui.MusicPlayerActivity;
-import com.lcc.imusic.utils.Common;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
@@ -37,14 +22,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MusicPlayService extends Service {
-
     public static final int PLAY_TYPE_LOOP = 1;
     public static final int PLAY_TYPE_ONE = 2;
     public static final int PLAY_TYPE_RANDOM = 3;
-
-
-    public static final String ACTION_MUSIC_PLAY_OR_PAUSE = "com.lcc.music.play";
-    public static final String ACTION_MUSIC_NEXT = "com.lcc.music.next";
 
     private MediaPlayer mediaPlayer;
     private Timer timer;
@@ -56,7 +36,7 @@ public class MusicPlayService extends Service {
 
     public static boolean HAS_STATED = false;
 
-    private MusicControllerReceiver musicControllerReceiver;
+    MusicNotificationManager musicNotificationManager;
 
     private MusicProvider musicProvider;
 
@@ -68,6 +48,7 @@ public class MusicPlayService extends Service {
         HAS_STATED = true;
         initMediaPlayer();
         initLocalMusicList();
+        musicNotificationManager = new MusicNotificationManager(this);
     }
 
     private void initMediaPlayer() {
@@ -87,48 +68,6 @@ public class MusicPlayService extends Service {
     private int currentIndex = -1;
 
     private Random random;
-
-
-    private Notification notification;
-
-    private NotificationManagerCompat managerCompat;
-
-    private RemoteViews remoteViews;
-
-    private static final int NOTIFICATION_ID = 2946;
-
-    public void initNotification() {
-        musicControllerReceiver = new MusicControllerReceiver();
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_MUSIC_NEXT);
-        intentFilter.addAction(ACTION_MUSIC_PLAY_OR_PAUSE);
-
-        registerReceiver(musicControllerReceiver, intentFilter);
-
-        remoteViews = new RemoteViews(getPackageName(), R.layout.notification_play_panel);
-        Intent play = new Intent(ACTION_MUSIC_PLAY_OR_PAUSE);
-        PendingIntent playIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, play, 0);
-        remoteViews.setOnClickPendingIntent(R.id.notification_play, playIntent);
-
-
-        Intent next = new Intent(ACTION_MUSIC_NEXT);
-        PendingIntent nextIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, next, 0);
-        remoteViews.setOnClickPendingIntent(R.id.notification_next, nextIntent);
-
-
-        NotificationCompat.Builder builder = new NotificationCompat
-                .Builder(getApplicationContext());
-
-        builder.setOngoing(true);
-        builder.setContent(remoteViews)
-                .setSmallIcon(R.mipmap.ic_launcher);
-        Intent intent = new Intent(getApplicationContext(), MusicPlayerActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-        builder.setContentIntent(pendingIntent);
-        managerCompat = NotificationManagerCompat.from(this);
-        startForeground(NOTIFICATION_ID, notification = builder.build());
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -341,25 +280,10 @@ public class MusicPlayService extends Service {
                 timer = new Timer();
                 timer.schedule(progressTask, 0, 1000);
             }
-
-            if (notification == null) {
-                initNotification();
+            if (!musicNotificationManager.hasNotified()) {
+                musicNotificationManager.notifyNotification();
             }
-            MusicItem item = musicProvider.getPlayingMusic();
-            remoteViews.setTextViewText(R.id.notification_title,item.title);
-            remoteViews.setTextViewText(R.id.notification_subtitle,item.artist);
-
-            Glide.with(MusicPlayService.this)
-                    .load(item.cover)
-                    .placeholder(R.mipmap.mycover)
-                    .into(new SimpleTarget<GlideDrawable>() {
-                        @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            remoteViews.setImageViewBitmap(R.id.notification_cover, Common.drawable2Bitmap(resource));
-                        }
-                    });
-
-            managerCompat.notify(NOTIFICATION_ID,notification);
+            musicNotificationManager.update(musicProvider.getPlayingMusic());
         }
 
 
@@ -411,10 +335,9 @@ public class MusicPlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (musicControllerReceiver != null) {
-            unregisterReceiver(musicControllerReceiver);
-            musicControllerReceiver = null;
-        }
+
+        musicNotificationManager.onDestroy();
+        musicNotificationManager = null;
         if (timer != null) {
             timer.cancel();
             timer = null;
@@ -435,32 +358,6 @@ public class MusicPlayService extends Service {
         mediaPlayer = null;
         Logger.i("MusicPlayService onDestroy");
         HAS_STATED = false;
-    }
-
-
-    public class MusicControllerReceiver extends BroadcastReceiver {
-        private boolean playing = true;
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            String action = intent.getAction();
-            if (ACTION_MUSIC_NEXT.equals(action)) {
-                nextMusic();
-            } else if (ACTION_MUSIC_PLAY_OR_PAUSE.equals(action)) {
-                if(playing)
-                {
-                    playing = false;
-                    pauseMusic();
-                    remoteViews.setImageViewResource(R.id.notification_play,R.mipmap.playbar_btn_pause);
-                }
-                else
-                {
-                    playing = true;
-                    startPlayOrResume();
-                    remoteViews.setImageViewResource(R.id.notification_play,R.mipmap.playbar_btn_play);
-                }
-            }
-        }
     }
 
 
