@@ -29,7 +29,8 @@ public class MusicNotificationManager {
     private boolean hasNotified = false;
     MusicControllerReceiver musicControllerReceiver;
     private Notification notification;
-
+    Bitmap pauseBitmap;
+    Bitmap playBitmap;
     private NotificationManagerCompat managerCompat;
 
     private RemoteViews remoteViews;
@@ -40,7 +41,13 @@ public class MusicNotificationManager {
 
     public MusicNotificationManager(@NonNull MusicPlayService musicPlayService) {
         this.musicPlayService = musicPlayService;
+
         context = musicPlayService.getApplicationContext();
+
+        pauseBitmap = BitmapFactory.decodeResource(musicPlayService.getResources()
+                , R.mipmap.playbar_btn_pause);
+        playBitmap = BitmapFactory.decodeResource(musicPlayService.getResources()
+                , R.mipmap.playbar_btn_play);
     }
 
     public void notifyNotification() {
@@ -84,6 +91,7 @@ public class MusicNotificationManager {
     public void update(MusicItem musicItem) {
         remoteViews.setTextViewText(R.id.notification_title, musicItem.title);
         remoteViews.setTextViewText(R.id.notification_subtitle, musicItem.artist);
+        remoteViews.setImageViewBitmap(R.id.notification_play_or_pause, pauseBitmap);
         managerCompat.notify(NOTIFICATION_ID, notification);
         /*Glide.with(MusicPlayService.this)
                     .load(item.cover)
@@ -97,6 +105,13 @@ public class MusicNotificationManager {
 
     }
 
+    public void pause() {
+        if (!hasNotified)
+            return;
+        remoteViews.setImageViewBitmap(R.id.notification_play_or_pause, playBitmap);
+        managerCompat.notify(NOTIFICATION_ID, notification);
+    }
+
     public void onDestroy() {
         musicPlayService.unregisterReceiver(musicControllerReceiver);
         context = null;
@@ -107,15 +122,6 @@ public class MusicNotificationManager {
 
     public class MusicControllerReceiver extends BroadcastReceiver {
         private boolean playing = true;
-        Bitmap pauseBitmap;
-        Bitmap playBitmap;
-
-        public MusicControllerReceiver() {
-            pauseBitmap = BitmapFactory.decodeResource(musicPlayService.getResources()
-                    , R.mipmap.playbar_btn_pause);
-            playBitmap = BitmapFactory.decodeResource(musicPlayService.getResources()
-                    , R.mipmap.playbar_btn_play);
-        }
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -133,11 +139,10 @@ public class MusicNotificationManager {
                     musicPlayService.startPlayOrResume();
 
                 }
-                if (playing)
+                if (playing) {
                     remoteViews.setImageViewBitmap(R.id.notification_play_or_pause, pauseBitmap);
-                else
-                    remoteViews.setImageViewBitmap(R.id.notification_play_or_pause, playBitmap);
-                managerCompat.notify(NOTIFICATION_ID, notification);
+                    managerCompat.notify(NOTIFICATION_ID, notification);
+                }
             }
         }
     }

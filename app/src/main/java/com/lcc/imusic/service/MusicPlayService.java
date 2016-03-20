@@ -105,6 +105,7 @@ public class MusicPlayService extends Service {
     public void pauseMusic() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
+            musicNotificationManager.pause();
         }
     }
 

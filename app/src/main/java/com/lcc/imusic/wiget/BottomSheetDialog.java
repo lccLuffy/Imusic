@@ -71,7 +71,6 @@ public class BottomSheetDialog extends AppCompatDialog {
         FrameLayout bottomSheet = (FrameLayout) coordinator.findViewById(R.id.design_bottom_sheet);
         behavior = BottomSheetBehavior.from(bottomSheet);
         behavior.setBottomSheetCallback(mBottomSheetCallback);
-        behavior.setPeekHeight(800);
         if (params == null) {
             bottomSheet.addView(view);
         } else {
