@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.MusicItemAdapter;
+import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 
 /**
  * Created by lcc_luffy on 2016/3/19.
@@ -26,7 +27,7 @@ public class MusicListDialog extends BottomSheetDialog {
         super(context, cancelable, cancelListener);
     }
 
-    private MusicItemAdapter adapter;
+    private SimpleMusicListAdapter adapter;
 
     public MusicListDialog init() {
         View content = getLayoutInflater().inflate(R.layout.dialog_bottom_music_play, null);
@@ -35,15 +36,14 @@ public class MusicListDialog extends BottomSheetDialog {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(getAdapter());
-        adapter.getLoadMoreFooter().showNoMoreView();
         setContentView(content);
         return this;
     }
 
     @NonNull
-    public MusicItemAdapter getAdapter() {
+    public SimpleMusicListAdapter getAdapter() {
         if (adapter == null)
-            adapter = new MusicItemAdapter(getContext());
+            adapter = new SimpleMusicListAdapter();
         return adapter;
     }
 }

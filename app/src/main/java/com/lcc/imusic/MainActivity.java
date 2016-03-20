@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lcc.imusic.adapter.FragmentAdapter;
+import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.AccountDelegate;
 import com.lcc.imusic.base.MusicBindActivity;
 import com.lcc.imusic.bean.MusicItem;
@@ -22,7 +23,6 @@ import com.lcc.imusic.model.MusicProvider;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.lcc.imusic.wiget.MusicListDialog;
-import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -154,9 +154,9 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         {
             musicListDialog = new MusicListDialog(this);
 
-            musicListDialog.init().getAdapter().initData(musicProvider.provideMusics());
+            musicListDialog.init().getAdapter().setData(musicProvider.provideMusics());
 
-            musicListDialog.getAdapter().setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
+            musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
                     playMusic(position);

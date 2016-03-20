@@ -2,8 +2,8 @@ package com.lcc.imusic.wiget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.util.AttributeSet;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
@@ -38,7 +38,7 @@ public class NeedleImageView extends ImageView {
         quickPause();
     }
 
-    private final Interpolator interpolator = new FastOutLinearInInterpolator();
+    private final Interpolator interpolator = new AccelerateInterpolator();
 
     public void pause() {
         if(getRotation() == -40)

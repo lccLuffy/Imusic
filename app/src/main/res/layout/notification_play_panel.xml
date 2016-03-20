@@ -54,6 +54,7 @@
             android:id="@+id/notification_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:contentDescription="@null"
             android:src="@mipmap/playbar_btn_play" />
 
@@ -61,6 +62,7 @@
             android:id="@+id/notification_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:contentDescription="@null"
             android:src="@mipmap/playbar_btn_next" />
     </LinearLayout>

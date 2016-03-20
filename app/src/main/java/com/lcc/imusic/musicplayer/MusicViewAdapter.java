@@ -34,11 +34,6 @@ public class MusicViewAdapter extends PagerAdapter {
 
     public boolean rotate = true;
 
-    public MusicViewAdapter()
-    {
-
-    }
-
     public void pause(int position)
     {
         if(viewGroup == null)
@@ -50,7 +45,9 @@ public class MusicViewAdapter extends PagerAdapter {
             if(viewGroup.getChildAt(j).getId() == position)
             {
                 ((RotateImageView)(viewGroup.getChildAt(j))).pause();
-                break;
+            }
+            else {
+                ((RotateImageView)(viewGroup.getChildAt(j))).pause();
             }
         }
     }
@@ -65,7 +62,10 @@ public class MusicViewAdapter extends PagerAdapter {
             if(viewGroup.getChildAt(j).getId() == position)
             {
                 ((RotateImageView)(viewGroup.getChildAt(j))).resume();
-                break;
+            }
+            else
+            {
+                ((RotateImageView)(viewGroup.getChildAt(j))).pause();
             }
         }
     }

@@ -63,7 +63,9 @@ public class MusicPlayService extends Service {
         HAS_STATED = true;
         initMediaPlayer();
         initLocalMusicList();
+        initNotification();
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -71,8 +73,7 @@ public class MusicPlayService extends Service {
     }
 
 
-    private void initMediaPlayer()
-    {
+    private void initMediaPlayer() {
         mediaPlayer = new MediaPlayer();
         MediaListener mediaListener = new MediaListener();
         mediaPlayer.setOnPreparedListener(mediaListener);
@@ -80,22 +81,22 @@ public class MusicPlayService extends Service {
         mediaPlayer.setOnBufferingUpdateListener(mediaListener);
         mediaPlayer.setOnErrorListener(mediaListener);
     }
-    private void initLocalMusicList()
-    {
+
+    private void initLocalMusicList() {
         musicProvider = LocalMusicProvider.getMusicProvider(getApplicationContext());
     }
 
 
     RemoteViews contentView;
-    public void initNotification()
-    {
+
+    public void initNotification() {
         musicControllerReceiver = new MusicControllerReceiver();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_MUSIC_NEXT);
         intentFilter.addAction(ACTION_MUSIC_PLAY_OR_PAUSE);
 
-        registerReceiver(musicControllerReceiver,intentFilter);
+        registerReceiver(musicControllerReceiver, intentFilter);
 
         contentView = new RemoteViews(getPackageName(), R.layout.notification_play_panel);
         /**
@@ -103,7 +104,7 @@ public class MusicPlayService extends Service {
          */
         Intent play = new Intent(ACTION_MUSIC_PLAY_OR_PAUSE);
         PendingIntent playIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, play, 0);
-        contentView.setOnClickPendingIntent(R.id.notification_play,playIntent);
+        contentView.setOnClickPendingIntent(R.id.notification_play, playIntent);
 
 
         /**
@@ -111,7 +112,7 @@ public class MusicPlayService extends Service {
          */
         Intent next = new Intent(ACTION_MUSIC_NEXT);
         PendingIntent nextIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, next, 0);
-        contentView.setOnClickPendingIntent(R.id.notification_next,nextIntent);
+        contentView.setOnClickPendingIntent(R.id.notification_next, nextIntent);
 
 
         NotificationCompat.Builder builder = new NotificationCompat
@@ -121,7 +122,7 @@ public class MusicPlayService extends Service {
         builder.setContent(contentView)
                 .setSmallIcon(R.mipmap.ic_launcher);
         Intent intent = new Intent(getApplicationContext(), MusicPlayerActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
         builder.setContentIntent(pendingIntent);
         startForeground(1, builder.build());
     }
@@ -131,62 +132,44 @@ public class MusicPlayService extends Service {
         return binder == null ? (binder = new MusicServiceBind()) : binder;
     }
 
-    public void nextMusic()
-    {
-        if (playType == PLAY_TYPE_RANDOM)
-        {
+    public void nextMusic() {
+        if (playType == PLAY_TYPE_RANDOM) {
             playMusic(getPlayIndexWithType());
-        }
-        else if(currentIndex + 1 < musicProvider.provideMusics().size())
-        {
+        } else if (currentIndex + 1 < musicProvider.provideMusics().size()) {
             playMusic(currentIndex + 1);
-        }
-        else
-        {
+        } else {
             playMusic(0);
         }
     }
 
-    private int getPlayIndexWithType()
-    {
-        switch (playType)
-        {
+    private int getPlayIndexWithType() {
+        switch (playType) {
             case PLAY_TYPE_ONE:
                 return currentIndex;
             case PLAY_TYPE_RANDOM:
-                if(random == null)
+                if (random == null)
                     random = new Random();
                 return random.nextInt(musicProvider.provideMusics().size());
         }
         return currentIndex + 1;
     }
 
-    public void prevMusic()
-    {
-        if (playType == PLAY_TYPE_RANDOM)
-        {
+    public void prevMusic() {
+        if (playType == PLAY_TYPE_RANDOM) {
             playMusic(getPlayIndexWithType());
-        }
-        else if(currentIndex >= 1)
-        {
+        } else if (currentIndex >= 1) {
             playMusic(currentIndex - 1);
-        }
-        else
-        {
+        } else {
             playMusic(musicProvider.provideMusics().size() - 1);
         }
     }
 
-    public void playMusic(int index)
-    {
-        if(currentIndex == index)
-        {
+    public void playMusic(int index) {
+        checkBoundary(index);
+        if (currentIndex == index) {
             startMusic();
-        }
-        else
-        {
-            try
-            {
+        } else {
+            try {
                 mediaPlayer.reset();
                 musicProvider.setPlayingMusic(index);
                 currentIndex = index;
@@ -194,140 +177,128 @@ public class MusicPlayService extends Service {
                 mediaPlayer.prepareAsync();
             } catch (IOException e) {
                 e.printStackTrace();
-                Logger.e(e,"IOException");
-            }
-            catch (Throwable throwable)
-            {
-                Logger.e(throwable,"Throwable");
+                Logger.e(e, "IOException");
+            } catch (Throwable throwable) {
+                Logger.e(throwable, "Throwable");
             }
         }
 
     }
-    public void pauseMusic()
-    {
-        mediaPlayer.pause();
+
+    public void pauseMusic() {
+        if (mediaPlayer.isPlaying())
+            mediaPlayer.pause();
     }
 
-    public void startMusic()
-    {
-        if(currentIndex != -1)
-        {
+    public void startMusic() {
+        if (currentIndex != -1 && !mediaPlayer.isPlaying()) {
             mediaPlayer.start();
-            if(musicReadyListeners != null)
-            {
-                for (MusicReadyListener listener : musicReadyListeners)
-                {
-                    listener.onMusicReady(musicProvider.provideMusics().get(currentIndex));
-                }
-            }
-        }
-        else
-        {
+            dispatchOnMusicReadyEvent();
+        } else {
             playMusic(0);
         }
     }
 
-    public class MusicServiceBind extends Binder
+    private void dispatchOnMusicReadyEvent() {
+        if (musicReadyListeners != null) {
+            for (MusicReadyListener listener : musicReadyListeners) {
+                listener.onMusicReady(musicProvider.provideMusics().get(currentIndex));
+            }
+        }
+    }
+    private void checkBoundary(int index)
     {
-        public void playMusic(int index)
-        {
+        if(index < 0 || index >= musicProvider.provideMusics().size())
+            throw new IllegalStateException("Oops,music index is out of boundary!!!! index is "
+                    + index + ", but music size is " +musicProvider.provideMusics().size());
+    }
+
+    public class MusicServiceBind extends Binder {
+        public void playMusic(int index) {
             MusicPlayService.this.playMusic(index);
         }
 
-        public void start()
-        {
+        public void start() {
             startMusic();
         }
 
-        public void pause()
-        {
+        public void pause() {
             pauseMusic();
         }
 
-        public int getTotalTime()
-        {
+        public int getTotalTime() {
             return mediaPlayer.getDuration() / 1000;
         }
 
-        public boolean isPlaying()
-        {
+        public boolean isPlaying() {
             return mediaPlayer.isPlaying();
         }
-        public void next()
-        {
+
+        public void next() {
             nextMusic();
         }
-        public void prev()
-        {
+
+        public void prev() {
             prevMusic();
         }
-        public void addMusicReadyListener(MusicReadyListener listener)
-        {
-            if(musicReadyListeners == null)
+
+        public void addMusicReadyListener(MusicReadyListener listener) {
+            if (musicReadyListeners == null)
                 musicReadyListeners = new ArrayList<>();
             musicReadyListeners.add(listener);
         }
 
-        public void removeMusicReadyListener(MusicReadyListener listener)
-        {
+        public void removeMusicReadyListener(MusicReadyListener listener) {
             musicReadyListeners.remove(listener);
         }
 
-        public void addMusicProgressListener(MusicProgressListener listener)
-        {
-            if(musicProgressListeners == null)
+        public void addMusicProgressListener(MusicProgressListener listener) {
+            if (musicProgressListeners == null)
                 musicProgressListeners = new ArrayList<>();
             musicProgressListeners.add(listener);
         }
-        public void removeMusicProgressListener(MusicProgressListener listener)
-        {
+
+        public void removeMusicProgressListener(MusicProgressListener listener) {
             musicProgressListeners.remove(listener);
         }
-        public void seekTo(int second)
-        {
+
+        public void seekTo(int second) {
             mediaPlayer.seekTo(second * 1000);
         }
-        public int getPlayType()
-        {
+
+        public int getPlayType() {
             return playType;
         }
-        public void setPlayType(int playType)
-        {
+
+        public void setPlayType(int playType) {
             MusicPlayService.this.playType = playType;
         }
     }
+
     private class MediaListener implements MediaPlayer.OnPreparedListener
-        ,MediaPlayer.OnCompletionListener,MediaPlayer.OnBufferingUpdateListener
-        ,MediaPlayer.OnErrorListener
-    {
+            , MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener
+            , MediaPlayer.OnErrorListener {
         @Override
-        public void onPrepared(MediaPlayer mp)
-        {
+        public void onPrepared(MediaPlayer mp) {
             mp.start();
-            if(musicReadyListeners != null)
-            {
-                for (MusicReadyListener listener : musicReadyListeners)
-                {
-                    listener.onMusicReady(musicProvider.provideMusics().get(currentIndex));
-                }
-            }
-            if(progressTask == null)
-            {
+            dispatchOnMusicReadyEvent();
+            if (progressTask == null) {
                 progressTask = new ProgressTask();
                 timer = new Timer();
                 timer.schedule(new ProgressTask(), 0, 1000);
             }
 
-            if(!hasShowNotification)
-            {
+            if (!hasShowNotification) {
                 hasShowNotification = true;
                 initNotification();
             }
             MusicItem item = musicProvider.getPlayingMusic();
-            contentView.setCharSequence(R.id.notification_title,"setText",item.title);
-            contentView.setCharSequence(R.id.notification_subtitle,"setText",item.artist);
+            contentView.setCharSequence(R.id.notification_title, "setText", item.title);
+            contentView.setCharSequence(R.id.notification_subtitle, "setText", item.artist);
         }
+
         private boolean hasShowNotification = false;
+
         @Override
         public void onCompletion(MediaPlayer mp) {
             playMusic(getPlayIndexWithType());
@@ -335,29 +306,32 @@ public class MusicPlayService extends Service {
 
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            Logger.i("onBufferingUpdate:%d%",percent);
+            Logger.i("onBufferingUpdate:%d%%", percent);
         }
 
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
-            Logger.i("onError:what:%d,extra:%d",what,extra);
+            Logger.i("onError:what:%d,extra:%d", what, extra);
             return false;
         }
     }
 
     private class ProgressTask extends TimerTask {
         private Handler handler;
-        public ProgressTask()
-        {
+
+        public ProgressTask() {
             handler = new Handler(Looper.getMainLooper());
         }
+
         @Override
         public void run() {
-            if(musicProgressListeners != null)
-            {
+            dispatchOnProgressEvent();
+        }
+
+        private void dispatchOnProgressEvent() {
+            if (musicProgressListeners != null) {
                 final int current = mediaPlayer.getCurrentPosition() / 1000;
-                for (final MusicProgressListener listener : musicProgressListeners)
-                {
+                for (final MusicProgressListener listener : musicProgressListeners) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -372,23 +346,19 @@ public class MusicPlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(musicControllerReceiver != null)
-        {
+        if (musicControllerReceiver != null) {
             unregisterReceiver(musicControllerReceiver);
             musicControllerReceiver = null;
         }
-        if(timer != null)
-        {
+        if (timer != null) {
             timer.cancel();
             timer = null;
         }
-        if(musicReadyListeners != null)
-        {
+        if (musicReadyListeners != null) {
             musicReadyListeners.clear();
             musicReadyListeners = null;
         }
-        if(musicProgressListeners != null)
-        {
+        if (musicProgressListeners != null) {
             musicProgressListeners.clear();
             musicProgressListeners = null;
         }
@@ -408,22 +378,19 @@ public class MusicPlayService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(ACTION_MUSIC_NEXT.equals(action))
-            {
+            if (ACTION_MUSIC_NEXT.equals(action)) {
                 nextMusic();
-            }
-            else if(ACTION_MUSIC_PLAY_OR_PAUSE.equals(action))
-            {
+            } else if (ACTION_MUSIC_PLAY_OR_PAUSE.equals(action)) {
                 startMusic();
             }
         }
     }
-    public interface MusicReadyListener
-    {
+
+    public interface MusicReadyListener {
         void onMusicReady(MusicItem musicItem);
     }
-    public interface MusicProgressListener
-    {
+
+    public interface MusicProgressListener {
         void onProgress(int second);
     }
 }
