@@ -14,7 +14,9 @@ public class MusicPlayManager {
     private int currentIndex;
     private int allIndex;
     private int playType = PLAY_TYPE_LOOP;
-    private int willPlayIndex;
+
+    private int previousIndex = -1;
+
     private Random random;
 
     public MusicPlayManager(int currentIndex, int all) {
@@ -38,21 +40,25 @@ public class MusicPlayManager {
         return currentIndex;
     }
 
-    public int getAllIndex() {
-        return allIndex;
-    }
-
     public void setAllIndex(int allIndex) {
         this.allIndex = allIndex;
     }
 
     public int prevIndex() {
+        if (allIndex == 1) {
+            return changeIndex(0);
+        }
+
         if (playType == PLAY_TYPE_RANDOM)
             return randomIndex();
         return changeIndex((currentIndex - 1) % allIndex);
     }
 
     public int nextIndex() {
+        if (allIndex == 1) {
+            return changeIndex(0);
+        }
+
         if (playType == PLAY_TYPE_RANDOM)
             return randomIndex();
         return changeIndex((currentIndex + 1) % allIndex);
@@ -83,8 +89,22 @@ public class MusicPlayManager {
         }
         return changeIndex(result);
     }
+    public int lastPlayedIndex()
+    {
+        return previousIndex;
+    }
+    public void setLastPlayedIndex(int previousIndex)
+    {
+        this.previousIndex = previousIndex;
+    }
+
+    public boolean hasPlayed()
+    {
+        return previousIndex != -1;
+    }
 
     private int changeIndex(int index) {
-        return currentIndex = index;
+        currentIndex = index;
+        return currentIndex;
     }
 }

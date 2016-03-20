@@ -29,7 +29,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
         musicProvider = LocalMusicProvider.getMusicProvider(this);
 
-        setCurrentMusicItem(musicProvider.getWillPlayMusic());
+        setCurrentMusicItem(musicProvider.getPlayingMusic());
     }
 
     @Override

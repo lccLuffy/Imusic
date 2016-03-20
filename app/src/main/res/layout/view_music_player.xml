@@ -69,7 +69,8 @@
                 android:id="@+id/musicView_seekBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="9" />
+                android:layout_weight="9"
+                android:progressDrawable="@drawable/draw_music_progress" />
 
             <TextView
                 android:id="@+id/musicView_totalTime"

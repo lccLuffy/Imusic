@@ -121,16 +121,6 @@ public class LocalMusicProvider implements MusicProvider {
         return playingMusicIndex;
     }
 
-    @Override
-    public int getWillPlayMusicIndex() {
-        return 0;
-    }
-
-    @Override
-    public MusicItem getWillPlayMusic() {
-        return localMusicList.get(getPlayingMusicIndex());
-    }
-
     public static class Ro {
 
 

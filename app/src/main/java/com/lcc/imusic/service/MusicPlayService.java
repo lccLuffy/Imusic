@@ -79,8 +79,10 @@ public class MusicPlayService extends Service {
 
     private void initLocalMusicList() {
         musicProvider = LocalMusicProvider.getMusicProvider(getApplicationContext());
-        musicPlayManager = new MusicPlayManager(musicProvider.getWillPlayMusicIndex(),musicProvider.provideMusics().size());
+        musicPlayManager = new MusicPlayManager(musicProvider.getPlayingMusicIndex(),musicProvider.provideMusics().size());
     }
+
+    private int currentIndex = -1;
 
 
     RemoteViews contentView;
@@ -128,19 +130,21 @@ public class MusicPlayService extends Service {
         return binder == null ? (binder = new MusicServiceBind()) : binder;
     }
 
-    private boolean hasPlayed = false;
     public void playMusic(int index) {
         checkBoundary(index);
-        Logger.i("MusicWillPlay@%d", index);
-        if(musicPlayManager.getCurrentIndex() == index)
+        MusicItem musicItem = musicProvider.provideMusics().get(index);
+        Logger.i("MusicWillPlay @%s", musicItem.title);
+        if(mediaPlayer.isPlaying() && currentIndex == musicPlayManager.getCurrentIndex())
+        {
+            Logger.i("playMusic returned @%s",musicItem.title);
             return;
+        }
+
         try {
-            hasPlayed = true;
-            MusicItem musicItem = musicProvider.provideMusics().get(index);
+            musicPlayManager.setLastPlayedIndex(index);
             mediaPlayer.reset();
             musicProvider.setPlayingMusic(index);
             dispatchOnMusicWillPlayEvent(musicItem);
-
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(musicItem.data);
             mediaPlayer.prepareAsync();
@@ -167,7 +171,7 @@ public class MusicPlayService extends Service {
     }
 
     public void startPlayOrResume() {
-        if (!hasPlayed) {
+        if (currentIndex == -1) {
             playMusic(musicPlayManager.getCurrentIndex());
         } else {
             if(!mediaPlayer.isPlaying())
@@ -276,6 +280,7 @@ public class MusicPlayService extends Service {
         @Override
         public void onPrepared(MediaPlayer mp) {
             mp.start();
+            currentIndex = musicPlayManager.getCurrentIndex();
             dispatchOnMusicReadyEvent();
             if (progressTask == null) {
                 progressTask = new ProgressTask();
