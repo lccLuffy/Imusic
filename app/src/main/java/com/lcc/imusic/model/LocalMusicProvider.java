@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.utils.Json;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,53 +34,51 @@ public class LocalMusicProvider implements MusicProvider {
 
     private String url3 = "http://img.666ccc.com/SpecialPic3/pic2010/19642.jpg";
     private static MusicProvider musicProvider;
-    public static MusicProvider getMusicProvider(@NonNull Context context)
-    {
-        if(musicProvider == null)
+
+    public static MusicProvider getMusicProvider(@NonNull Context context) {
+        if (musicProvider == null)
             musicProvider = new LocalMusicProvider(context);
         return musicProvider;
     }
 
     Random random = new Random(System.currentTimeMillis());
-    private LocalMusicProvider(@NonNull Context context)
-    {
+
+    private LocalMusicProvider(@NonNull Context context) {
         localMusicList = new ArrayList<>();
 
-        for (Ro.MusicBean musicBean : getRo())
-        {
+        for (Ro.MusicBean musicBean : getRo()) {
             MusicItem musicItem = new MusicItem();
-            musicItem.title=musicBean.title;
-            musicItem.data = "http://storage.googleapis.com/automotive-media/"+musicBean.source;
-            musicItem.cover="http://storage.googleapis.com/automotive-media/"+musicBean.image;
-            musicItem.artist=musicBean.artist;
-            musicItem.duration=musicBean.duration;
+            musicItem.title = musicBean.title;
+            musicItem.data = "http://storage.googleapis.com/automotive-media/" + musicBean.source;
+            musicItem.cover = "http://storage.googleapis.com/automotive-media/" + musicBean.image;
+            musicItem.artist = musicBean.artist;
+            musicItem.duration = musicBean.duration;
             localMusicList.add(musicItem);
-            Logger.i(musicItem.data);
         }
 
 
-        if(true)
+        if (true)
             return;
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,Media.DURATION +" > 20000",null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-        if(cursor == null)
+                projection, Media.DURATION + " > 20000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        if (cursor == null)
             return;
 
         cursor.moveToFirst();
         int count = cursor.getCount();
-        for(int i=0;i < count;i++){
+        for (int i = 0; i < count; i++) {
             String name = cursor.getString(0);
             String artist = cursor.getString(1);
             String path = cursor.getString(2);
             int duration = cursor.getInt(3) / 1000;
             MusicItem musicItem = new MusicItem();
             musicItem.data = path;
-            musicItem.title = name+String.format(Locale.CHINA," - %s",cursor.getString(4));
+            musicItem.title = name + String.format(Locale.CHINA, " - %s", cursor.getString(4));
             musicItem.artist = artist;
             musicItem.duration = duration;
 
             int r = random.nextInt(3);
-            if(r == 0)
+            if (r == 0)
                 musicItem.cover = url1;
             else if (r == 1)
                 musicItem.cover = url2;
@@ -93,6 +90,7 @@ public class LocalMusicProvider implements MusicProvider {
         }
         cursor.close();
     }
+
     @NonNull
     @Override
     public List<MusicItem> provideMusics() {
@@ -102,10 +100,9 @@ public class LocalMusicProvider implements MusicProvider {
     @Nullable
     @Override
     public MusicItem getPlayingMusic() {
-        if(playingMusic != null)
+        if (playingMusic != null)
             return playingMusic;
-        if(localMusicList != null && !localMusicList.isEmpty())
-        {
+        if (localMusicList != null && !localMusicList.isEmpty()) {
             return localMusicList.get(0);
         }
         return null;
@@ -124,8 +121,17 @@ public class LocalMusicProvider implements MusicProvider {
         return playingMusicIndex;
     }
 
-    public static class Ro
-    {
+    @Override
+    public int getWillPlayMusicIndex() {
+        return 0;
+    }
+
+    @Override
+    public MusicItem getWillPlayMusic() {
+        return localMusicList.get(getPlayingMusicIndex());
+    }
+
+    public static class Ro {
 
 
         /**
@@ -157,10 +163,10 @@ public class LocalMusicProvider implements MusicProvider {
         }
     }
 
-    List<Ro.MusicBean> getRo()
-    {
-        return Json.fromJson(json,Ro.class).music;
+    List<Ro.MusicBean> getRo() {
+        return Json.fromJson(json, Ro.class).music;
     }
+
     String json = "{\"music\" : [ \n" +
             "\t{ \"title\" : \"Jazz in Paris\",\n" +
             "\t  \"album\" : \"Jazz & Blues\",\n" +

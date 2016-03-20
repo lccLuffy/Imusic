@@ -28,7 +28,8 @@ public class MusicPlayerActivity extends MusicBindActivity {
         super.onCreate(savedInstanceState);
 
         musicProvider = LocalMusicProvider.getMusicProvider(this);
-        setCurrentMusicItem(musicProvider.getPlayingMusic());
+
+        setCurrentMusicItem(musicProvider.getWillPlayMusic());
     }
 
     @Override
@@ -43,18 +44,33 @@ public class MusicPlayerActivity extends MusicBindActivity {
         musicServiceBind.addMusicReadyListener(musicInfoListener);
     }
 
-    private class MusicInfoListener implements MusicPlayService.MusicReadyListener,MusicPlayService.MusicProgressListener
+    private class MusicInfoListener implements MusicPlayService.MusicPlayListener,MusicPlayService.MusicProgressListener
     {
+        private boolean canAutoProgress = true;
         @Override
         public void onProgress(int second) {
-            if(!(musicPlayerView.isUserSliding() || musicPlayerView.isPaused()))
+            if(!(musicPlayerView.isUserSliding() || musicPlayerView.isPaused()) && canAutoProgress)
             {
                 musicPlayerView.setProgress(second);
             }
         }
 
         @Override
+        public void onBuffering(int percent) {
+            musicPlayerView.setSecondaryProgress(percent);
+        }
+
+        @Override
+        public void onMusicWillPlay(MusicItem musicItem) {
+            canAutoProgress = false;
+            musicPlayerView.setSecondaryProgress(0);
+            musicPlayerView.setProgress(0);
+            setCurrentMusicItem(musicItem);
+        }
+
+        @Override
         public void onMusicReady(MusicItem musicItem) {
+            canAutoProgress = true;
             setCurrentMusicItem(musicItem);
         }
     }
@@ -98,7 +114,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
         @Override
         public void start() {
-            musicServiceBind.start();
+            musicServiceBind.startPlayOrResume();
         }
 
         @Override
@@ -141,7 +157,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
         @Override
         public void onPageSelected(int position) {
-            musicServiceBind.playMusic(position);
+            musicServiceBind.play(position);
         }
     }
     private MusicListDialog musicListDialog;
@@ -155,7 +171,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
             musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
-                    musicServiceBind.playMusic(position);
+                    musicServiceBind.play(position);
                     musicPlayerView.setPageIndex(position);
                 }
             });

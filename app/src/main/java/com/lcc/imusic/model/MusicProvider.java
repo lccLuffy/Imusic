@@ -18,4 +18,8 @@ public interface MusicProvider {
     void setPlayingMusic(int index);
 
     int getPlayingMusicIndex();
+
+    int getWillPlayMusicIndex();
+
+    MusicItem getWillPlayMusic();
 }

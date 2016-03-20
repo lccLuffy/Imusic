@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Handler;
@@ -30,21 +31,15 @@ import java.util.TimerTask;
 
 public class MusicPlayService extends Service {
 
-    public static final int PLAY_TYPE_LOOP = 1;
-    public static final int PLAY_TYPE_ONE = 2;
-    public static final int PLAY_TYPE_RANDOM = 3;
-
     public static final String ACTION_MUSIC_PLAY_OR_PAUSE = "com.lcc.music.play";
     public static final String ACTION_MUSIC_NEXT = "com.lcc.music.next";
-
-    private int currentIndex = -1;
 
     private MediaPlayer mediaPlayer;
     private Timer timer;
     private ProgressTask progressTask;
     private IBinder binder;
 
-    private List<MusicReadyListener> musicReadyListeners;
+    private List<MusicPlayListener> musicPlayListeners;
     private List<MusicProgressListener> musicProgressListeners;
 
     public static boolean HAS_STATED = false;
@@ -53,9 +48,9 @@ public class MusicPlayService extends Service {
 
     private MusicProvider musicProvider;
 
-    private Random random;
+    private MusicPlayManager musicPlayManager;
 
-    private int playType = PLAY_TYPE_LOOP;
+    private Random random;
 
     @Override
     public void onCreate() {
@@ -84,6 +79,7 @@ public class MusicPlayService extends Service {
 
     private void initLocalMusicList() {
         musicProvider = LocalMusicProvider.getMusicProvider(getApplicationContext());
+        musicPlayManager = new MusicPlayManager(musicProvider.getWillPlayMusicIndex(),musicProvider.provideMusics().size());
     }
 
 
@@ -132,94 +128,93 @@ public class MusicPlayService extends Service {
         return binder == null ? (binder = new MusicServiceBind()) : binder;
     }
 
-    public void nextMusic() {
-        if (playType == PLAY_TYPE_RANDOM) {
-            playMusic(getPlayIndexWithType());
-        } else if (currentIndex + 1 < musicProvider.provideMusics().size()) {
-            playMusic(currentIndex + 1);
-        } else {
-            playMusic(0);
-        }
-    }
-
-    private int getPlayIndexWithType() {
-        switch (playType) {
-            case PLAY_TYPE_ONE:
-                return currentIndex;
-            case PLAY_TYPE_RANDOM:
-                if (random == null)
-                    random = new Random();
-                return random.nextInt(musicProvider.provideMusics().size());
-        }
-        return currentIndex + 1;
-    }
-
-    public void prevMusic() {
-        if (playType == PLAY_TYPE_RANDOM) {
-            playMusic(getPlayIndexWithType());
-        } else if (currentIndex >= 1) {
-            playMusic(currentIndex - 1);
-        } else {
-            playMusic(musicProvider.provideMusics().size() - 1);
-        }
-    }
-
+    private boolean hasPlayed = false;
     public void playMusic(int index) {
         checkBoundary(index);
-        if (currentIndex == index) {
-            startMusic();
-        } else {
-            try {
-                mediaPlayer.reset();
-                musicProvider.setPlayingMusic(index);
-                currentIndex = index;
-                mediaPlayer.setDataSource(musicProvider.provideMusics().get(index).data);
-                mediaPlayer.prepareAsync();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Logger.e(e, "IOException");
-            } catch (Throwable throwable) {
-                Logger.e(throwable, "Throwable");
-            }
-        }
+        Logger.i("MusicWillPlay@%d", index);
+        if(musicPlayManager.getCurrentIndex() == index)
+            return;
+        try {
+            hasPlayed = true;
+            MusicItem musicItem = musicProvider.provideMusics().get(index);
+            mediaPlayer.reset();
+            musicProvider.setPlayingMusic(index);
+            dispatchOnMusicWillPlayEvent(musicItem);
 
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setDataSource(musicItem.data);
+            mediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.e(e, "IOException");
+        } catch (Throwable throwable) {
+            Logger.e(throwable, "Throwable");
+        }
     }
 
     public void pauseMusic() {
-        if (mediaPlayer.isPlaying())
+        if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
+        }
+    }
+    public void nextMusic()
+    {
+        playMusic(musicPlayManager.nextIndex());
+    }
+    public void prevMusic()
+    {
+        playMusic(musicPlayManager.prevIndex());
     }
 
-    public void startMusic() {
-        if (currentIndex != -1 && !mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
-            dispatchOnMusicReadyEvent();
+    public void startPlayOrResume() {
+        if (!hasPlayed) {
+            playMusic(musicPlayManager.getCurrentIndex());
         } else {
-            playMusic(0);
+            if(!mediaPlayer.isPlaying())
+            {
+                mediaPlayer.start();
+                dispatchOnMusicReadyEvent();
+            }
+        }
+    }
+
+    private void dispatchOnMusicWillPlayEvent(MusicItem musicItem) {
+        if (musicPlayListeners != null) {
+            for (final MusicPlayListener listener : musicPlayListeners) {
+                listener.onMusicWillPlay(musicItem);
+            }
+        }
+    }
+
+    private void dispatchOnBufferingEvent(int percent) {
+        if (musicProgressListeners != null) {
+            for (final MusicProgressListener listener : musicProgressListeners) {
+                listener.onBuffering(percent);
+            }
         }
     }
 
     private void dispatchOnMusicReadyEvent() {
-        if (musicReadyListeners != null) {
-            for (MusicReadyListener listener : musicReadyListeners) {
-                listener.onMusicReady(musicProvider.provideMusics().get(currentIndex));
+        if (musicPlayListeners != null) {
+            for (MusicPlayListener listener : musicPlayListeners) {
+                listener.onMusicReady(musicProvider.provideMusics().get(musicPlayManager.getCurrentIndex()));
             }
         }
     }
-    private void checkBoundary(int index)
-    {
-        if(index < 0 || index >= musicProvider.provideMusics().size())
+
+    private void checkBoundary(int index) {
+        if (index < 0 || index >= musicProvider.provideMusics().size())
             throw new IllegalStateException("Oops,music index is out of boundary!!!! index is "
-                    + index + ", but music size is " +musicProvider.provideMusics().size());
+                    + index + ", but music size is " + musicProvider.provideMusics().size());
     }
 
     public class MusicServiceBind extends Binder {
-        public void playMusic(int index) {
-            MusicPlayService.this.playMusic(index);
+        public void play(int index) {
+            playMusic(musicPlayManager.playAtIndex(index));
         }
 
-        public void start() {
-            startMusic();
+        public void startPlayOrResume() {
+            MusicPlayService.this.startPlayOrResume();
         }
 
         public void pause() {
@@ -235,21 +230,21 @@ public class MusicPlayService extends Service {
         }
 
         public void next() {
-            nextMusic();
-        }
-
-        public void prev() {
             prevMusic();
         }
 
-        public void addMusicReadyListener(MusicReadyListener listener) {
-            if (musicReadyListeners == null)
-                musicReadyListeners = new ArrayList<>();
-            musicReadyListeners.add(listener);
+        public void prev() {
+            nextMusic();
         }
 
-        public void removeMusicReadyListener(MusicReadyListener listener) {
-            musicReadyListeners.remove(listener);
+        public void addMusicReadyListener(MusicPlayListener listener) {
+            if (musicPlayListeners == null)
+                musicPlayListeners = new ArrayList<>();
+            musicPlayListeners.add(listener);
+        }
+
+        public void removeMusicReadyListener(MusicPlayListener listener) {
+            musicPlayListeners.remove(listener);
         }
 
         public void addMusicProgressListener(MusicProgressListener listener) {
@@ -267,11 +262,11 @@ public class MusicPlayService extends Service {
         }
 
         public int getPlayType() {
-            return playType;
+            return musicPlayManager.getPlayType();
         }
 
         public void setPlayType(int playType) {
-            MusicPlayService.this.playType = playType;
+            musicPlayManager.setPlayType(playType);
         }
     }
 
@@ -301,12 +296,13 @@ public class MusicPlayService extends Service {
 
         @Override
         public void onCompletion(MediaPlayer mp) {
-            playMusic(getPlayIndexWithType());
+            playMusic(musicPlayManager.indexByPlayType());
         }
 
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            Logger.i("onBufferingUpdate:%d%%", percent);
+            dispatchOnBufferingEvent(percent);
+            /*Logger.i("onBufferingUpdate:%d%%", percent);*/
         }
 
         @Override
@@ -354,9 +350,9 @@ public class MusicPlayService extends Service {
             timer.cancel();
             timer = null;
         }
-        if (musicReadyListeners != null) {
-            musicReadyListeners.clear();
-            musicReadyListeners = null;
+        if (musicPlayListeners != null) {
+            musicPlayListeners.clear();
+            musicPlayListeners = null;
         }
         if (musicProgressListeners != null) {
             musicProgressListeners.clear();
@@ -381,16 +377,22 @@ public class MusicPlayService extends Service {
             if (ACTION_MUSIC_NEXT.equals(action)) {
                 nextMusic();
             } else if (ACTION_MUSIC_PLAY_OR_PAUSE.equals(action)) {
-                startMusic();
+                startPlayOrResume();
             }
         }
     }
 
-    public interface MusicReadyListener {
+
+
+    public interface MusicPlayListener {
+        void onMusicWillPlay(MusicItem musicItem);
+
         void onMusicReady(MusicItem musicItem);
     }
 
     public interface MusicProgressListener {
         void onProgress(int second);
+
+        void onBuffering(int percent);
     }
 }

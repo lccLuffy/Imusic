@@ -184,22 +184,22 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     @Override
     protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
         setCurrentMusicItem(musicProvider.getPlayingMusic());
-        if(musicReadyListener == null)
-            musicReadyListener = new MusicReadyListener();
-        musicServiceBind.addMusicReadyListener(musicReadyListener);
+        if(musicPlayListener == null)
+            musicPlayListener = new MusicPlayListener();
+        musicServiceBind.addMusicReadyListener(musicPlayListener);
     }
 
     @Override
     protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-        if(musicReadyListener != null)
+        if(musicPlayListener != null)
         {
-            musicServiceBind.removeMusicReadyListener(musicReadyListener);
-            musicReadyListener = null;
+            musicServiceBind.removeMusicReadyListener(musicPlayListener);
+            musicPlayListener = null;
         }
     }
 
     public void playMusic(int id) {
-        musicServiceBind.playMusic(id);
+        musicServiceBind.play(id);
     }
 
     private void setCurrentMusicItem(MusicItem musicItem)
@@ -219,10 +219,15 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         }
     }
 
-    MusicPlayService.MusicReadyListener musicReadyListener;
+    MusicPlayService.MusicPlayListener musicPlayListener;
 
-    private class MusicReadyListener implements MusicPlayService.MusicReadyListener
+    private class MusicPlayListener implements MusicPlayService.MusicPlayListener
     {
+        @Override
+        public void onMusicWillPlay(MusicItem musicItem) {
+            setCurrentMusicItem(musicItem);
+        }
+
         @Override
         public void onMusicReady(MusicItem musicItem) {
             setCurrentMusicItem(musicItem);
@@ -235,7 +240,7 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         {
             if(isChecked)
             {
-                musicServiceBind.start();
+                musicServiceBind.startPlayOrResume();
             }
             else
             {

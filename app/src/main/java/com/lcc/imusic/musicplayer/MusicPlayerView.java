@@ -167,6 +167,11 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         setCurrentTime(second);
     }
 
+    public void setSecondaryProgress(int percent)
+    {
+        seekBar.setSecondaryProgress((int) (percent * 1.0f / 100 * seekBar.getMax()));
+    }
+
     public void setPageIndex(int index)
     {
         viewPager.setCurrentItem(index);
