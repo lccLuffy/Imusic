@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -44,6 +45,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
     private final String test_url = "http://m1.music.126.net/jt_bjt-DDWhFI9btE2b8tw==/7901090557280522.mp3";
 
+    private RelativeLayout panel;
+
     public MusicPlayerView(Context context) {
         super(context);
         init();
@@ -70,8 +73,9 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     }
 
     private void init() {
-        View panel = LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
+        panel = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
         addView(panel);
+
 
         needleImageView = (NeedleImageView) panel.findViewById(R.id.musicView_needleImageView);
 
@@ -141,13 +145,15 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         tv_currentTime.setText(String.format(Locale.CHINA, "%d:%02d", currentTime / 60, currentTime % 60));
     }
 
-    public void setCover(String cover_url) {
+    public void setCover(final String cover_url) {
+
         Glide.with(getContext())
                 .load(cover_url)
+                .placeholder(R.mipmap.placeholder_disk_play_song)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(cover);
-    }
 
+    }
     private boolean fromUser = false;
 
     public void setPlayBtnState(boolean state) {

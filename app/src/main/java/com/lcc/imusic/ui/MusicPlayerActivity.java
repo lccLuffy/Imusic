@@ -23,6 +23,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
     MusicInfoListener musicInfoListener;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +62,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
             canAutoProgress = false;
             musicPlayerView.setSecondaryProgress(0);
             musicPlayerView.setProgress(0);
+            musicPlayerView.setPlayBtnState(true);
             setCurrentMusicItem(musicItem);
         }
 

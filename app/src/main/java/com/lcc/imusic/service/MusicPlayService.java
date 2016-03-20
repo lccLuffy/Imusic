@@ -1,5 +1,6 @@
 package com.lcc.imusic.service;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -12,7 +13,8 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.lcc.imusic.R;
@@ -60,7 +62,6 @@ public class MusicPlayService extends Service {
         HAS_STATED = true;
         initMediaPlayer();
         initLocalMusicList();
-        initNotification();
     }
 
     @Override
@@ -91,14 +92,17 @@ public class MusicPlayService extends Service {
 
     private Random random;
 
+    private final static int NOTIFICATION_ID = 89;
+    private NotificationManagerCompat notificationManagerCompat;
+    private Notification notification;
     public void initNotification() {
         musicControllerReceiver = new MusicControllerReceiver();
-
+        notificationManagerCompat = NotificationManagerCompat.from(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_MUSIC_NEXT);
         intentFilter.addAction(ACTION_MUSIC_PLAY_OR_PAUSE);
-
         registerReceiver(musicControllerReceiver, intentFilter);
+
 
         contentView = new RemoteViews(getPackageName(), R.layout.notification_play_panel);
         /**
@@ -107,7 +111,6 @@ public class MusicPlayService extends Service {
         Intent play = new Intent(ACTION_MUSIC_PLAY_OR_PAUSE);
         PendingIntent playIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, play, 0);
         contentView.setOnClickPendingIntent(R.id.notification_play, playIntent);
-
 
         /**
          * next
@@ -118,15 +121,15 @@ public class MusicPlayService extends Service {
 
 
         NotificationCompat.Builder builder = new NotificationCompat
-                .Builder(getApplicationContext());
+                .Builder(getApplicationContext())
+                .setSmallIcon((R.mipmap.ic_launcher));
 
-        builder.setOngoing(true);
-        builder.setContent(contentView)
-                .setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContent(contentView);
+
         Intent intent = new Intent(getApplicationContext(), MusicPlayerActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
         builder.setContentIntent(pendingIntent);
-        startForeground(1, builder.build());
+        startForeground(NOTIFICATION_ID, notification = builder.build());
     }
 
     @Override
@@ -142,7 +145,6 @@ public class MusicPlayService extends Service {
         currentIndex = index;
         MusicItem musicItem = musicProvider.provideMusics().get(index);
         try {
-
 
             currentIndex = index;
 
@@ -349,6 +351,7 @@ public class MusicPlayService extends Service {
             MusicItem item = musicProvider.getPlayingMusic();
             contentView.setCharSequence(R.id.notification_title, "setText", item.title);
             contentView.setCharSequence(R.id.notification_subtitle, "setText", item.artist);
+            notificationManagerCompat.notify(NOTIFICATION_ID,notification);
         }
 
         private boolean hasShowNotification = false;

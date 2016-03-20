@@ -12,7 +12,6 @@ import com.lcc.imusic.utils.Json;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -45,7 +44,15 @@ public class LocalMusicProvider implements MusicProvider {
 
     private LocalMusicProvider(@NonNull Context context) {
         localMusicList = new ArrayList<>();
-
+        for (Ro.MusicBean musicBean : getRo()) {
+            MusicItem musicItem = new MusicItem();
+            musicItem.title = musicBean.title;
+            musicItem.data = "http://storage.googleapis.com/automotive-media/" + musicBean.source;
+            musicItem.cover = "http://storage.googleapis.com/automotive-media/" + musicBean.image;
+            musicItem.artist = musicBean.artist;
+            musicItem.duration = musicBean.duration;
+            localMusicList.add(musicItem);
+        }
 
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, Media.DURATION + " > 20000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
@@ -61,7 +68,7 @@ public class LocalMusicProvider implements MusicProvider {
             int duration = cursor.getInt(3) / 1000;
             MusicItem musicItem = new MusicItem();
             musicItem.data = path;
-            musicItem.title = name + String.format(Locale.CHINA, " - %s", cursor.getString(4));
+            musicItem.title = name;
             musicItem.artist = artist;
             musicItem.duration = duration;
 
@@ -78,15 +85,7 @@ public class LocalMusicProvider implements MusicProvider {
         }
         cursor.close();
 
-        for (Ro.MusicBean musicBean : getRo()) {
-            MusicItem musicItem = new MusicItem();
-            musicItem.title = musicBean.title;
-            musicItem.data = "http://storage.googleapis.com/automotive-media/" + musicBean.source;
-            musicItem.cover = "http://storage.googleapis.com/automotive-media/" + musicBean.image;
-            musicItem.artist = musicBean.artist;
-            musicItem.duration = musicBean.duration;
-            localMusicList.add(musicItem);
-        }
+
     }
 
     @NonNull

@@ -13,6 +13,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.AccountDelegate;
@@ -208,6 +210,11 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         {
             playBarTitle.setText(musicItem.title);
             playBarSubtitle.setText(musicItem.artist);
+            Glide.with(this)
+                    .load(musicItem.cover)
+                    .placeholder(R.mipmap.placeholder_disk_play_song)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(playBarCover);
             if(musicServiceBind != null && musicServiceBind.isPlaying())
             {
                 playBarPlayToggle.setChecked(true);
