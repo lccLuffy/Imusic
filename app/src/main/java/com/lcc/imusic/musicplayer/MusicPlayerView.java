@@ -206,10 +206,10 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
         @Override
         public void onPageSelected(int position) {
-            if(musicPlayerCallBack != null && position != currentPlayingMusic)
+            /*if(musicPlayerCallBack != null && position != currentPlayingMusic)
             {
                 musicPlayerCallBack.onPageSelected(position);
-            }
+            }*/
             currentPlayingMusic = position;
         }
 

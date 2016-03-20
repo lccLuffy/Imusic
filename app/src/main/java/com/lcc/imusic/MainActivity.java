@@ -226,6 +226,7 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
         @Override
         public void onMusicWillPlay(MusicItem musicItem) {
             setCurrentMusicItem(musicItem);
+            playBarPlayToggle.setChecked(true);
         }
 
         @Override

@@ -26,31 +26,28 @@ public class MusicPlayerActivity extends MusicBindActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         musicProvider = LocalMusicProvider.getMusicProvider(this);
 
         setCurrentMusicItem(musicProvider.getPlayingMusic());
     }
 
     @Override
-    protected void onBind(final MusicPlayService.MusicServiceBind musicServiceBind)
-    {
+    protected void onBind(final MusicPlayService.MusicServiceBind musicServiceBind) {
         musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
         musicPlayerView.setPlayType(musicServiceBind.getPlayType());
         musicPlayerView.setMusicPlayerCallBack(new MusicPlayerCallBackImpl());
-        musicPlayerView.setMusicList(musicProvider.provideMusics(),musicProvider.getPlayingMusicIndex());
+        musicPlayerView.setMusicList(musicProvider.provideMusics(), musicProvider.getPlayingMusicIndex());
         musicInfoListener = new MusicInfoListener();
         musicServiceBind.addMusicProgressListener(musicInfoListener);
         musicServiceBind.addMusicReadyListener(musicInfoListener);
     }
 
-    private class MusicInfoListener implements MusicPlayService.MusicPlayListener,MusicPlayService.MusicProgressListener
-    {
+    private class MusicInfoListener implements MusicPlayService.MusicPlayListener, MusicPlayService.MusicProgressListener {
         private boolean canAutoProgress = true;
+
         @Override
         public void onProgress(int second) {
-            if(!(musicPlayerView.isUserSliding() || musicPlayerView.isPaused()) && canAutoProgress)
-            {
+            if (!(musicPlayerView.isUserSliding() || musicPlayerView.isPaused()) && canAutoProgress) {
                 musicPlayerView.setProgress(second);
             }
         }
@@ -78,8 +75,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
     @Override
     protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-        if(musicInfoListener != null)
-        {
+        if (musicInfoListener != null) {
             musicServiceBind.removeMusicProgressListener(musicInfoListener);
             musicServiceBind.removeMusicReadyListener(musicInfoListener);
             musicInfoListener = null;
@@ -87,14 +83,13 @@ public class MusicPlayerActivity extends MusicBindActivity {
     }
 
 
-    private void setCurrentMusicItem(MusicItem musicItem)
-    {
-        if(musicItem != null)
-        {
+    private void setCurrentMusicItem(MusicItem musicItem) {
+        if (musicItem != null) {
             setTitle(musicItem.title);
             toolbar.setSubtitle(musicItem.artist);
             musicPlayerView.setTotalProgress(musicItem.duration);
-            musicPlayerView.setPlayBtnState(true);
+            if(musicServiceBind != null)
+                musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
         }
     }
 
@@ -109,8 +104,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
         return R.layout.activity_music_player;
     }
 
-    private class MusicPlayerCallBackImpl implements MusicPlayerView.MusicPlayerCallBack
-    {
+    private class MusicPlayerCallBackImpl implements MusicPlayerView.MusicPlayerCallBack {
 
         @Override
         public void start() {
@@ -124,12 +118,11 @@ public class MusicPlayerActivity extends MusicBindActivity {
 
         @Override
         public void next() {
-            musicPlayerView.setProgress(0);
             musicServiceBind.next();
         }
+
         @Override
         public void prev() {
-            musicPlayerView.setProgress(0);
             musicServiceBind.prev();
         }
 
@@ -160,10 +153,11 @@ public class MusicPlayerActivity extends MusicBindActivity {
             musicServiceBind.play(position);
         }
     }
+
     private MusicListDialog musicListDialog;
+
     private void checkDialogIsNull() {
-        if(musicListDialog == null)
-        {
+        if (musicListDialog == null) {
             musicListDialog = new MusicListDialog(this);
 
             musicListDialog.init().getAdapter().setData(musicProvider.provideMusics());

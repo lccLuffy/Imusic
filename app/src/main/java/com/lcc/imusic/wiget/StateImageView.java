@@ -9,14 +9,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.lcc.imusic.R;
-import com.lcc.imusic.service.MusicPlayManager;
+import com.lcc.imusic.service.MusicPlayService;
 
 /**
  * Created by lcc_luffy on 2016/3/19.
  */
 public class StateImageView extends ImageView implements View.OnClickListener,View.OnLongClickListener{
 
-    private int state = MusicPlayManager.PLAY_TYPE_LOOP;
+    private int state = MusicPlayService.PLAY_TYPE_LOOP;
 
     private OnStateChangeListener onStateChangeListener;
     public StateImageView(Context context) {
@@ -69,17 +69,17 @@ public class StateImageView extends ImageView implements View.OnClickListener,Vi
 
     @Override
     public void onClick(View v) {
-        if(state == MusicPlayManager.PLAY_TYPE_LOOP)
+        if(state == MusicPlayService.PLAY_TYPE_LOOP)
         {
-            state = MusicPlayManager.PLAY_TYPE_ONE;
+            state = MusicPlayService.PLAY_TYPE_ONE;
         }
-        else if(state == MusicPlayManager.PLAY_TYPE_ONE)
+        else if(state == MusicPlayService.PLAY_TYPE_ONE)
         {
-            state = MusicPlayManager.PLAY_TYPE_RANDOM;
+            state = MusicPlayService.PLAY_TYPE_RANDOM;
         }
-        else if(state == MusicPlayManager.PLAY_TYPE_RANDOM)
+        else if(state == MusicPlayService.PLAY_TYPE_RANDOM)
         {
-            state = MusicPlayManager.PLAY_TYPE_LOOP;
+            state = MusicPlayService.PLAY_TYPE_LOOP;
         }
         setImageResource(state2Drawable());
         if(onStateChangeListener != null)
@@ -96,9 +96,9 @@ public class StateImageView extends ImageView implements View.OnClickListener,Vi
     {
         switch (state)
         {
-            case MusicPlayManager.PLAY_TYPE_ONE:
+            case MusicPlayService.PLAY_TYPE_ONE:
                 return R.mipmap.play_icn_one;
-            case MusicPlayManager.PLAY_TYPE_RANDOM:
+            case MusicPlayService.PLAY_TYPE_RANDOM:
                 return R.mipmap.play_icn_random;
         }
         return R.mipmap.play_icn_loop;
@@ -108,9 +108,9 @@ public class StateImageView extends ImageView implements View.OnClickListener,Vi
     {
         switch (state)
         {
-            case MusicPlayManager.PLAY_TYPE_ONE:
+            case MusicPlayService.PLAY_TYPE_ONE:
                 return R.mipmap.play_icn_one_prs;
-            case MusicPlayManager.PLAY_TYPE_RANDOM:
+            case MusicPlayService.PLAY_TYPE_RANDOM:
                 return R.mipmap.play_icn_random_prs;
         }
         return R.mipmap.play_icn_loop_prs;
@@ -123,9 +123,9 @@ public class StateImageView extends ImageView implements View.OnClickListener,Vi
     {
         switch (state)
         {
-            case MusicPlayManager.PLAY_TYPE_ONE:
+            case MusicPlayService.PLAY_TYPE_ONE:
                 return "单曲循环";
-            case MusicPlayManager.PLAY_TYPE_RANDOM:
+            case MusicPlayService.PLAY_TYPE_RANDOM:
                 return "随机循环";
         }
         return "循环播放";

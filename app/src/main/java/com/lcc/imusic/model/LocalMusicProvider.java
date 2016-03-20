@@ -46,7 +46,7 @@ public class LocalMusicProvider implements MusicProvider {
     private LocalMusicProvider(@NonNull Context context) {
         localMusicList = new ArrayList<>();
 
-        for (Ro.MusicBean musicBean : getRo()) {
+        /*for (Ro.MusicBean musicBean : getRo()) {
             MusicItem musicItem = new MusicItem();
             musicItem.title = musicBean.title;
             musicItem.data = "http://storage.googleapis.com/automotive-media/" + musicBean.source;
@@ -54,11 +54,7 @@ public class LocalMusicProvider implements MusicProvider {
             musicItem.artist = musicBean.artist;
             musicItem.duration = musicBean.duration;
             localMusicList.add(musicItem);
-        }
-
-
-        if (true)
-            return;
+        }*/
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, Media.DURATION + " > 20000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         if (cursor == null)
@@ -121,22 +117,8 @@ public class LocalMusicProvider implements MusicProvider {
         return playingMusicIndex;
     }
 
+
     public static class Ro {
-
-
-        /**
-         * title : Jazz in Paris
-         * album : Jazz & Blues
-         * artist : Media Right Productions
-         * genre : Jazz & Blues
-         * source : Jazz_In_Paris.mp3
-         * image : album_art.jpg
-         * trackNumber : 1
-         * totalTrackCount : 6
-         * duration : 103
-         * site : https://www.youtube.com/audiolibrary/music
-         */
-
         public List<MusicBean> music;
 
         public static class MusicBean {
