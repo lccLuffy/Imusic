@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
  */
 public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicListAdapter.MusicItemViewHolder> {
 
-    public static List<SimpleMusicListAdapter> simpleMusicListAdapters;
+    private static List<SimpleMusicListAdapter> simpleMusicListAdapters;
 
     List<MusicItem> musicItems;
     OnItemClickListener onItemClickListener;
@@ -35,7 +35,7 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         return currentPlayingIndex;
     }
 
-    private final static int NO_POSITION = -1;
+    private final static int NO_POSITION = -11;
 
     private int currentPlayingIndex = NO_POSITION;
 
@@ -71,7 +71,7 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
 
     @Override
     public void onBindViewHolder(final MusicItemViewHolder holder, final int position) {
-        holder.onBindData(musicItems.get(position));
+        holder.onBindData(musicItems.get(position), position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,10 +118,10 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
             ButterKnife.bind(this, itemView);
         }
 
-        public void onBindData(MusicItem data) {
+        public void onBindData(MusicItem data, int position) {
             displayName.setText(data.title);
             musician.setText(data.artist);
-            if (isPlaying() && currentPlayingIndex == getAdapterPosition()) {
+            if (isPlaying() && currentPlayingIndex == position) {
                 playing();
             } else {
                 notPlaying();

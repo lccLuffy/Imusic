@@ -13,7 +13,6 @@ import com.lcc.imusic.base.AttachFragment;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.OnMusicList;
 import com.lcc.imusic.model.RemoteMusicProvider;
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -57,6 +56,13 @@ public class ActivitiesFragment extends AttachFragment {
         super.onDestroy();
         simpleMusicListAdapter.onDestroy();
         simpleMusicListAdapter = null;
+    }
+
+
+    @Override
+    public void onPlayingIndexChange(int index) {
+        if(simpleMusicListAdapter != null)
+            simpleMusicListAdapter.playingIndexChangeTo(index);
     }
 
     @Override
