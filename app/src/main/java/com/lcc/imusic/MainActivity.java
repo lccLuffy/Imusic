@@ -23,8 +23,11 @@ import com.lcc.imusic.base.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
+import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
+import com.lcc.imusic.ui.home.HotMusicianFragment;
+import com.lcc.imusic.ui.home.NetMusicFragment;
 import com.lcc.imusic.wiget.MusicListDialog;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -78,6 +81,10 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
         super.onCreate(savedInstanceState);
         init();
         currentMusicProvider = CurrentMusicProviderImpl.getMusicProvider();
+
+        if (currentMusicProvider.provideMusics().isEmpty()) {
+            currentMusicProvider.copyToMe(LocalMusicProvider.getMusicProvider(this).provideMusics());
+        }
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
 
@@ -92,7 +99,8 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
 
     private void init() {
         actionBar.setDisplayShowTitleEnabled(false);
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),
+                new HotMusicianFragment(), new NetMusicFragment());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         if (!MusicPlayService.HAS_STATED) {

@@ -14,26 +14,19 @@ import retrofit2.Response;
  */
 public class RemoteMusicProvider extends SimpleMusicProviderImpl {
 
-    private static RemoteMusicProvider musicProvider;
+    private long id;
 
-    public static RemoteMusicProvider get() {
-        if (musicProvider == null)
-            musicProvider = new RemoteMusicProvider();
-        return musicProvider;
+    public RemoteMusicProvider(long id) {
+        this.id = id;
     }
 
-
-    private RemoteMusicProvider() {
-
-    }
-
-    public static void getData(final OnMusicList onMusicList) {
-        if (onMusicList != null && get().musicList.size() >= 1) {
-            onMusicList.onSuccess(get().musicList);
+    public void getData(final OnMusicList onMusicList) {
+        if (onMusicList != null && musicList.size() >= 1) {
+            onMusicList.onSuccess(musicList);
             return;
         }
         TestApi testApi = RetrofitUtil.create(TestApi.class);
-        testApi.get().enqueue(new Callback<M163>() {
+        testApi.get(id).enqueue(new Callback<M163>() {
             @Override
             public void onResponse(Call<M163> call, Response<M163> response) {
                 M163 m163 = response.body();
@@ -44,10 +37,10 @@ public class RemoteMusicProvider extends SimpleMusicProviderImpl {
                     musicItem.data = tracksBean.mp3Url;
                     musicItem.artist = tracksBean.artists.get(0).name;
                     musicItem.cover = tracksBean.album.picUrl;
-                    get().musicList.add(musicItem);
+                    musicList.add(musicItem);
                 }
                 if (onMusicList != null) {
-                    onMusicList.onSuccess(get().musicList);
+                    onMusicList.onSuccess(musicList);
                 }
             }
 

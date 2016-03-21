@@ -27,6 +27,15 @@ public class ActivitiesFragment extends AttachFragment {
 
     SimpleMusicListAdapter simpleMusicListAdapter;
 
+    private long id = 58451795;
+    RemoteMusicProvider remoteMusicProvider;
+
+    public static ActivitiesFragment newInstance(int id) {
+        ActivitiesFragment fragment = new ActivitiesFragment();
+        fragment.id = id;
+        return fragment;
+    }
+
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -38,7 +47,8 @@ public class ActivitiesFragment extends AttachFragment {
                 mainActivity.playMusic(position);
             }
         });
-        RemoteMusicProvider.getData(new OnMusicList() {
+        remoteMusicProvider = new RemoteMusicProvider(id);
+        remoteMusicProvider.getData(new OnMusicList() {
             @Override
             public void onSuccess(List<MusicItem> musicItems) {
                 simpleMusicListAdapter.setData(musicItems);
@@ -61,7 +71,7 @@ public class ActivitiesFragment extends AttachFragment {
 
     @Override
     public void onPlayingIndexChange(int index) {
-        if(simpleMusicListAdapter != null)
+        if (simpleMusicListAdapter != null)
             simpleMusicListAdapter.playingIndexChangeTo(index);
     }
 

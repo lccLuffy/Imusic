@@ -40,6 +40,8 @@ public class CurrentMusicProviderImpl implements CurrentMusicProvider {
     @Override
     public void copyToMe(@NonNull List<MusicItem> anotherData) {
         musicList.addAll(anotherData);
+        if (playingMusicIndex == NO_PLAYING_INDEX && !musicList.isEmpty())
+            playingMusicIndex = 0;
         EventsManager.get().dispatchCurrentPlayingListChangeEvent(musicList);
     }
 
@@ -47,6 +49,8 @@ public class CurrentMusicProviderImpl implements CurrentMusicProvider {
     public void overrideToMe(@NonNull List<MusicItem> anotherData) {
         musicList.clear();
         musicList.addAll(anotherData);
+        if (playingMusicIndex == NO_PLAYING_INDEX && !musicList.isEmpty())
+            playingMusicIndex = 0;
         EventsManager.get().dispatchCurrentPlayingListChangeEvent(musicList);
     }
 
