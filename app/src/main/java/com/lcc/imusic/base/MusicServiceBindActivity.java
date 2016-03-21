@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.lcc.imusic.service.MusicPlayService;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +46,6 @@ public abstract class MusicServiceBindActivity extends BaseActivity {
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }
 
-    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-    }
-
-    protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-    }
 
     public void addOnBindMusicServiceListener(@NonNull OnBindMusicServiceListener listener) {
         if (onBindMusicServiceListeners == null)
@@ -71,12 +67,21 @@ public abstract class MusicServiceBindActivity extends BaseActivity {
         unBind(musicServiceBind);
     }
 
-    protected class MusicServiceConnection implements ServiceConnection {
+
+    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
+        Logger.i("onBind @ " + this);
+    }
+
+    protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
+        Logger.i("unBind @ " + this);
+    }
+
+    private class MusicServiceConnection implements ServiceConnection {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             musicServiceBind = (MusicPlayService.MusicServiceBind) service;
-            onBind(musicServiceBind);
             isBind = true;
+            onBind(musicServiceBind);
             if (onBindMusicServiceListeners != null) {
                 for (OnBindMusicServiceListener listener : onBindMusicServiceListeners) {
                     listener.onBind(musicServiceBind);
@@ -86,7 +91,7 @@ public abstract class MusicServiceBindActivity extends BaseActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            Logger.i("onServiceDisconnected");
         }
     }
 }

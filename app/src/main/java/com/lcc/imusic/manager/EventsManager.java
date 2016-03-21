@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.PlayingIndexChangeListener;
 import com.lcc.imusic.service.MusicPlayService;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,23 +15,33 @@ import java.util.List;
  */
 public class EventsManager {
     private static EventsManager eventsManager;
+
     private List<PlayingIndexChangeListener> playingIndexChangeListeners;
+
     private List<MusicPlayService.MusicPlayListener> musicPlayListeners;
+
     private List<MusicPlayService.MusicProgressListener> musicProgressListeners;
 
     private EventsManager() {
     }
 
     public static EventsManager get() {
-        if (eventsManager == null)
-            eventsManager = new EventsManager();
+        if (eventsManager == null) {
+            synchronized (EventsManager.class) {
+                if (eventsManager == null) {
+                    eventsManager = new EventsManager();
+                }
+            }
+        }
         return eventsManager;
     }
 
 
     public void dispatchOnMusicWillPlayEvent(MusicItem musicItem) {
+        Logger.i(musicItem.title);
         if (musicPlayListeners != null) {
             for (final MusicPlayService.MusicPlayListener listener : musicPlayListeners) {
+                Logger.i(listener.toString());
                 listener.onMusicWillPlay(musicItem);
             }
         }
@@ -65,6 +76,13 @@ public class EventsManager {
         }
     }
 
+    public void dispatchPlayingIndexChangeListener(int index) {
+        if (playingIndexChangeListeners != null) {
+            for (PlayingIndexChangeListener listener : playingIndexChangeListeners) {
+                listener.onPlayingIndexChange(index);
+            }
+        }
+    }
 
     public void addMusicPlayListener(MusicPlayService.MusicPlayListener listener) {
         if (musicPlayListeners == null)
@@ -73,7 +91,10 @@ public class EventsManager {
     }
 
     public void removeMusicPlayListener(MusicPlayService.MusicPlayListener listener) {
-        musicPlayListeners.remove(listener);
+        if (musicPlayListeners != null) {
+            musicPlayListeners.remove(listener);
+            Logger.i("remove @ " + listener);
+        }
     }
 
     public void addMusicProgressListener(MusicPlayService.MusicProgressListener listener) {
@@ -83,7 +104,10 @@ public class EventsManager {
     }
 
     public void removeMusicProgressListener(MusicPlayService.MusicProgressListener listener) {
-        musicProgressListeners.remove(listener);
+        if (musicProgressListeners != null) {
+            musicProgressListeners.remove(listener);
+            Logger.i("remove @ " + listener);
+        }
     }
 
 
@@ -96,17 +120,9 @@ public class EventsManager {
     public void removePlayingIndexChangeListener(PlayingIndexChangeListener listener) {
         if (playingIndexChangeListeners != null) {
             playingIndexChangeListeners.remove(listener);
+            Logger.i("remove @ " + listener);
         }
     }
-
-    public void dispatchPlayingIndexChangeListener(int index) {
-        if (playingIndexChangeListeners != null) {
-            for (PlayingIndexChangeListener listener : playingIndexChangeListeners) {
-                listener.onPlayingIndexChange(index);
-            }
-        }
-    }
-
 
     public void clearAllEvents() {
         if (musicPlayListeners != null)

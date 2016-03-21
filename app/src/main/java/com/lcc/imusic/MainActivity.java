@@ -126,8 +126,8 @@ public class MainActivity extends MusicPlayCallActivity implements AccountDelega
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         accountDelegate.destroy();
+        super.onDestroy();
     }
 
     @Override

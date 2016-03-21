@@ -1,5 +1,8 @@
 package com.lcc.imusic.base;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.manager.EventsManager;
 import com.lcc.imusic.model.PlayingIndexChangeListener;
@@ -11,17 +14,17 @@ import com.lcc.imusic.service.MusicPlayService;
 public abstract class MusicPlayCallActivity extends MusicServiceBindActivity implements
         MusicPlayService.MusicPlayListener, PlayingIndexChangeListener {
     @Override
-    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-        super.onBind(musicServiceBind);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         EventsManager.get().addMusicPlayListener(this);
         EventsManager.get().addPlayingIndexChangeListener(this);
     }
 
     @Override
-    protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-        super.unBind(musicServiceBind);
-        EventsManager.get().removeMusicPlayListener(this);
+    protected void onDestroy() {
+        super.onDestroy();
         EventsManager.get().removePlayingIndexChangeListener(this);
+        EventsManager.get().removeMusicPlayListener(this);
     }
 
     @Override
