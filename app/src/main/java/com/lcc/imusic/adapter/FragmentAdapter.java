@@ -19,8 +19,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     public FragmentAdapter(FragmentManager fm) {
         super(fm);
         fragments = new ArrayList<>(2);
-        fragments.add(new ActivitiesFragment());
         fragments.add(new HotMusicianFragment());
+        fragments.add(new ActivitiesFragment());
         /*fragments.add(new HotSingleFragment());
         fragments.add(new MusicNewsFragment());
         fragments.add(new RingtoneFragment());

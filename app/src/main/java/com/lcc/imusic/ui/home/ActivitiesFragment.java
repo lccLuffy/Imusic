@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.AttachFragment;
 import com.lcc.imusic.bean.MusicItem;
@@ -31,12 +32,12 @@ public class ActivitiesFragment extends AttachFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         simpleMusicListAdapter = new SimpleMusicListAdapter();
         recyclerView.setAdapter(simpleMusicListAdapter);
-        /*simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
+        simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 mainActivity.playMusic(position);
             }
-        });*/
+        });
         RemoteMusicProvider.getData(new OnMusicList() {
             @Override
             public void onSuccess(List<MusicItem> musicItems) {
@@ -57,6 +58,6 @@ public class ActivitiesFragment extends AttachFragment {
 
     @Override
     public String toString() {
-        return "活动";
+        return "联网音乐";
     }
 }

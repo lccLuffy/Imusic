@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.model.CurrentMusicProviderImpl;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,14 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
     public void setData(List<MusicItem> musicItemList) {
         musicItems.clear();
         musicItems.addAll(musicItemList);
+        notifyDataSetChanged();
+    }
 
+
+    public void setData(List<MusicItem> musicItemList, int currentPlayingIndex) {
+        this.currentPlayingIndex = currentPlayingIndex;
+        musicItems.clear();
+        musicItems.addAll(musicItemList);
         notifyDataSetChanged();
     }
 
@@ -59,14 +68,23 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
     @Override
     public void onBindViewHolder(final MusicItemViewHolder holder, final int position) {
         holder.onBindData(musicItems.get(position));
-        if (onItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentPlayingIndex == NO_POSITION) {
+                    currentPlayingIndex = holder.getAdapterPosition();
+                    CurrentMusicProviderImpl.getMusicProvider().setPlayingMusic(currentPlayingIndex);
+                    CurrentMusicProviderImpl.getMusicProvider().overrideToMe(musicItems);
+                    playingIndexChangeTo(currentPlayingIndex);
+                    Logger.i("is not playing");
+                    if (onItemClickListener != null)
+                        onItemClickListener.onItemClick(holder.getAdapterPosition());
+                } else if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(holder.getAdapterPosition());
+                    Logger.i("is playing");
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -92,7 +110,7 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         public void onBindData(MusicItem data) {
             displayName.setText(data.title);
             musician.setText(data.artist);
-            if (currentPlayingIndex != NO_POSITION) {
+            if (isPlaying()) {
                 if (currentPlayingIndex == getAdapterPosition()) {
                     playing();
                 } else {
@@ -117,8 +135,12 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         }
     }
 
+    public boolean isPlaying() {
+        return currentPlayingIndex != NO_POSITION;
+    }
+
     public void playingIndexChangeTo(int index) {
-        if (index != currentPlayingIndex) {
+        if (isPlaying()) {
             int i = currentPlayingIndex;
             currentPlayingIndex = index;
             notifyItemChanged(index);

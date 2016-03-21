@@ -6,7 +6,7 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.model.CurrentMusicProvide;
+import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
 import com.lcc.imusic.service.MusicPlayService;
@@ -19,15 +19,15 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     @Bind(R.id.musicPlayer)
     MusicPlayerView musicPlayerView;
 
-    private CurrentMusicProvide musicProvider;
+    private CurrentMusicProvider currentMusicProvider;
 
     private MusicListDialog musicListDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        musicProvider = CurrentMusicProviderImpl.getMusicProvider(this);
-        setCurrentMusicItem(musicProvider.getPlayingMusic());
+        currentMusicProvider = CurrentMusicProviderImpl.getMusicProvider();
+        setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
     }
 
     @Override
@@ -146,8 +146,8 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         if (musicListDialog == null) {
             musicListDialog = new MusicListDialog(this);
 
-            musicListDialog.init().getAdapter().setData(musicProvider.provideMusics());
-            musicListDialog.getAdapter().setCurrentPlayingIndex(musicProvider.getPlayingMusicIndex());
+            musicListDialog.init().getAdapter().setData(currentMusicProvider.provideMusics());
+            musicListDialog.getAdapter().setCurrentPlayingIndex(currentMusicProvider.getPlayingMusicIndex());
             musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {

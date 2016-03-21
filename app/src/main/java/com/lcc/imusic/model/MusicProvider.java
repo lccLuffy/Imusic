@@ -12,4 +12,8 @@ import java.util.List;
 public interface MusicProvider {
     @NonNull
     List<MusicItem> provideMusics();
+
+    void copyToMe(@NonNull List<MusicItem> anotherData);
+
+    void overrideToMe(@NonNull List<MusicItem> anotherData);
 }

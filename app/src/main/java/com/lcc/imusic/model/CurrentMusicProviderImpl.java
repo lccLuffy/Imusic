@@ -1,6 +1,5 @@
 package com.lcc.imusic.model;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -13,19 +12,19 @@ import java.util.List;
 /**
  * Created by lcc_luffy on 2016/3/18.
  */
-public class CurrentMusicProviderImpl implements CurrentMusicProvide {
-    List<MusicItem> musicList;
+public class CurrentMusicProviderImpl implements CurrentMusicProvider {
+    private List<MusicItem> musicList;
     private int playingMusicIndex;
 
     private static CurrentMusicProviderImpl musicProvider;
 
-    public static CurrentMusicProviderImpl getMusicProvider(@NonNull Context context) {
+    public static CurrentMusicProviderImpl getMusicProvider() {
         if (musicProvider == null)
-            musicProvider = new CurrentMusicProviderImpl(context);
+            musicProvider = new CurrentMusicProviderImpl();
         return musicProvider;
     }
 
-    private CurrentMusicProviderImpl(@NonNull Context context) {
+    private CurrentMusicProviderImpl() {
         musicList = new ArrayList<>();
     }
 
@@ -35,31 +34,45 @@ public class CurrentMusicProviderImpl implements CurrentMusicProvide {
         return musicList;
     }
 
+    @Override
+    public void copyToMe(@NonNull List<MusicItem> anotherData) {
+        musicList.addAll(anotherData);
+        EventsManager.get().dispatchCurrentPlayingListChangeEvent(musicList);
+    }
+
+    @Override
+    public void overrideToMe(@NonNull List<MusicItem> anotherData) {
+        musicList.clear();
+        musicList.addAll(anotherData);
+        EventsManager.get().dispatchCurrentPlayingListChangeEvent(musicList);
+    }
+
     @Nullable
     @Override
     public MusicItem getPlayingMusic() {
-        if (playingMusic != null)
-            return playingMusic;
-        if (musicList != null && !musicList.isEmpty()) {
-            return musicList.get(0);
+        if (playingMusicIndex >= 0 && playingMusicIndex < musicList.size()) {
+            return musicList.get(playingMusicIndex);
         }
         return null;
     }
 
-    private MusicItem playingMusic;
-
     @Override
     public void setPlayingMusic(int index) {
-        boolean change = playingMusicIndex != index;
         playingMusicIndex = index;
-        playingMusic = musicList.get(index);
-        if (change) {
-            EventsManager.get().dispatchPlayingIndexChangeListener(index);
+        if (index >= 0 && index < musicList.size()) {
+            boolean change = playingMusicIndex != index;
+            if (change) {
+                EventsManager.get().dispatchPlayingIndexChangeEvent(index);
+            }
         }
     }
 
     @Override
     public int getPlayingMusicIndex() {
         return playingMusicIndex;
+    }
+
+    public interface CurrentPlayingListChangeListener {
+        void onCurrentPlayingListChange(@NonNull List<MusicItem> musicItems);
     }
 }

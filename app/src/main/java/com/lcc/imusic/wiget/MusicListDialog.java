@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
-import com.orhanobut.logger.Logger;
 
 /**
  * Created by lcc_luffy on 2016/3/19.
@@ -31,7 +30,6 @@ public class MusicListDialog extends BottomSheetDialog {
 
     public MusicListDialog init() {
         View content = getLayoutInflater().inflate(R.layout.dialog_bottom_music_play, null);
-
         RecyclerView recyclerView = (RecyclerView) content.findViewById(R.id.dialog_recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -46,7 +44,6 @@ public class MusicListDialog extends BottomSheetDialog {
             adapter = new SimpleMusicListAdapter();
         return adapter;
     }
-
 
 
 }

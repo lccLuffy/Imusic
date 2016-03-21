@@ -1,14 +1,9 @@
 package com.lcc.imusic.model;
 
-import android.support.annotation.NonNull;
-
 import com.lcc.imusic.api.TestApi;
 import com.lcc.imusic.bean.M163;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.utils.RetrofitUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,8 +12,7 @@ import retrofit2.Response;
 /**
  * Created by lcc_luffy on 2016/3/18.
  */
-public class RemoteMusicProvider implements MusicProvider {
-    private List<MusicItem> musicList;
+public class RemoteMusicProvider extends SimpleMusicProviderImpl {
 
     private static RemoteMusicProvider musicProvider;
 
@@ -30,7 +24,7 @@ public class RemoteMusicProvider implements MusicProvider {
 
 
     private RemoteMusicProvider() {
-        musicList = new ArrayList<>();
+
     }
 
     public static void getData(final OnMusicList onMusicList) {
@@ -64,12 +58,6 @@ public class RemoteMusicProvider implements MusicProvider {
                 }
             }
         });
-    }
-
-    @NonNull
-    @Override
-    public List<MusicItem> provideMusics() {
-        return musicList;
     }
 
 }

@@ -10,7 +10,7 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.AttachFragment;
-import com.lcc.imusic.model.CurrentMusicProviderImpl;
+import com.lcc.imusic.model.LocalMusicProvider;
 
 import butterknife.Bind;
 
@@ -31,7 +31,7 @@ public class HotMusicianFragment extends AttachFragment {
         simpleMusicListAdapter = new SimpleMusicListAdapter();
         recyclerView.setAdapter(simpleMusicListAdapter);
 
-        simpleMusicListAdapter.setData(CurrentMusicProviderImpl.getMusicProvider(context).provideMusics());
+        simpleMusicListAdapter.setData(LocalMusicProvider.getMusicProvider(context).provideMusics());
         simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -53,7 +53,7 @@ public class HotMusicianFragment extends AttachFragment {
 
     @Override
     public String toString() {
-        return "热门音乐人";
+        return "本地音乐";
     }
 
 }

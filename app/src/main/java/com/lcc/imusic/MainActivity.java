@@ -21,7 +21,7 @@ import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.AccountDelegate;
 import com.lcc.imusic.base.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.model.CurrentMusicProvide;
+import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
@@ -70,13 +70,13 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
 
     private AccountDelegate accountDelegate;
 
-    CurrentMusicProvide musicProvider;
+    CurrentMusicProvider currentMusicProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
-        musicProvider = CurrentMusicProviderImpl.getMusicProvider(this);
+        currentMusicProvider = CurrentMusicProviderImpl.getMusicProvider();
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
 
@@ -85,7 +85,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
         playBarPlayNext.setOnClickListener(this);
         playBarPlayList.setOnClickListener(this);
         accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
-
+        setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
     }
 
 
@@ -138,7 +138,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     protected void onResume() {
         super.onResume();
         if (isBind()) {
-            setCurrentMusicItem(musicProvider.getPlayingMusic());
+            setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
         }
     }
 
@@ -158,8 +158,8 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
         if (musicListDialog == null) {
             musicListDialog = new MusicListDialog(this);
 
-            musicListDialog.init().getAdapter().setData(musicProvider.provideMusics());
-            musicListDialog.getAdapter().setCurrentPlayingIndex(musicProvider.getPlayingMusicIndex());
+            musicListDialog.init().getAdapter().setData(currentMusicProvider.provideMusics());
+            musicListDialog.getAdapter().setCurrentPlayingIndex(currentMusicProvider.getPlayingMusicIndex());
             musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
@@ -187,7 +187,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
 
     @Override
     protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-        setCurrentMusicItem(musicProvider.getPlayingMusic());
+        setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
     }
 
     public void playMusic(int id) {
@@ -247,6 +247,13 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
             } else {
                 musicServiceBind.pause();
             }
+        }
+    }
+
+    @Override
+    public void onCurrentPlayingListChange(@NonNull List<MusicItem> musicItems) {
+        if (musicListDialog != null) {
+            musicListDialog.getAdapter().setData(musicItems, currentMusicProvider.getPlayingMusicIndex());
         }
     }
 }

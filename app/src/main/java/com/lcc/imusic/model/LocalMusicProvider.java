@@ -7,15 +7,12 @@ import android.support.annotation.NonNull;
 
 import com.lcc.imusic.bean.MusicItem;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
  * Created by lcc_luffy on 2016/3/18.
  */
-public class LocalMusicProvider implements MusicProvider {
-    private List<MusicItem> musicList;
+public class LocalMusicProvider extends SimpleMusicProviderImpl {
     private static String[] projection = {
             Media.TITLE,
             Media.ARTIST,
@@ -39,8 +36,7 @@ public class LocalMusicProvider implements MusicProvider {
     Random random = new Random(System.currentTimeMillis());
 
     private LocalMusicProvider(@NonNull Context context) {
-        musicList = new ArrayList<>();
-
+        super();
         Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI,
                 projection, Media.DURATION + " > 20000", null, Media.DEFAULT_SORT_ORDER);
         if (cursor == null)
@@ -72,11 +68,4 @@ public class LocalMusicProvider implements MusicProvider {
         }
         cursor.close();
     }
-
-    @NonNull
-    @Override
-    public List<MusicItem> provideMusics() {
-        return musicList;
-    }
-
 }

@@ -1,8 +1,10 @@
 package com.lcc.imusic.manager;
 
 import android.os.Handler;
+import android.support.annotation.NonNull;
 
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.model.CurrentMusicProviderImpl;
 import com.lcc.imusic.model.PlayingIndexChangeListener;
 import com.lcc.imusic.service.MusicPlayService;
 import com.orhanobut.logger.Logger;
@@ -21,6 +23,7 @@ public class EventsManager {
     private List<MusicPlayService.MusicPlayListener> musicPlayListeners;
 
     private List<MusicPlayService.MusicProgressListener> musicProgressListeners;
+    private List<CurrentMusicProviderImpl.CurrentPlayingListChangeListener> currentPlayingListChangeListeners;
 
     private EventsManager() {
     }
@@ -38,10 +41,8 @@ public class EventsManager {
 
 
     public void dispatchOnMusicWillPlayEvent(MusicItem musicItem) {
-        Logger.i(musicItem.title);
         if (musicPlayListeners != null) {
             for (final MusicPlayService.MusicPlayListener listener : musicPlayListeners) {
-                Logger.i(listener.toString());
                 listener.onMusicWillPlay(musicItem);
             }
         }
@@ -76,10 +77,18 @@ public class EventsManager {
         }
     }
 
-    public void dispatchPlayingIndexChangeListener(int index) {
+    public void dispatchPlayingIndexChangeEvent(int index) {
         if (playingIndexChangeListeners != null) {
             for (PlayingIndexChangeListener listener : playingIndexChangeListeners) {
                 listener.onPlayingIndexChange(index);
+            }
+        }
+    }
+
+    public void dispatchCurrentPlayingListChangeEvent(@NonNull List<MusicItem> musicItems) {
+        if (currentPlayingListChangeListeners != null) {
+            for (CurrentMusicProviderImpl.CurrentPlayingListChangeListener listener : currentPlayingListChangeListeners) {
+                listener.onCurrentPlayingListChange(musicItems);
             }
         }
     }
@@ -110,6 +119,18 @@ public class EventsManager {
         }
     }
 
+    public void addCurrentPlayingListChangeListener(CurrentMusicProviderImpl.CurrentPlayingListChangeListener listener) {
+        if (currentPlayingListChangeListeners == null) {
+            currentPlayingListChangeListeners = new ArrayList<>();
+            currentPlayingListChangeListeners.add(listener);
+        }
+    }
+
+    public void removeCurrentPlayingListChangeListener(CurrentMusicProviderImpl.CurrentPlayingListChangeListener listener) {
+        if (currentPlayingListChangeListeners != null) {
+            currentPlayingListChangeListeners.remove(listener);
+        }
+    }
 
     public void addPlayingIndexChangeListener(PlayingIndexChangeListener listener) {
         if (playingIndexChangeListeners == null)
@@ -129,5 +150,7 @@ public class EventsManager {
             musicPlayListeners.clear();
         if (musicProgressListeners != null)
             musicProgressListeners.clear();
+        if (currentPlayingListChangeListeners != null)
+            currentPlayingListChangeListeners.clear();
     }
 }
