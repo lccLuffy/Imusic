@@ -136,13 +136,9 @@ public class MusicPlayService extends Service {
         } else {
             if (lockPrepared && !mediaPlayer.isPlaying()) {
                 mediaPlayer.start();
-                EventsManager.get().dispatchOnMusicReadyEvent(musicProvider.getPlayingMusic());
             }
         }
     }
-
-
-
 
 
     private void checkBoundary(int index) {
@@ -273,7 +269,7 @@ public class MusicPlayService extends Service {
 
         @Override
         public void run() {
-            EventsManager.get().dispatchOnProgressEvent(mediaPlayer.getCurrentPosition() / 1000,handler);
+            EventsManager.get().dispatchOnProgressEvent(mediaPlayer.getCurrentPosition() / 1000, handler);
         }
 
 

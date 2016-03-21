@@ -100,11 +100,16 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         private void notPlaying() {
             if (music_playing.getVisibility() != View.GONE)
                 music_playing.setVisibility(View.GONE);
+
+            displayName.setTextColor(itemView.getContext().getResources().getColor(R.color.musicTextColorPrimary));
+            musician.setTextColor(itemView.getContext().getResources().getColor(R.color.musicTextColorSecondary));
         }
 
         private void playing() {
             if (music_playing.getVisibility() != View.VISIBLE)
                 music_playing.setVisibility(View.VISIBLE);
+            displayName.setTextColor(itemView.getContext().getResources().getColor(R.color.selectedRed));
+            musician.setTextColor(itemView.getContext().getResources().getColor(R.color.selectedRed));
         }
     }
 

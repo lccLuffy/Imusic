@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="musicTextColorPrimary">#212121</color>
+    <color name="musicTextColorSecondary">#727272</color>
+
+    <color name="selectedRed">#FF5252</color>
     <color name="music_play_bg">#15272d</color>
     <color name="play_bar_normal">#faeeeeee</color>
     <color name="play_bar_pressed">#fadddddd</color>

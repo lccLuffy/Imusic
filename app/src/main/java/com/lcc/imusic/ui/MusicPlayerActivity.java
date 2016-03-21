@@ -41,19 +41,16 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
 
     @Override
     public void onMusicWillPlay(MusicItem musicItem) {
-        super.onMusicWillPlay(musicItem);
         canAutoProgress = false;
         musicPlayerView.setSecondaryProgress(0);
-        musicPlayerView.setProgress(0);
-        musicPlayerView.setPlayBtnState(true);
         setCurrentMusicItem(musicItem);
     }
 
     @Override
     public void onMusicReady(MusicItem musicItem) {
         canAutoProgress = true;
-        setCurrentMusicItem(musicItem);
-        musicPlayerView.setProgress(musicServiceBind.getTotalTime());
+        musicPlayerView.setTotalProgress(musicServiceBind.getTotalTime());
+        musicPlayerView.setPlayBtnState(true);
     }
 
     @Override
@@ -81,8 +78,6 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
             toolbar.setSubtitle(musicItem.artist);
             musicPlayerView.setTotalProgress(musicItem.duration);
             musicPlayerView.setCover(musicItem.cover);
-            if (musicServiceBind != null)
-                musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
         }
     }
 
@@ -111,11 +106,15 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
 
         @Override
         public void next() {
+            canAutoProgress = false;
+            musicPlayerView.setProgress(0);
             musicServiceBind.next();
         }
 
         @Override
         public void prev() {
+            canAutoProgress = false;
+            musicPlayerView.setProgress(0);
             musicServiceBind.prev();
         }
 

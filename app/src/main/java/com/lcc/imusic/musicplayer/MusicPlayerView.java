@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -43,8 +42,6 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
     private MusicPlayerCallBack musicPlayerCallBack;
 
-    private RelativeLayout panel;
-
     public MusicPlayerView(Context context) {
         super(context);
         init();
@@ -71,9 +68,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     }
 
     private void init() {
-        panel = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
+        View panel = LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
         addView(panel);
-
 
         needleImageView = (NeedleImageView) panel.findViewById(R.id.musicView_needleImageView);
 
@@ -152,6 +148,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
                 .into(cover);
 
     }
+
     private boolean fromUser = false;
 
     public void setPlayBtnState(boolean state) {
@@ -199,6 +196,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
         if (fromUser) {
+            fromUser = false;
             if (isChecked) {
                 cover.resume();
                 needleImageView.quickResume();
@@ -206,7 +204,6 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
                 cover.pause();
                 needleImageView.quickPause();
             }
-            fromUser = false;
             return;
         }
 

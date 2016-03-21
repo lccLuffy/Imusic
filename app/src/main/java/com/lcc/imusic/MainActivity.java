@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,7 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.AccountDelegate;
-import com.lcc.imusic.base.MusicPlayCallActivity;
+import com.lcc.imusic.base.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
@@ -34,7 +35,7 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class MainActivity extends MusicPlayCallActivity implements AccountDelegate.AccountListener
+public class MainActivity extends MusicProgressCallActivity implements AccountDelegate.AccountListener
         , View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     @Bind(R.id.tabLayout)
     TabLayout tabLayout;
@@ -48,6 +49,9 @@ public class MainActivity extends MusicPlayCallActivity implements AccountDelega
 
     @Bind(R.id.playBar_cover)
     ImageView playBarCover;
+
+    @Bind(R.id.progress)
+    ProgressBar progressBar;
 
     @Bind(R.id.playBar_title)
     TextView playBarTitle;
@@ -194,22 +198,31 @@ public class MainActivity extends MusicPlayCallActivity implements AccountDelega
         if (musicItem != null) {
             playBarTitle.setText(musicItem.title);
             playBarSubtitle.setText(musicItem.artist);
+            progressBar.setMax(musicItem.duration);
             Glide.with(this)
                     .load(musicItem.cover)
                     .placeholder(R.mipmap.placeholder_disk_play_song)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(playBarCover);
-            if (musicServiceBind != null && musicServiceBind.isPlaying()) {
-                playBarPlayToggle.setChecked(true);
-            } else {
-                playBarPlayToggle.setChecked(false);
-            }
+
         }
+    }
+
+    @Override
+    public void onProgress(int second) {
+        progressBar.setProgress(second);
+    }
+
+    @Override
+    public void onBuffering(int percent) {
+        progressBar.setSecondaryProgress((int) (percent * 1.0f / 100 * progressBar.getMax()));
     }
 
     @Override
     public void onMusicReady(MusicItem musicItem) {
         setCurrentMusicItem(musicItem);
+        progressBar.setMax(musicServiceBind.getTotalTime());
+        playBarPlayToggle.setChecked(true);
     }
 
     @Override
@@ -223,6 +236,7 @@ public class MainActivity extends MusicPlayCallActivity implements AccountDelega
     public void onMusicWillPlay(MusicItem musicItem) {
         setCurrentMusicItem(musicItem);
         playBarPlayToggle.setChecked(true);
+        progressBar.setProgress(0);
     }
 
     @Override

@@ -18,8 +18,8 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/music_play_bg"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:subtitleTextAppearance="@style/MusicPlayerSubTitleText"
-            app:titleTextAppearance="@style/MusicPlayerTitleText" />
+            app:subtitleTextAppearance="@style/MusicToolbarSubtitle"
+            app:titleTextAppearance="@style/MusicToolbarTitle" />
     </android.support.design.widget.AppBarLayout>
 
     <com.lcc.imusic.musicplayer.MusicPlayerView
