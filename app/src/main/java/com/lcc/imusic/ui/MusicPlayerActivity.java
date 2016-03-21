@@ -4,10 +4,11 @@ import android.os.Bundle;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
-import com.lcc.imusic.base.MusicBindActivity;
+import com.lcc.imusic.base.MusicServiceBindActivity;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
+import com.lcc.imusic.model.PlayingIndexChangeListener;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.wiget.MusicListDialog;
@@ -15,19 +16,20 @@ import com.lcc.imusic.wiget.StateImageView;
 
 import butterknife.Bind;
 
-public class MusicPlayerActivity extends MusicBindActivity {
+public class MusicPlayerActivity extends MusicServiceBindActivity {
     @Bind(R.id.musicPlayer)
     MusicPlayerView musicPlayerView;
 
-    MusicProvider musicProvider;
+    private MusicProvider musicProvider;
 
-    MusicInfoListener musicInfoListener;
+    private MusicInfoListener musicInfoListener;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         musicProvider = LocalMusicProvider.getMusicProvider(this);
+
 
         setCurrentMusicItem(musicProvider.getPlayingMusic());
     }
@@ -40,9 +42,11 @@ public class MusicPlayerActivity extends MusicBindActivity {
         musicInfoListener = new MusicInfoListener();
         musicServiceBind.addMusicProgressListener(musicInfoListener);
         musicServiceBind.addMusicReadyListener(musicInfoListener);
+        musicProvider.addPlayingIndexChangeListener(musicInfoListener);
     }
 
-    private class MusicInfoListener implements MusicPlayService.MusicPlayListener, MusicPlayService.MusicProgressListener {
+    private class MusicInfoListener implements MusicPlayService.MusicPlayListener,
+            MusicPlayService.MusicProgressListener, PlayingIndexChangeListener {
         private boolean canAutoProgress = true;
 
         @Override
@@ -70,6 +74,14 @@ public class MusicPlayerActivity extends MusicBindActivity {
         public void onMusicReady(MusicItem musicItem) {
             canAutoProgress = true;
             setCurrentMusicItem(musicItem);
+            musicPlayerView.setProgress(musicServiceBind.getTotalTime());
+        }
+
+        @Override
+        public void onPlayingIndexChange(int index) {
+            if (musicListDialog != null) {
+                musicListDialog.getAdapter().playingIndexChangeTo(index);
+            }
         }
     }
 
@@ -79,6 +91,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
         if (musicInfoListener != null) {
             musicServiceBind.removeMusicProgressListener(musicInfoListener);
             musicServiceBind.removeMusicReadyListener(musicInfoListener);
+            musicProvider.removePlayingIndexChangeListener(musicInfoListener);
             musicInfoListener = null;
         }
     }
@@ -90,7 +103,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
             toolbar.setSubtitle(musicItem.artist);
             musicPlayerView.setTotalProgress(musicItem.duration);
             musicPlayerView.setCover(musicItem.cover);
-            if(musicServiceBind != null)
+            if (musicServiceBind != null)
                 musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
         }
     }
@@ -158,7 +171,7 @@ public class MusicPlayerActivity extends MusicBindActivity {
             musicListDialog = new MusicListDialog(this);
 
             musicListDialog.init().getAdapter().setData(musicProvider.provideMusics());
-
+            musicListDialog.getAdapter().setCurrentPlayingIndex(musicProvider.getPlayingMusicIndex());
             musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {

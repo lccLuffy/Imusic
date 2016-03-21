@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lcc.imusic.R;
@@ -18,32 +19,45 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/20.
  */
-public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicListAdapter.MusicItemViewHolder>{
+public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicListAdapter.MusicItemViewHolder> {
 
     List<MusicItem> musicItems;
     OnItemClickListener onItemClickListener;
-    public SimpleMusicListAdapter()
-    {
+
+    public void setCurrentPlayingIndex(int currentPlayingIndex) {
+        this.currentPlayingIndex = currentPlayingIndex;
+    }
+
+    public int getCurrentPlayingIndex() {
+        return currentPlayingIndex;
+    }
+
+    private int currentPlayingIndex;
+
+    public SimpleMusicListAdapter() {
         musicItems = new ArrayList<>();
     }
-    public void setData(List<MusicItem> musicItemList)
-    {
+
+    public void setData(List<MusicItem> musicItemList) {
         musicItems.clear();
         musicItems.addAll(musicItemList);
+
         notifyDataSetChanged();
     }
+
     @Override
     public MusicItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MusicItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_music,parent,false));
+        return new MusicItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_music_list, parent, false));
     }
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
+
     @Override
     public void onBindViewHolder(final MusicItemViewHolder holder, final int position) {
         holder.onBindData(musicItems.get(position));
-        if(onItemClickListener != null)
-        {
+        if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -58,19 +72,48 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         return musicItems.size();
     }
 
-    protected class MusicItemViewHolder extends RecyclerView.ViewHolder
-    {
+    protected class MusicItemViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.music_display_name)
         TextView displayName;
+
         @Bind(R.id.music_musician)
         TextView musician;
+
+        @Bind(R.id.music_playing)
+        ImageView music_playing;
+
         public MusicItemViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
+
         public void onBindData(MusicItem data) {
             displayName.setText(data.title);
             musician.setText(data.artist);
+            if (currentPlayingIndex == getAdapterPosition()) {
+                playing();
+            } else {
+                notPlaying();
+            }
+        }
+
+        private void notPlaying() {
+            if (music_playing.getVisibility() != View.GONE)
+                music_playing.setVisibility(View.GONE);
+        }
+
+        private void playing() {
+            if (music_playing.getVisibility() != View.VISIBLE)
+                music_playing.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void playingIndexChangeTo(int index) {
+        if (index != currentPlayingIndex) {
+            int i = currentPlayingIndex;
+            currentPlayingIndex = index;
+            notifyItemChanged(index);
+            notifyItemChanged(i);
         }
     }
 }

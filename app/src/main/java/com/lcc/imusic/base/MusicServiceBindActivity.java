@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by lcc_luffy on 2016/3/18.
  */
-public abstract class MusicBindActivity extends BaseActivity {
+public abstract class MusicServiceBindActivity extends BaseActivity {
 
     protected MusicPlayService.MusicServiceBind musicServiceBind;
     private ServiceConnection serviceConnection;
@@ -25,60 +25,60 @@ public abstract class MusicBindActivity extends BaseActivity {
     private boolean isBind = false;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(shouldBind())
+        if (shouldBind())
             bindMusicService();
     }
-    public boolean isBind()
-    {
+
+    public boolean isBind() {
         return isBind;
     }
 
-    /************************Music service**********************************/
+    /************************
+     * Music service
+     **********************************/
 
-    private void bindMusicService()
-    {
+    private void bindMusicService() {
         Intent intent = new Intent(this, MusicPlayService.class);
         serviceConnection = new MusicServiceConnection();
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
     }
 
-    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind){}
+    protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
+    }
 
-    protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind){}
+    protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
+    }
 
-    public void addOnBindMusicServiceListener(@NonNull OnBindMusicServiceListener listener)
-    {
-        if(onBindMusicServiceListeners == null)
+    public void addOnBindMusicServiceListener(@NonNull OnBindMusicServiceListener listener) {
+        if (onBindMusicServiceListeners == null)
             onBindMusicServiceListeners = new ArrayList<>();
         onBindMusicServiceListeners.add(listener);
     }
 
-    protected boolean shouldBind()
-    {
+    protected boolean shouldBind() {
         return true;
     }
 
-    /************************Music service**********************************/
+    /************************
+     * Music service
+     **********************************/
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unBind(musicServiceBind);
         unbindService(serviceConnection);
+        unBind(musicServiceBind);
     }
-    protected class MusicServiceConnection implements ServiceConnection
-    {
+
+    protected class MusicServiceConnection implements ServiceConnection {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             musicServiceBind = (MusicPlayService.MusicServiceBind) service;
             onBind(musicServiceBind);
             isBind = true;
-            if(onBindMusicServiceListeners != null)
-            {
-                for (OnBindMusicServiceListener listener : onBindMusicServiceListeners)
-                {
+            if (onBindMusicServiceListeners != null) {
+                for (OnBindMusicServiceListener listener : onBindMusicServiceListeners) {
                     listener.onBind(musicServiceBind);
                 }
             }

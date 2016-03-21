@@ -3,14 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="10dp">
+
+
+    <ImageView
+        android:id="@+id/music_playing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:src="@mipmap/play_playlist_icn_playing"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/music_display_name"
         style="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:ellipsize="end"
         android:lines="1"
         android:text="name"
@@ -21,6 +31,7 @@
         style="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:ellipsize="end"
         android:lines="1"
         android:text="author"

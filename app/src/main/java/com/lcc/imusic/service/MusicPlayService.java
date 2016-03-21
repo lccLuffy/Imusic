@@ -10,13 +10,13 @@ import android.os.IBinder;
 import android.os.Looper;
 
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.manager.EventsManager;
+import com.lcc.imusic.manager.MusicNotificationManager;
 import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,9 +30,6 @@ public class MusicPlayService extends Service {
     private Timer timer;
     private ProgressTask progressTask;
     private IBinder binder;
-
-    private List<MusicPlayListener> musicPlayListeners;
-    private List<MusicProgressListener> musicProgressListeners;
 
     public static boolean HAS_STATED = false;
 
@@ -88,7 +85,7 @@ public class MusicPlayService extends Service {
 
             mediaPlayer.reset();
 
-            dispatchOnMusicWillPlayEvent(musicItem);
+            EventsManager.get().dispatchOnMusicWillPlayEvent(musicItem);
 
             mediaPlayer.setDataSource(musicItem.data);
             lockPrepared = false;
@@ -139,34 +136,14 @@ public class MusicPlayService extends Service {
         } else {
             if (lockPrepared && !mediaPlayer.isPlaying()) {
                 mediaPlayer.start();
-                dispatchOnMusicReadyEvent();
+                EventsManager.get().dispatchOnMusicReadyEvent(musicProvider.getPlayingMusic());
             }
         }
     }
 
-    private void dispatchOnMusicWillPlayEvent(MusicItem musicItem) {
-        if (musicPlayListeners != null) {
-            for (final MusicPlayListener listener : musicPlayListeners) {
-                listener.onMusicWillPlay(musicItem);
-            }
-        }
-    }
 
-    private void dispatchOnBufferingEvent(int percent) {
-        if (musicProgressListeners != null) {
-            for (final MusicProgressListener listener : musicProgressListeners) {
-                listener.onBuffering(percent);
-            }
-        }
-    }
 
-    private void dispatchOnMusicReadyEvent() {
-        if (musicPlayListeners != null) {
-            for (MusicPlayListener listener : musicPlayListeners) {
-                listener.onMusicReady(musicProvider.provideMusics().get(currentIndex));
-            }
-        }
-    }
+
 
     private void checkBoundary(int index) {
         if (index < 0 || index >= musicProvider.provideMusics().size())
@@ -203,25 +180,6 @@ public class MusicPlayService extends Service {
             prevMusic();
         }
 
-        public void addMusicReadyListener(MusicPlayListener listener) {
-            if (musicPlayListeners == null)
-                musicPlayListeners = new ArrayList<>();
-            musicPlayListeners.add(listener);
-        }
-
-        public void removeMusicReadyListener(MusicPlayListener listener) {
-            musicPlayListeners.remove(listener);
-        }
-
-        public void addMusicProgressListener(MusicProgressListener listener) {
-            if (musicProgressListeners == null)
-                musicProgressListeners = new ArrayList<>();
-            musicProgressListeners.add(listener);
-        }
-
-        public void removeMusicProgressListener(MusicProgressListener listener) {
-            musicProgressListeners.remove(listener);
-        }
 
         public void seekTo(int second) {
             mediaPlayer.seekTo(second * 1000);
@@ -265,7 +223,7 @@ public class MusicPlayService extends Service {
                     result = 0;
                 break;
         }
-        return (result);
+        return result;
     }
 
     private class MediaListener implements MediaPlayer.OnPreparedListener
@@ -275,7 +233,7 @@ public class MusicPlayService extends Service {
         public void onPrepared(MediaPlayer mp) {
             lockPrepared = true;
             mp.start();
-            dispatchOnMusicReadyEvent();
+            EventsManager.get().dispatchOnMusicReadyEvent(musicProvider.getPlayingMusic());
             if (progressTask == null) {
                 progressTask = new ProgressTask();
                 timer = new Timer();
@@ -295,7 +253,7 @@ public class MusicPlayService extends Service {
 
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
-            dispatchOnBufferingEvent(percent);
+            EventsManager.get().dispatchOnBufferingEvent(percent);
             /*Logger.i("onBufferingUpdate:%d%%", percent);*/
         }
 
@@ -315,22 +273,10 @@ public class MusicPlayService extends Service {
 
         @Override
         public void run() {
-            dispatchOnProgressEvent();
+            EventsManager.get().dispatchOnProgressEvent(mediaPlayer.getCurrentPosition() / 1000,handler);
         }
 
-        private void dispatchOnProgressEvent() {
-            if (musicProgressListeners != null) {
-                final int current = mediaPlayer.getCurrentPosition() / 1000;
-                for (final MusicProgressListener listener : musicProgressListeners) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.onProgress(current);
-                        }
-                    });
-                }
-            }
-        }
+
     }
 
     @Override
@@ -343,14 +289,7 @@ public class MusicPlayService extends Service {
             timer.cancel();
             timer = null;
         }
-        if (musicPlayListeners != null) {
-            musicPlayListeners.clear();
-            musicPlayListeners = null;
-        }
-        if (musicProgressListeners != null) {
-            musicProgressListeners.clear();
-            musicProgressListeners = null;
-        }
+        EventsManager.get().clearAllEvents();
 
         mediaPlayer.release();
         binder = null;

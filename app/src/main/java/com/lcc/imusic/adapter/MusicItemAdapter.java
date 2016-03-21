@@ -32,7 +32,7 @@ public class MusicItemAdapter extends NiceAdapter<MusicItem>{
 
     @Override
     protected NiceViewHolder onCreateNiceViewHolder(ViewGroup parent, int viewType) {
-        return new Holder(layoutInflater.inflate(R.layout.item_music,parent,false));
+        return new Holder(layoutInflater.inflate(R.layout.item_music_list,parent,false));
     }
 
     class Holder extends NiceViewHolder<MusicItem>

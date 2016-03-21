@@ -1,4 +1,4 @@
-package com.lcc.imusic.service;
+package com.lcc.imusic.manager;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -15,6 +15,7 @@ import android.widget.RemoteViews;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.orhanobut.logger.Logger;
 
@@ -113,7 +114,8 @@ public class MusicNotificationManager {
     }
 
     public void onDestroy() {
-        musicPlayService.unregisterReceiver(musicControllerReceiver);
+        if (musicControllerReceiver != null)
+            musicPlayService.unregisterReceiver(musicControllerReceiver);
         context = null;
         musicPlayService = null;
         remoteViews = null;

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.manager.EventsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class LocalMusicProvider implements MusicProvider {
             musicProvider = new LocalMusicProvider(context);
         return musicProvider;
     }
+
     private final String test_url = "http://m1.music.126.net/jt_bjt-DDWhFI9btE2b8tw==/7901090557280522.mp3";
     Random random = new Random(System.currentTimeMillis());
 
@@ -105,8 +107,13 @@ public class LocalMusicProvider implements MusicProvider {
 
     @Override
     public void setPlayingMusic(int index) {
+        boolean change = playingMusicIndex != index;
         playingMusicIndex = index;
         playingMusic = localMusicList.get(index);
+        if(change)
+        {
+            EventsManager.get().dispatchPlayingIndexChangeListener(index);
+        }
     }
 
     @Override

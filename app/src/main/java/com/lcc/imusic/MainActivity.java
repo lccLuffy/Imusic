@@ -1,12 +1,9 @@
 package com.lcc.imusic;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +11,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.AccountDelegate;
-import com.lcc.imusic.base.MusicBindActivity;
+import com.lcc.imusic.base.MusicPlayCallActivity;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
@@ -38,8 +34,8 @@ import java.util.List;
 
 import butterknife.Bind;
 
-public class MainActivity extends MusicBindActivity implements AccountDelegate.AccountListener
-        ,View.OnClickListener,CompoundButton.OnCheckedChangeListener{
+public class MainActivity extends MusicPlayCallActivity implements AccountDelegate.AccountListener
+        , View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     @Bind(R.id.tabLayout)
     TabLayout tabLayout;
 
@@ -71,12 +67,13 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     private AccountDelegate accountDelegate;
 
     MusicProvider musicProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
         musicProvider = LocalMusicProvider.getMusicProvider(this);
-        accountDelegate = new AccountDelegate(this,toolbar,this);
+        accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
 
         playBar_wrap.setOnClickListener(this);
@@ -88,15 +85,12 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     }
 
 
-
-    private void init()
-    {
+    private void init() {
         actionBar.setDisplayShowTitleEnabled(false);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-        if(!MusicPlayService.HAS_STATED)
-        {
+        if (!MusicPlayService.HAS_STATED) {
             Intent intent = new Intent(this, MusicPlayService.class);
             startService(intent);
         }
@@ -139,8 +133,7 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     @Override
     protected void onResume() {
         super.onResume();
-        if(isBind())
-        {
+        if (isBind()) {
             setCurrentMusicItem(musicProvider.getPlayingMusic());
         }
     }
@@ -149,19 +142,20 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
         return false;
     }
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
     }
 
     private MusicListDialog musicListDialog;
+
     private void checkDialogIsNull() {
-        if(musicListDialog == null)
-        {
+        if (musicListDialog == null) {
             musicListDialog = new MusicListDialog(this);
 
             musicListDialog.init().getAdapter().setData(musicProvider.provideMusics());
-
+            musicListDialog.getAdapter().setCurrentPlayingIndex(musicProvider.getPlayingMusicIndex());
             musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
@@ -170,10 +164,10 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
             });
         }
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.playBar_wrap:
                 startActivity(new Intent(this, MusicPlayerActivity.class));
                 break;
@@ -190,28 +184,14 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
     @Override
     protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
         setCurrentMusicItem(musicProvider.getPlayingMusic());
-        if(musicPlayListener == null)
-            musicPlayListener = new MusicPlayListener();
-        musicServiceBind.addMusicReadyListener(musicPlayListener);
-    }
-
-    @Override
-    protected void unBind(MusicPlayService.MusicServiceBind musicServiceBind) {
-        if(musicPlayListener != null)
-        {
-            musicServiceBind.removeMusicReadyListener(musicPlayListener);
-            musicPlayListener = null;
-        }
     }
 
     public void playMusic(int id) {
         musicServiceBind.play(id);
     }
 
-    private void setCurrentMusicItem(MusicItem musicItem)
-    {
-        if(musicItem != null)
-        {
+    private void setCurrentMusicItem(MusicItem musicItem) {
+        if (musicItem != null) {
             playBarTitle.setText(musicItem.title);
             playBarSubtitle.setText(musicItem.artist);
             Glide.with(this)
@@ -219,43 +199,38 @@ public class MainActivity extends MusicBindActivity implements AccountDelegate.A
                     .placeholder(R.mipmap.placeholder_disk_play_song)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(playBarCover);
-            if(musicServiceBind != null && musicServiceBind.isPlaying())
-            {
+            if (musicServiceBind != null && musicServiceBind.isPlaying()) {
                 playBarPlayToggle.setChecked(true);
-            }
-            else
-            {
+            } else {
                 playBarPlayToggle.setChecked(false);
             }
         }
     }
 
-    MusicPlayService.MusicPlayListener musicPlayListener;
+    @Override
+    public void onMusicReady(MusicItem musicItem) {
+        setCurrentMusicItem(musicItem);
+    }
 
-    private class MusicPlayListener implements MusicPlayService.MusicPlayListener
-    {
-        @Override
-        public void onMusicWillPlay(MusicItem musicItem) {
-            setCurrentMusicItem(musicItem);
-            playBarPlayToggle.setChecked(true);
-        }
+    @Override
+    public void onPlayingIndexChange(int index) {
+        super.onPlayingIndexChange(index);
+        if (musicListDialog != null)
+            musicListDialog.getAdapter().playingIndexChangeTo(index);
+    }
 
-        @Override
-        public void onMusicReady(MusicItem musicItem) {
-            setCurrentMusicItem(musicItem);
-        }
+    @Override
+    public void onMusicWillPlay(MusicItem musicItem) {
+        setCurrentMusicItem(musicItem);
+        playBarPlayToggle.setChecked(true);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(musicServiceBind != null)
-        {
-            if(isChecked)
-            {
+        if (musicServiceBind != null) {
+            if (isChecked) {
                 musicServiceBind.startPlayOrResume();
-            }
-            else
-            {
+            } else {
                 musicServiceBind.pause();
             }
         }
