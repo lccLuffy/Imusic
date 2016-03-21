@@ -13,8 +13,11 @@ import java.util.List;
  * Created by lcc_luffy on 2016/3/18.
  */
 public class CurrentMusicProviderImpl implements CurrentMusicProvider {
+
+    public final static int NO_PLAYING_INDEX = -1;
+
     private List<MusicItem> musicList;
-    private int playingMusicIndex;
+    private int playingMusicIndex = NO_PLAYING_INDEX;
 
     private static CurrentMusicProviderImpl musicProvider;
 
@@ -58,12 +61,10 @@ public class CurrentMusicProviderImpl implements CurrentMusicProvider {
 
     @Override
     public void setPlayingMusic(int index) {
-        playingMusicIndex = index;
-        if (index >= 0 && index < musicList.size()) {
-            boolean change = playingMusicIndex != index;
-            if (change) {
-                EventsManager.get().dispatchPlayingIndexChangeEvent(index);
-            }
+        boolean change = playingMusicIndex != index;
+        if ((change) && index >= 0 && index < musicList.size()) {
+            playingMusicIndex = index;
+            EventsManager.get().dispatchPlayingIndexChangeEvent(index);
         }
     }
 

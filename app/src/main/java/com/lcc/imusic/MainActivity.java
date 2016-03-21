@@ -103,9 +103,6 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        /*MenuItem menuItem = menu.add("Music");
-        menuItem.setIcon(R.mipmap.actionbar_music_selected);
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
         return true;
     }
 
@@ -227,7 +224,6 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
 
     @Override
     public void onPlayingIndexChange(int index) {
-        super.onPlayingIndexChange(index);
         if (musicListDialog != null)
             musicListDialog.getAdapter().playingIndexChangeTo(index);
     }

@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.lcc.imusic.R;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,15 +72,12 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
             public void onClick(View v) {
                 if (currentPlayingIndex == NO_POSITION) {
                     currentPlayingIndex = holder.getAdapterPosition();
-                    CurrentMusicProviderImpl.getMusicProvider().setPlayingMusic(currentPlayingIndex);
                     CurrentMusicProviderImpl.getMusicProvider().overrideToMe(musicItems);
                     playingIndexChangeTo(currentPlayingIndex);
-                    Logger.i("is not playing");
                     if (onItemClickListener != null)
                         onItemClickListener.onItemClick(holder.getAdapterPosition());
                 } else if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(holder.getAdapterPosition());
-                    Logger.i("is playing");
                 }
             }
         });
