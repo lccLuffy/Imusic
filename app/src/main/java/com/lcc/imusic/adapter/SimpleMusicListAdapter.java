@@ -22,6 +22,8 @@ import butterknife.ButterKnife;
  */
 public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicListAdapter.MusicItemViewHolder> {
 
+    public static List<SimpleMusicListAdapter> simpleMusicListAdapters;
+
     List<MusicItem> musicItems;
     OnItemClickListener onItemClickListener;
 
@@ -39,6 +41,9 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
 
     public SimpleMusicListAdapter() {
         musicItems = new ArrayList<>();
+        if (simpleMusicListAdapters == null)
+            simpleMusicListAdapters = new ArrayList<>();
+        simpleMusicListAdapters.add(this);
     }
 
     public void setData(List<MusicItem> musicItemList) {
@@ -76,6 +81,11 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
                     playingIndexChangeTo(currentPlayingIndex);
                     if (onItemClickListener != null)
                         onItemClickListener.onItemClick(holder.getAdapterPosition());
+                    for (SimpleMusicListAdapter adapter : simpleMusicListAdapters) {
+                        if (adapter != SimpleMusicListAdapter.this) {
+                            adapter.notPlayAnyMore();
+                        }
+                    }
                 } else if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(holder.getAdapterPosition());
                 }
@@ -83,7 +93,12 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         });
     }
 
+    public void onDestroy() {
+        simpleMusicListAdapters.remove(this);
+    }
+
     @Override
+
     public int getItemCount() {
         return musicItems.size();
     }
@@ -106,13 +121,12 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         public void onBindData(MusicItem data) {
             displayName.setText(data.title);
             musician.setText(data.artist);
-            if (isPlaying()) {
-                if (currentPlayingIndex == getAdapterPosition()) {
-                    playing();
-                } else {
-                    notPlaying();
-                }
+            if (isPlaying() && currentPlayingIndex == getAdapterPosition()) {
+                playing();
+            } else {
+                notPlaying();
             }
+
         }
 
         private void notPlaying() {
@@ -141,6 +155,14 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
             currentPlayingIndex = index;
             notifyItemChanged(index);
             notifyItemChanged(i);
+        }
+    }
+
+
+    public void notPlayAnyMore() {
+        if (isPlaying()) {
+            currentPlayingIndex = NO_POSITION;
+            notifyDataSetChanged();
         }
     }
 }

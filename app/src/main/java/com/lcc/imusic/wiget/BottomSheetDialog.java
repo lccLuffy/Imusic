@@ -144,5 +144,5 @@ public class BottomSheetDialog extends AppCompatDialog {
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
-
+    
 }

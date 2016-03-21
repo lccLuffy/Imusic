@@ -84,6 +84,9 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (musicListDialog != null) {
+            musicListDialog.getAdapter().onDestroy();
+        }
         musicListDialog = null;
     }
 

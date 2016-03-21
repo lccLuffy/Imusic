@@ -47,6 +47,13 @@ public class HotMusicianFragment extends AttachFragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        simpleMusicListAdapter.onDestroy();
+        simpleMusicListAdapter = null;
+    }
+
+    @Override
     public int getLayoutId() {
         return R.layout.test_fragment;
     }

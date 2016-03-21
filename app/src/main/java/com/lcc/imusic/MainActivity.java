@@ -72,6 +72,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
 
     CurrentMusicProvider currentMusicProvider;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +129,9 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     @Override
     protected void onDestroy() {
         accountDelegate.destroy();
+        if (musicListDialog != null) {
+            musicListDialog.getAdapter().onDestroy();
+        }
         super.onDestroy();
     }
 

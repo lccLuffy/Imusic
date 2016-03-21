@@ -45,5 +45,4 @@ public class MusicListDialog extends BottomSheetDialog {
         return adapter;
     }
 
-
 }

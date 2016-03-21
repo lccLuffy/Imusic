@@ -7,9 +7,11 @@ import android.support.v7.app.AppCompatDialogFragment;
 /**
  * Created by lcc_luffy on 2016/3/19.
  */
-public class BottomSheetFragment extends AppCompatDialogFragment {
+public class MusicListDialogFragment extends AppCompatDialogFragment {
+    private MusicListDialog musicListDialog;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new BottomSheetDialog(getActivity(), getTheme());
+        return new MusicListDialog(getActivity(), getTheme());
     }
 }
