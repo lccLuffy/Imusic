@@ -1,17 +1,14 @@
 package com.lcc.imusic.model;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.lcc.imusic.api.TestApi;
 import com.lcc.imusic.bean.M163;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.manager.EventsManager;
 import com.lcc.imusic.utils.RetrofitUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,9 +18,7 @@ import retrofit2.Response;
  * Created by lcc_luffy on 2016/3/18.
  */
 public class RemoteMusicProvider implements MusicProvider {
-    List<MusicItem> musicList;
-    private int playingMusicIndex;
-
+    private List<MusicItem> musicList;
 
     private static RemoteMusicProvider musicProvider;
 
@@ -33,7 +28,6 @@ public class RemoteMusicProvider implements MusicProvider {
         return musicProvider;
     }
 
-    Random random = new Random(System.currentTimeMillis());
 
     private RemoteMusicProvider() {
         musicList = new ArrayList<>();
@@ -78,31 +72,4 @@ public class RemoteMusicProvider implements MusicProvider {
         return musicList;
     }
 
-    @Nullable
-    @Override
-    public MusicItem getPlayingMusic() {
-        if (playingMusic != null)
-            return playingMusic;
-        if (musicList != null && !musicList.isEmpty()) {
-            return musicList.get(0);
-        }
-        return null;
-    }
-
-    private MusicItem playingMusic;
-
-    @Override
-    public void setPlayingMusic(int index) {
-        boolean change = playingMusicIndex != index;
-        playingMusicIndex = index;
-        playingMusic = musicList.get(index);
-        if (change) {
-            EventsManager.get().dispatchPlayingIndexChangeListener(index);
-        }
-    }
-
-    @Override
-    public int getPlayingMusicIndex() {
-        return playingMusicIndex;
-    }
 }

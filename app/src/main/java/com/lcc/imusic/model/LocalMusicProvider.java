@@ -4,29 +4,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore.Audio.Media;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.lcc.imusic.api.TestApi;
-import com.lcc.imusic.bean.M163;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.manager.EventsManager;
-import com.lcc.imusic.utils.RetrofitUtil;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 /**
  * Created by lcc_luffy on 2016/3/18.
  */
 public class LocalMusicProvider implements MusicProvider {
-    List<MusicItem> musicList;
-    private int playingMusicIndex;
+    private List<MusicItem> musicList;
     private static String[] projection = {
             Media.TITLE,
             Media.ARTIST,
@@ -82,28 +71,6 @@ public class LocalMusicProvider implements MusicProvider {
             cursor.moveToNext();
         }
         cursor.close();
-
-
-        TestApi testApi = RetrofitUtil.create(TestApi.class);
-        testApi.get().enqueue(new Callback<M163>() {
-            @Override
-            public void onResponse(Call<M163> call, Response<M163> response) {
-                M163 m163 = response.body();
-                for (M163.ResultBean.TracksBean tracksBean : m163.result.tracks) {
-                    Logger.i(tracksBean.name);
-                    Logger.i(tracksBean.mp3Url);
-                    Logger.i(tracksBean.artists.get(0).name);
-                    Logger.i(tracksBean.duration + "");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<M163> call, Throwable t) {
-
-            }
-        });
-
-
     }
 
     @NonNull
@@ -112,31 +79,4 @@ public class LocalMusicProvider implements MusicProvider {
         return musicList;
     }
 
-    @Nullable
-    @Override
-    public MusicItem getPlayingMusic() {
-        if (playingMusic != null)
-            return playingMusic;
-        if (musicList != null && !musicList.isEmpty()) {
-            return musicList.get(0);
-        }
-        return null;
-    }
-
-    private MusicItem playingMusic;
-
-    @Override
-    public void setPlayingMusic(int index) {
-        boolean change = playingMusicIndex != index;
-        playingMusicIndex = index;
-        playingMusic = musicList.get(index);
-        if (change) {
-            EventsManager.get().dispatchPlayingIndexChangeListener(index);
-        }
-    }
-
-    @Override
-    public int getPlayingMusicIndex() {
-        return playingMusicIndex;
-    }
 }

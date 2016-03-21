@@ -6,8 +6,8 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.model.CurrentMusicProvider;
-import com.lcc.imusic.model.MusicProvider;
+import com.lcc.imusic.model.CurrentMusicProvide;
+import com.lcc.imusic.model.CurrentMusicProviderImpl;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.wiget.MusicListDialog;
@@ -19,14 +19,14 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     @Bind(R.id.musicPlayer)
     MusicPlayerView musicPlayerView;
 
-    private MusicProvider musicProvider;
+    private CurrentMusicProvide musicProvider;
 
     private MusicListDialog musicListDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        musicProvider = CurrentMusicProvider.getMusicProvider(this);
+        musicProvider = CurrentMusicProviderImpl.getMusicProvider(this);
         setCurrentMusicItem(musicProvider.getPlayingMusic());
     }
 

@@ -10,7 +10,7 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.AttachFragment;
-import com.lcc.imusic.model.CurrentMusicProvider;
+import com.lcc.imusic.model.CurrentMusicProviderImpl;
 
 import butterknife.Bind;
 
@@ -31,7 +31,7 @@ public class HotMusicianFragment extends AttachFragment {
         simpleMusicListAdapter = new SimpleMusicListAdapter();
         recyclerView.setAdapter(simpleMusicListAdapter);
 
-        simpleMusicListAdapter.setData(CurrentMusicProvider.getMusicProvider(context).provideMusics());
+        simpleMusicListAdapter.setData(CurrentMusicProviderImpl.getMusicProvider(context).provideMusics());
         simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
