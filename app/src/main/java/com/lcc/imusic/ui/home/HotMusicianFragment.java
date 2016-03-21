@@ -7,10 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
-import com.lcc.imusic.adapter.MusicItemAdapter;
+import com.lcc.imusic.adapter.OnItemClickListener;
+import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.AttachFragment;
-import com.lcc.imusic.model.LocalMusicProvider;
-import com.lcc.state_refresh_recyclerview.Recycler.NiceAdapter;
+import com.lcc.imusic.model.CurrentMusicProvider;
 
 import butterknife.Bind;
 
@@ -23,23 +23,29 @@ public class HotMusicianFragment extends AttachFragment {
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    MusicItemAdapter musicItemAdapter;
+    SimpleMusicListAdapter simpleMusicListAdapter;
 
     @Override
-    public void initialize(@Nullable Bundle savedInstanceState)
-    {
+    public void initialize(@Nullable Bundle savedInstanceState) {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        musicItemAdapter = new MusicItemAdapter(context);
-        recyclerView.setAdapter(musicItemAdapter);
-        musicItemAdapter.getLoadMoreFooter().showNoMoreView();
-        musicItemAdapter.initData(LocalMusicProvider.getMusicProvider(context).provideMusics());
-        musicItemAdapter.setOnItemClickListener(new NiceAdapter.OnItemClickListener() {
+        simpleMusicListAdapter = new SimpleMusicListAdapter();
+        recyclerView.setAdapter(simpleMusicListAdapter);
+
+        simpleMusicListAdapter.setData(CurrentMusicProvider.getMusicProvider(context).provideMusics());
+        simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 mainActivity.playMusic(position);
             }
         });
     }
+
+    @Override
+    public void onPlayingIndexChange(int index) {
+        super.onPlayingIndexChange(index);
+        simpleMusicListAdapter.playingIndexChangeTo(index);
+    }
+
     @Override
     public int getLayoutId() {
         return R.layout.test_fragment;

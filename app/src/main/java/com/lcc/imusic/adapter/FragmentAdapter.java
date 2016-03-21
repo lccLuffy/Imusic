@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.lcc.imusic.ui.home.ActivitiesFragment;
 import com.lcc.imusic.ui.home.HotMusicianFragment;
 
 import java.util.ArrayList;
@@ -12,13 +13,13 @@ import java.util.List;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class FragmentAdapter extends FragmentPagerAdapter{
+public class FragmentAdapter extends FragmentPagerAdapter {
     List<Fragment> fragments;
+
     public FragmentAdapter(FragmentManager fm) {
         super(fm);
-        fragments = new ArrayList<>(3);
-        fragments.add(new HotMusicianFragment());
-        fragments.add(new HotMusicianFragment());
+        fragments = new ArrayList<>(2);
+        fragments.add(new ActivitiesFragment());
         fragments.add(new HotMusicianFragment());
         /*fragments.add(new HotSingleFragment());
         fragments.add(new MusicNewsFragment());

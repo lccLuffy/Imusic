@@ -32,7 +32,9 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         return currentPlayingIndex;
     }
 
-    private int currentPlayingIndex;
+    private final static int NO_POSITION = -1;
+
+    private int currentPlayingIndex = NO_POSITION;
 
     public SimpleMusicListAdapter() {
         musicItems = new ArrayList<>();
@@ -90,10 +92,12 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
         public void onBindData(MusicItem data) {
             displayName.setText(data.title);
             musician.setText(data.artist);
-            if (currentPlayingIndex == getAdapterPosition()) {
-                playing();
-            } else {
-                notPlaying();
+            if (currentPlayingIndex != NO_POSITION) {
+                if (currentPlayingIndex == getAdapterPosition()) {
+                    playing();
+                } else {
+                    notPlaying();
+                }
             }
         }
 

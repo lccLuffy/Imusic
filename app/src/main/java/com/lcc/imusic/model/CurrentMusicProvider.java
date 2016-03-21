@@ -2,6 +2,7 @@ package com.lcc.imusic.model;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Media;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,7 +25,7 @@ import retrofit2.Response;
 /**
  * Created by lcc_luffy on 2016/3/18.
  */
-public class LocalMusicProvider implements MusicProvider {
+public class CurrentMusicProvider implements MusicProvider {
     List<MusicItem> musicList;
     private int playingMusicIndex;
     private static String[] projection = {
@@ -43,17 +44,24 @@ public class LocalMusicProvider implements MusicProvider {
 
     public static MusicProvider getMusicProvider(@NonNull Context context) {
         if (musicProvider == null)
-            musicProvider = new LocalMusicProvider(context);
+            musicProvider = new CurrentMusicProvider(context);
         return musicProvider;
     }
 
+    private final String test_url = "http://m1.music.126.net/jt_bjt-DDWhFI9btE2b8tw==/7901090557280522.mp3";
     Random random = new Random(System.currentTimeMillis());
 
-    private LocalMusicProvider(@NonNull Context context) {
+    private CurrentMusicProvider(@NonNull Context context) {
         musicList = new ArrayList<>();
 
-        Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI,
-                projection, Media.DURATION + " > 20000", null, Media.DEFAULT_SORT_ORDER);
+        MusicItem item = new MusicItem();
+        item.data = test_url;
+        item.title = "7901090557280522";
+        item.artist = "jt_bjt";
+        musicList.add(item);
+
+        Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                projection, Media.DURATION + " > 20000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         if (cursor == null)
             return;
 

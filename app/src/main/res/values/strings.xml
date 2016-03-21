@@ -3,5 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="exit">退出</string>
     <string name="footer_behavior" translatable="false">com.lcc.imusic.wiget.FooterBehavior</string>
+    <string name="playing_list">播放列表</string>
 
 </resources>

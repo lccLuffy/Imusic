@@ -21,7 +21,7 @@ import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.AccountDelegate;
 import com.lcc.imusic.base.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.model.LocalMusicProvider;
+import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
@@ -76,7 +76,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
-        musicProvider = LocalMusicProvider.getMusicProvider(this);
+        musicProvider = CurrentMusicProvider.getMusicProvider(this);
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
 

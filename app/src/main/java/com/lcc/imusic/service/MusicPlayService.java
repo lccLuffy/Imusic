@@ -12,7 +12,7 @@ import android.os.Looper;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.manager.EventsManager;
 import com.lcc.imusic.manager.MusicNotificationManager;
-import com.lcc.imusic.model.LocalMusicProvider;
+import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
 import com.orhanobut.logger.Logger;
 
@@ -59,7 +59,7 @@ public class MusicPlayService extends Service {
     }
 
     private void initLocalMusicList() {
-        musicProvider = LocalMusicProvider.getMusicProvider(getApplicationContext());
+        musicProvider = CurrentMusicProvider.getMusicProvider(getApplicationContext());
     }
 
     private int currentIndex = -1;

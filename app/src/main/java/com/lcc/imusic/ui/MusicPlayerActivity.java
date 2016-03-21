@@ -6,7 +6,7 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.model.LocalMusicProvider;
+import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.MusicProvider;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
 import com.lcc.imusic.service.MusicPlayService;
@@ -26,7 +26,7 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        musicProvider = LocalMusicProvider.getMusicProvider(this);
+        musicProvider = CurrentMusicProvider.getMusicProvider(this);
         setCurrentMusicItem(musicProvider.getPlayingMusic());
     }
 
