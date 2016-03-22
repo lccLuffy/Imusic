@@ -1,4 +1,4 @@
-package com.lcc.imusic.base;
+package com.lcc.imusic.base.activity;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;

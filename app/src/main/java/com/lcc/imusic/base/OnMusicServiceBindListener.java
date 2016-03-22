@@ -5,7 +5,6 @@ import com.lcc.imusic.service.MusicPlayService;
 /**
  * Created by lcc_luffy on 2016/3/18.
  */
-public interface OnBindMusicServiceListener
-{
+public interface OnMusicServiceBindListener {
     void onBind(MusicPlayService.MusicServiceBind musicServiceBind);
 }

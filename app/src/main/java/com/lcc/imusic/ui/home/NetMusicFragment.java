@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.FragmentAdapter;
-import com.lcc.imusic.base.AttachFragment;
+import com.lcc.imusic.base.fragment.AttachFragment;
 
 import butterknife.Bind;
 
@@ -26,11 +26,11 @@ public class NetMusicFragment extends AttachFragment {
     public void initialize(@Nullable Bundle savedInstanceState) {
         super.initialize(savedInstanceState);
         FragmentAdapter fragmentAdapter = new FragmentAdapter(getFragmentManager(),
-                ActivitiesFragment.newInstance(58451795),
-                ActivitiesFragment.newInstance(1),
-                ActivitiesFragment.newInstance(317054928),
-                ActivitiesFragment.newInstance(5845662),
-                ActivitiesFragment.newInstance(306397077)
+                RemoteMusicFragment.newInstance(58451795),
+                RemoteMusicFragment.newInstance(1),
+                RemoteMusicFragment.newInstance(317054928),
+                RemoteMusicFragment.newInstance(5845662),
+                RemoteMusicFragment.newInstance(306397077)
         );
         viewPager.setAdapter(fragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);

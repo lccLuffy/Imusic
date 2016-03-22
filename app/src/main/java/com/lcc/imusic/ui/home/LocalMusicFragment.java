@@ -3,13 +3,14 @@ package com.lcc.imusic.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
-import com.lcc.imusic.base.AttachFragment;
+import com.lcc.imusic.base.fragment.AttachFragment;
 import com.lcc.imusic.model.LocalMusicProvider;
 
 import butterknife.Bind;
@@ -18,15 +19,20 @@ import butterknife.Bind;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class HotMusicianFragment extends AttachFragment {
+public class LocalMusicFragment extends AttachFragment {
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
+
+    @Bind(R.id.refreshLayout)
+    SwipeRefreshLayout refreshLayout;
 
     SimpleMusicListAdapter simpleMusicListAdapter;
 
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
+        refreshLayout.setEnabled(false);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         simpleMusicListAdapter = new SimpleMusicListAdapter();
         recyclerView.setAdapter(simpleMusicListAdapter);
@@ -55,7 +61,7 @@ public class HotMusicianFragment extends AttachFragment {
 
     @Override
     public int getLayoutId() {
-        return R.layout.test_fragment;
+        return R.layout.fragment_musiclist;
     }
 
     @Override

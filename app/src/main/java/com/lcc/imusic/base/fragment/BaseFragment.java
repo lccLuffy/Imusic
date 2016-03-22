@@ -1,4 +1,4 @@
-package com.lcc.imusic.base;
+package com.lcc.imusic.base.fragment;
 
 import android.content.Context;
 import android.os.Bundle;

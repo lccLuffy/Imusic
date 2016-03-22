@@ -38,6 +38,12 @@ public class CurrentMusicProviderImpl implements CurrentMusicProvider {
     }
 
     @Override
+    public void provideMusics(OnProvideMusics onProvideMusics) {
+        if (onProvideMusics != null)
+            onProvideMusics.onSuccess(musicList);
+    }
+
+    @Override
     public void copyToMe(@NonNull List<MusicItem> anotherData) {
         musicList.addAll(anotherData);
         if (playingMusicIndex == NO_PLAYING_INDEX && !musicList.isEmpty())

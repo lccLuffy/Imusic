@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.lcc.imusic.R;
-import com.lcc.imusic.base.BaseActivity;
+import com.lcc.imusic.base.activity.BaseActivity;
 
 /**
  * Created by lcc_luffy on 2016/3/8.

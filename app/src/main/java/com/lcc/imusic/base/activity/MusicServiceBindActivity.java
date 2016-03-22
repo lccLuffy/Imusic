@@ -1,4 +1,4 @@
-package com.lcc.imusic.base;
+package com.lcc.imusic.base.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.lcc.imusic.base.OnMusicServiceBindListener;
 import com.lcc.imusic.service.MusicPlayService;
 import com.orhanobut.logger.Logger;
 
@@ -21,7 +22,7 @@ public abstract class MusicServiceBindActivity extends BaseActivity {
 
     protected MusicPlayService.MusicServiceBind musicServiceBind;
     private ServiceConnection serviceConnection;
-    private List<OnBindMusicServiceListener> onBindMusicServiceListeners;
+    private List<OnMusicServiceBindListener> onBindMusicServiceListeners;
 
     private boolean isBind = false;
 
@@ -47,7 +48,7 @@ public abstract class MusicServiceBindActivity extends BaseActivity {
     }
 
 
-    public void addOnBindMusicServiceListener(@NonNull OnBindMusicServiceListener listener) {
+    public void addOnBindMusicServiceListener(@NonNull OnMusicServiceBindListener listener) {
         if (onBindMusicServiceListeners == null)
             onBindMusicServiceListeners = new ArrayList<>();
         onBindMusicServiceListeners.add(listener);
@@ -83,7 +84,7 @@ public abstract class MusicServiceBindActivity extends BaseActivity {
             isBind = true;
             onBind(musicServiceBind);
             if (onBindMusicServiceListeners != null) {
-                for (OnBindMusicServiceListener listener : onBindMusicServiceListeners) {
+                for (OnMusicServiceBindListener listener : onBindMusicServiceListeners) {
                     listener.onBind(musicServiceBind);
                 }
             }

@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
-import com.lcc.imusic.base.MusicProgressCallActivity;
+import com.lcc.imusic.base.activity.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;

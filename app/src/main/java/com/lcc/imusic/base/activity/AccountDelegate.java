@@ -1,4 +1,4 @@
-package com.lcc.imusic.base;
+package com.lcc.imusic.base.activity;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -19,8 +19,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
-import com.lcc.imusic.base.AccountDelegate;
-import com.lcc.imusic.base.MusicProgressCallActivity;
+import com.lcc.imusic.base.activity.AccountDelegate;
+import com.lcc.imusic.base.activity.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
@@ -28,7 +28,7 @@ import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
-import com.lcc.imusic.ui.home.HotMusicianFragment;
+import com.lcc.imusic.ui.home.LocalMusicFragment;
 import com.lcc.imusic.ui.home.NetMusicFragment;
 import com.lcc.imusic.wiget.MusicListDialog;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -78,7 +78,6 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
 
     CurrentMusicProvider currentMusicProvider;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +109,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     private void init() {
         actionBar.setDisplayShowTitleEnabled(false);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),
-                new HotMusicianFragment(), new NetMusicFragment(), new HotMusicianFragment());
+                new LocalMusicFragment(), new NetMusicFragment(), new LocalMusicFragment());
         viewPager.setAdapter(adapter);
         tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override

@@ -13,6 +13,8 @@ public interface MusicProvider {
     @NonNull
     List<MusicItem> provideMusics();
 
+    void provideMusics(OnProvideMusics onProvideMusics);
+
     void copyToMe(@NonNull List<MusicItem> anotherData);
 
     void overrideToMe(@NonNull List<MusicItem> anotherData);

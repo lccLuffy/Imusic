@@ -20,11 +20,10 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/20.
  */
-public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicListAdapter.MusicItemViewHolder> {
+public class SimpleMusicListAdapter extends SimpleAdapter<SimpleMusicListAdapter.MusicItemViewHolder, MusicItem> {
 
     private static List<SimpleMusicListAdapter> simpleMusicListAdapters;
 
-    List<MusicItem> musicItems;
     OnItemClickListener onItemClickListener;
 
     public void setCurrentPlayingIndex(int currentPlayingIndex) {
@@ -40,23 +39,17 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
     private int currentPlayingIndex = NO_POSITION;
 
     public SimpleMusicListAdapter() {
-        musicItems = new ArrayList<>();
+        super();
         if (simpleMusicListAdapters == null)
             simpleMusicListAdapters = new ArrayList<>();
         simpleMusicListAdapters.add(this);
     }
 
-    public void setData(List<MusicItem> musicItemList) {
-        musicItems.clear();
-        musicItems.addAll(musicItemList);
-        notifyDataSetChanged();
-    }
-
 
     public void setData(List<MusicItem> musicItemList, int currentPlayingIndex) {
         this.currentPlayingIndex = currentPlayingIndex;
-        musicItems.clear();
-        musicItems.addAll(musicItemList);
+        data.clear();
+        data.addAll(musicItemList);
         notifyDataSetChanged();
     }
 
@@ -71,13 +64,13 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
 
     @Override
     public void onBindViewHolder(final MusicItemViewHolder holder, final int position) {
-        holder.onBindData(musicItems.get(position), position);
+        holder.onBindData(data.get(position), position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (currentPlayingIndex == NO_POSITION) {
                     currentPlayingIndex = holder.getAdapterPosition();
-                    CurrentMusicProviderImpl.getMusicProvider().overrideToMe(musicItems);
+                    CurrentMusicProviderImpl.getMusicProvider().overrideToMe(data);
                     playingIndexChangeTo(currentPlayingIndex);
                     if (onItemClickListener != null)
                         onItemClickListener.onItemClick(holder.getAdapterPosition());
@@ -95,12 +88,6 @@ public class SimpleMusicListAdapter extends RecyclerView.Adapter<SimpleMusicList
 
     public void onDestroy() {
         simpleMusicListAdapters.remove(this);
-    }
-
-    @Override
-
-    public int getItemCount() {
-        return musicItems.size();
     }
 
     protected class MusicItemViewHolder extends RecyclerView.ViewHolder {

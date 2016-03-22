@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lcc.imusic.R;
-import com.lcc.imusic.base.BaseActivity;
+import com.lcc.imusic.base.activity.BaseActivity;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import butterknife.Bind;

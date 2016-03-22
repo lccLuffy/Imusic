@@ -1,10 +1,11 @@
-package com.lcc.imusic.base;
+package com.lcc.imusic.base.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.lcc.imusic.MainActivity;
+import com.lcc.imusic.base.fragment.BaseFragment;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.manager.EventsManager;
 import com.lcc.imusic.model.PlayingIndexChangeListener;

@@ -20,11 +20,8 @@ public class RemoteMusicProvider extends SimpleMusicProviderImpl {
         this.id = id;
     }
 
-    public void getData(final OnMusicList onMusicList) {
-        if (onMusicList != null && musicList.size() >= 1) {
-            onMusicList.onSuccess(musicList);
-            return;
-        }
+    @Override
+    public void provideMusics(final OnProvideMusics onProvideMusics) {
         TestApi testApi = RetrofitUtil.create(TestApi.class);
         testApi.get(id).enqueue(new Callback<M163>() {
             @Override
@@ -39,18 +36,17 @@ public class RemoteMusicProvider extends SimpleMusicProviderImpl {
                     musicItem.cover = tracksBean.album.picUrl;
                     musicList.add(musicItem);
                 }
-                if (onMusicList != null) {
-                    onMusicList.onSuccess(musicList);
+                if (onProvideMusics != null) {
+                    onProvideMusics.onSuccess(musicList);
                 }
             }
 
             @Override
             public void onFailure(Call<M163> call, Throwable t) {
-                if (onMusicList != null) {
-                    onMusicList.onFail(t.getMessage());
+                if (onProvideMusics != null) {
+                    onProvideMusics.onFail(t.getMessage());
                 }
             }
         });
     }
-
 }

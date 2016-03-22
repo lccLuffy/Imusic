@@ -24,6 +24,13 @@ public class SimpleMusicProviderImpl implements MusicProvider {
     }
 
     @Override
+    public void provideMusics(OnProvideMusics onProvideMusics) {
+        if (onProvideMusics != null) {
+            onProvideMusics.onSuccess(musicList);
+        }
+    }
+
+    @Override
     public void copyToMe(@NonNull List<MusicItem> anotherData) {
         musicList.addAll(anotherData);
     }

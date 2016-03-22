@@ -3,15 +3,17 @@ package com.lcc.imusic.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
-import com.lcc.imusic.base.AttachFragment;
+import com.lcc.imusic.base.fragment.AttachFragment;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.model.OnMusicList;
+import com.lcc.imusic.model.OnProvideMusics;
 import com.lcc.imusic.model.RemoteMusicProvider;
 
 import java.util.List;
@@ -21,24 +23,31 @@ import butterknife.Bind;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class ActivitiesFragment extends AttachFragment {
+public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
+
+    @Bind(R.id.refreshLayout)
+    SwipeRefreshLayout refreshLayout;
 
     SimpleMusicListAdapter simpleMusicListAdapter;
 
     private long id = 58451795;
     RemoteMusicProvider remoteMusicProvider;
 
-    public static ActivitiesFragment newInstance(int id) {
-        ActivitiesFragment fragment = new ActivitiesFragment();
+    public static RemoteMusicFragment newInstance(int id) {
+        RemoteMusicFragment fragment = new RemoteMusicFragment();
         fragment.id = id;
         return fragment;
     }
 
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
+        refreshLayout.setColorSchemeResources(R.color.selectedRed);
+        refreshLayout.setOnRefreshListener(this);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
         simpleMusicListAdapter = new SimpleMusicListAdapter();
         recyclerView.setAdapter(simpleMusicListAdapter);
         simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
@@ -48,17 +57,8 @@ public class ActivitiesFragment extends AttachFragment {
             }
         });
         remoteMusicProvider = new RemoteMusicProvider(id);
-        remoteMusicProvider.getData(new OnMusicList() {
-            @Override
-            public void onSuccess(List<MusicItem> musicItems) {
-                simpleMusicListAdapter.setData(musicItems);
-            }
-
-            @Override
-            public void onFail(String reason) {
-                toast(reason);
-            }
-        });
+        getData();
+        NestedScrollView nestedScrollView;
     }
 
     @Override
@@ -75,13 +75,34 @@ public class ActivitiesFragment extends AttachFragment {
             simpleMusicListAdapter.playingIndexChangeTo(index);
     }
 
+    public void getData() {
+        remoteMusicProvider.getData(new OnProvideMusics() {
+            @Override
+            public void onSuccess(List<MusicItem> musicItems) {
+                simpleMusicListAdapter.setData(musicItems);
+                refreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFail(String reason) {
+                toast(reason);
+                refreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
     @Override
     public int getLayoutId() {
-        return R.layout.test_fragment;
+        return R.layout.fragment_musiclist;
     }
 
     @Override
     public String toString() {
         return "联网音乐";
+    }
+
+    @Override
+    public void onRefresh() {
+        getData();
     }
 }
