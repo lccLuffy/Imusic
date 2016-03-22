@@ -28,9 +28,9 @@ public class NetMusicFragment extends AttachFragment {
         FragmentAdapter fragmentAdapter = new FragmentAdapter(getFragmentManager(),
                 ActivitiesFragment.newInstance(58451795),
                 ActivitiesFragment.newInstance(1),
-                ActivitiesFragment.newInstance(865656),
+                ActivitiesFragment.newInstance(317054928),
                 ActivitiesFragment.newInstance(5845662),
-                ActivitiesFragment.newInstance(865656)
+                ActivitiesFragment.newInstance(306397077)
         );
         viewPager.setAdapter(fragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);

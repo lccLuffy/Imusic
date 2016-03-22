@@ -91,6 +91,8 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
 
+        progressBar.setProgress(0);
+
         playBar_wrap.setOnClickListener(this);
         playBarPlayToggle.setOnCheckedChangeListener(this);
         playBarPlayNext.setOnClickListener(this);
@@ -145,11 +147,11 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_exit) {
+        /*if (id == R.id.action_exit) {
             finish();
             stopService(new Intent(this, MusicPlayService.class));
             return true;
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 

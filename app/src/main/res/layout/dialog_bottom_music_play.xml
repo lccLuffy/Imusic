@@ -14,22 +14,11 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.75dp"
-        android:background="#eeeeeeee" />
+        android:background="@color/divider" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/dialog_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/dialog_empty"
-        android:layout_width="match_parent"
-        android:layout_height="200dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="还没有播放音乐" />
-    </android.support.v7.widget.CardView>
 </LinearLayout>

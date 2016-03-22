@@ -20,8 +20,6 @@ public class FragmentAdapter extends FragmentPagerAdapter {
         if (fs != null) {
             fragments.addAll(Arrays.asList(fs));
         }
-
-
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.view.View;
 import com.lcc.imusic.R;
 import com.lcc.imusic.ui.setting.SettingActivity;
 import com.lcc.imusic.ui.user.UserCenterActivity;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -35,14 +36,13 @@ public class AccountDelegate {
     protected AccountHeader header;
     protected ProfileDrawerItem profileDrawerItem;
 
-    public AccountDelegate(@NonNull Activity activity,@NonNull Toolbar toolbar,@NonNull AccountListener listener)
-    {
+    public AccountDelegate(@NonNull Activity activity, @NonNull Toolbar toolbar, @NonNull AccountListener listener) {
         this.activity = activity;
         this.toolbar = toolbar;
         this.accountListener = listener;
     }
-    public void init()
-    {
+
+    public void init() {
         header = new AccountHeaderBuilder()
                 .withActivity(activity)
                 .withHeaderBackground(R.mipmap.user_info_bg)
@@ -58,6 +58,7 @@ public class AccountDelegate {
                 .build();
 
         final PrimaryDrawerItem setting = new PrimaryDrawerItem()
+                .withIcon(FontAwesome.Icon.faw_cogs)
                 .withName("设置");
         drawer = new DrawerBuilder()
                 .withToolbar(toolbar)
@@ -67,8 +68,7 @@ public class AccountDelegate {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        if(drawerItem == setting)
-                        {
+                        if (drawerItem == setting) {
                             activity.startActivity(new Intent(activity, SettingActivity.class));
                             drawer.closeDrawer();
                             return true;
@@ -76,7 +76,6 @@ public class AccountDelegate {
                         return accountListener.onDrawerMenuSelected(view, position, drawerItem);
                     }
                 })
-                .withFooterDivider(true)
                 .withAccountHeader(header)
                 .build();
         drawer.addStickyFooterItem(setting);
@@ -84,49 +83,43 @@ public class AccountDelegate {
         drawer.getSlider().setFitsSystemWindows(true);
     }
 
-    public void setUsername(String username)
-    {
+    public void setUsername(String username) {
         profileDrawerItem.withName(username);
         header.updateProfile(profileDrawerItem);
     }
 
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         profileDrawerItem.withEmail(email);
         header.updateProfile(profileDrawerItem);
     }
 
-    public void setAvatar(String url)
-    {
+    public void setAvatar(String url) {
         profileDrawerItem.withIcon(url);
         header.updateProfile(profileDrawerItem);
     }
 
-    public void setAvatar(@DrawableRes int resId)
-    {
+    public void setAvatar(@DrawableRes int resId) {
         profileDrawerItem.withIcon(resId);
         header.updateProfile(profileDrawerItem);
     }
-    public void setHeaderBackground(String url)
-    {
+
+    public void setHeaderBackground(String url) {
         header.setHeaderBackground(new ImageHolder(url));
     }
 
-    public void setHeaderBackground(@DrawableRes int resId)
-    {
+    public void setHeaderBackground(@DrawableRes int resId) {
         header.setHeaderBackground(new ImageHolder(resId));
     }
-    public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem)
-    {
+
+    public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
         return false;
     }
 
-    public void setAccountListener(AccountListener accountListener)
-    {
+    public void setAccountListener(AccountListener accountListener) {
         this.accountListener = accountListener;
     }
-    public void destroy()
-    {
+
+    public void destroy() {
         drawer = null;
         header = null;
         profileDrawerItem = null;
@@ -134,9 +127,11 @@ public class AccountDelegate {
         activity = null;
         toolbar = null;
     }
-    public interface AccountListener
-    {
+
+    public interface AccountListener {
         boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem);
-        @NonNull List<IDrawerItem> onCreateMenuItem();
+
+        @NonNull
+        List<IDrawerItem> onCreateMenuItem();
     }
 }
