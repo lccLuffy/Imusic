@@ -3,6 +3,7 @@ package com.lcc.imusic.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
 import com.lcc.imusic.R;
@@ -18,6 +19,8 @@ public class NetMusicFragment extends AttachFragment {
     @Bind(R.id.viewPage)
     ViewPager viewPager;
 
+    @Bind(R.id.tabLayout)
+    TabLayout tabLayout;
 
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class NetMusicFragment extends AttachFragment {
                 ActivitiesFragment.newInstance(865656)
         );
         viewPager.setAdapter(fragmentAdapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override

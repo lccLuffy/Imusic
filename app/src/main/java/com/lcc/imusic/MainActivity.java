@@ -3,11 +3,12 @@ package com.lcc.imusic;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -33,6 +34,7 @@ import com.lcc.imusic.wiget.MusicListDialog;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ import butterknife.Bind;
 public class MainActivity extends MusicProgressCallActivity implements AccountDelegate.AccountListener
         , View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     @Bind(R.id.tabLayout)
-    TabLayout tabLayout;
+    SmartTabLayout tabLayout;
 
     @Bind(R.id.viewPager)
     ViewPager viewPager;
@@ -106,9 +108,28 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     private void init() {
         actionBar.setDisplayShowTitleEnabled(false);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),
-                new HotMusicianFragment(), new NetMusicFragment());
+                new HotMusicianFragment(), new NetMusicFragment(), new HotMusicianFragment());
         viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
+            @Override
+            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
+                ImageView imageView = (ImageView) getLayoutInflater()
+                        .inflate(R.layout.tab_icon_imageview, container, false);
+                switch (position) {
+                    case 0:
+                        imageView.setImageResource(R.mipmap.actionbar_discover_selected);
+                        break;
+                    case 1:
+                        imageView.setImageResource(R.mipmap.actionbar_music_selected);
+                        break;
+                    case 2:
+                        imageView.setImageResource(R.mipmap.actionbar_friends_selected);
+                        break;
+                }
+                return imageView;
+            }
+        });
+        tabLayout.setViewPager(viewPager);
         if (!MusicPlayService.HAS_STATED) {
             Intent intent = new Intent(this, MusicPlayService.class);
             startService(intent);

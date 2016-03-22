@@ -12,7 +12,8 @@
     <color name="play_bar_normal">#faeeeeee</color>
     <color name="play_bar_pressed">#fadddddd</color>
 
-
+    <color name="icon_enabled">#FFFFFFFF</color>
+    <color name="icon_disabled">@color/md_red_200</color>
     <!-- OVERWRITE THESE COLORS FOR A DARK THEME -->
     <!-- MaterialDrawer DEFAULT DARK colors -->
     <color name="material_drawer_dark_background">#303030</color>
