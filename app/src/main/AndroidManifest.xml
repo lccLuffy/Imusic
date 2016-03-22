@@ -39,7 +39,10 @@
             android:name=".service.MusicPlayService"
             android:enabled="true"
             android:exported="true" />
-
+        <service
+            android:name=".service.DownloadService"
+            android:enabled="true"
+            android:exported="true" />
         <!--<receiver
             android:name=".service.MusicControllerReceiver"
             android:enabled="true"

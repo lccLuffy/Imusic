@@ -24,6 +24,7 @@ import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
 import com.lcc.imusic.model.LocalMusicProvider;
+import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.lcc.imusic.ui.home.HotMusicianFragment;
@@ -94,6 +95,11 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
         playBarPlayList.setOnClickListener(this);
         accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
         setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
+        /*download();*/
+    }
+
+    private void download() {
+        startService(new Intent(this, DownloadService.class));
     }
 
 
@@ -197,6 +203,9 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     @Override
     protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
         setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
+        if (musicServiceBind.isPlaying()) {
+            playBarPlayToggle.setChecked(musicServiceBind.isPlaying());
+        }
     }
 
     public void playMusic(int id) {

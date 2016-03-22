@@ -1,13 +1,16 @@
 package com.lcc.imusic.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
 
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.manager.EventsManager;
@@ -33,7 +36,9 @@ public class MusicPlayService extends Service {
 
     public static boolean HAS_STATED = false;
 
-    MusicNotificationManager musicNotificationManager;
+    private MusicNotificationManager musicNotificationManager;
+
+    private WifiManager.WifiLock wifiLock;
 
     private CurrentMusicProvider musicProvider;
 
@@ -51,6 +56,12 @@ public class MusicPlayService extends Service {
     private void initMediaPlayer() {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
+
+        wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
+                .createWifiLock(WifiManager.WIFI_MODE_FULL, "music_play_lock");
+        wifiLock.acquire();
+
         MediaListener mediaListener = new MediaListener();
         mediaPlayer.setOnPreparedListener(mediaListener);
         mediaPlayer.setOnCompletionListener(mediaListener);
@@ -288,12 +299,17 @@ public class MusicPlayService extends Service {
         EventsManager.get().clearAllEvents();
 
         mediaPlayer.release();
+        mediaPlayer = null;
+
+        wifiLock.release();
+        wifiLock = null;
+
         binder = null;
         progressTask = null;
         musicProvider = null;
-        mediaPlayer = null;
-        Logger.i("MusicPlayService onDestroy");
         HAS_STATED = false;
+
+        Logger.i("MusicPlayService onDestroy");
     }
 
 

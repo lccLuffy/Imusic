@@ -56,7 +56,7 @@ public class ActivitiesFragment extends AttachFragment {
 
             @Override
             public void onFail(String reason) {
-
+                toast(reason);
             }
         });
     }

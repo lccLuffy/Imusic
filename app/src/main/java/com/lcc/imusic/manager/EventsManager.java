@@ -146,11 +146,18 @@ public class EventsManager {
     }
 
     public void clearAllEvents() {
-        if (musicPlayListeners != null)
+        if (musicPlayListeners != null) {
             musicPlayListeners.clear();
-        if (musicProgressListeners != null)
+            musicPlayListeners = null;
+        }
+        if (musicProgressListeners != null) {
             musicProgressListeners.clear();
-        if (currentPlayingListChangeListeners != null)
+            musicProgressListeners = null;
+        }
+
+        if (currentPlayingListChangeListeners != null) {
             currentPlayingListChangeListeners.clear();
+            currentPlayingListChangeListeners = null;
+        }
     }
 }
