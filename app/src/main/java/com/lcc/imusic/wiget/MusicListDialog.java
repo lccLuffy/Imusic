@@ -28,9 +28,11 @@ public class MusicListDialog extends BottomSheetDialog {
 
     private SimpleMusicListAdapter adapter;
     RecyclerView recyclerView;
+    View emptyView;
 
     public MusicListDialog init() {
         View content = getLayoutInflater().inflate(R.layout.dialog_bottom_music_play, null);
+        emptyView = content.findViewById(R.id.dialog_empty);
         recyclerView = (RecyclerView) content.findViewById(R.id.dialog_recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -44,5 +46,17 @@ public class MusicListDialog extends BottomSheetDialog {
         if (adapter == null)
             adapter = new SimpleMusicListAdapter();
         return adapter;
+    }
+
+    @Override
+    public void show() {
+        if (emptyView != null) {
+            if (getAdapter().getItemCount() == 0 && emptyView.getVisibility() != View.VISIBLE) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else if (emptyView.getVisibility() != View.GONE) {
+                emptyView.setVisibility(View.GONE);
+            }
+        }
+        super.show();
     }
 }
