@@ -3,7 +3,7 @@ package com.lcc.imusic.model;
 import com.lcc.imusic.api.TestApi;
 import com.lcc.imusic.bean.M163;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.utils.RetrofitUtil;
+import com.lcc.imusic.manager.NetManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,7 +22,7 @@ public class RemoteMusicProvider extends SimpleMusicProviderImpl {
 
     @Override
     public void provideMusics(final OnProvideMusics onProvideMusics) {
-        TestApi testApi = RetrofitUtil.create(TestApi.class);
+        TestApi testApi = NetManager.create(TestApi.class);
         testApi.get(id).enqueue(new Callback<M163>() {
             @Override
             public void onResponse(Call<M163> call, Response<M163> response) {

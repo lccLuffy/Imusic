@@ -3,7 +3,6 @@ package com.lcc.imusic.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -58,7 +57,7 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
         });
         remoteMusicProvider = new RemoteMusicProvider(id);
         getData();
-        NestedScrollView nestedScrollView;
+
     }
 
     @Override
@@ -76,7 +75,7 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
     }
 
     public void getData() {
-        remoteMusicProvider.getData(new OnProvideMusics() {
+        remoteMusicProvider.provideMusics(new OnProvideMusics() {
             @Override
             public void onSuccess(List<MusicItem> musicItems) {
                 simpleMusicListAdapter.setData(musicItems);

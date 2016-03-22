@@ -28,6 +28,7 @@ import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
+import com.lcc.imusic.ui.home.AlbumFragment;
 import com.lcc.imusic.ui.home.LocalMusicFragment;
 import com.lcc.imusic.ui.home.NetMusicFragment;
 import com.lcc.imusic.wiget.MusicListDialog;
@@ -109,7 +110,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     private void init() {
         actionBar.setDisplayShowTitleEnabled(false);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),
-                new LocalMusicFragment(), new NetMusicFragment(), new LocalMusicFragment());
+                new LocalMusicFragment(), new NetMusicFragment(), new AlbumFragment());
         viewPager.setAdapter(adapter);
         tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
@@ -146,11 +147,6 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        /*if (id == R.id.action_exit) {
-            finish();
-            stopService(new Intent(this, MusicPlayService.class));
-            return true;
-        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -159,6 +155,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     public List<IDrawerItem> onCreateMenuItem() {
         List<IDrawerItem> list = new ArrayList<>();
         list.add(new PrimaryDrawerItem().withName("Home").withIcon(FontAwesome.Icon.faw_home));
+        list.add(new PrimaryDrawerItem().withName("退出").withIcon(FontAwesome.Icon.faw_sign_out));
         return list;
     }
 
@@ -181,7 +178,13 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
 
     @Override
     public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
-        return false;
+        switch (position) {
+            case 2:
+                finish();
+                stopService(new Intent(this, MusicPlayService.class));
+                break;
+        }
+        return true;
     }
 
     @Override

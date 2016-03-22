@@ -1,10 +1,5 @@
-package com.lcc.imusic.utils;
+package com.lcc.imusic.manager;
 
-
-import android.os.UserManager;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
@@ -19,16 +14,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by lcc_luffy on 2016/3/5.
  */
-public class RetrofitUtil {
+public class NetManager {
     public static final String DOMAIN = "http://115.28.69.91";
     private static Retrofit retrofit;
 
-    private RetrofitUtil() {
+    private NetManager() {
     }
 
     public static Retrofit getRetrofit() {
         if (retrofit == null) {
-            synchronized (RetrofitUtil.class)
+            synchronized (NetManager.class)
             {
                 if (retrofit == null)
                 {

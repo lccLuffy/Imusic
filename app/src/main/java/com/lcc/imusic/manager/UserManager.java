@@ -1,4 +1,4 @@
-package com.lcc.imusic.utils;
+package com.lcc.imusic.manager;
 
 /**
  * Created by lcc_luffy on 2016/3/12.
