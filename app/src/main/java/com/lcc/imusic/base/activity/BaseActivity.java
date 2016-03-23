@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/5.
  */
-public abstract class BaseActivity extends AppCompatActivity{
+public abstract class BaseActivity extends AppCompatActivity {
 
     @Bind(R.id.toolbar)
     protected Toolbar toolbar;
@@ -33,19 +33,17 @@ public abstract class BaseActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
 
-        if(!((this instanceof MainActivity) || actionBar == null))
-        {
+        if (!((this instanceof MainActivity) || actionBar == null)) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
 
     private Toast toast;
-    public void toast(CharSequence msg)
-    {
-        if (toast == null)
-        {
-            toast = Toast.makeText(this,msg,Toast.LENGTH_LONG);
+
+    public void toast(CharSequence msg) {
+        if (toast == null) {
+            toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
         }
         toast.setText(msg);
         toast.show();
@@ -53,8 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home)
-        {
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }

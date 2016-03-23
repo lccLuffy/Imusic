@@ -56,7 +56,7 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
     @Bind(R.id.playBar_next)
     ImageView playBarPlayNext;
 
-    CurrentMusicProvider currentMusicProvider;
+    protected CurrentMusicProvider currentMusicProvider;
 
     private MusicListDialog musicListDialog;
 
@@ -107,6 +107,7 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
         if (musicListDialog != null) {
             musicListDialog.getAdapter().onDestroy();
         }
+        currentMusicProvider = null;
         super.onDestroy();
     }
 

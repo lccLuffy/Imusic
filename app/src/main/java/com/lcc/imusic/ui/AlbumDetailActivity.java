@@ -40,6 +40,7 @@ public class AlbumDetailActivity extends PlayBarActivity implements SwipeRefresh
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("专辑详情");
         refreshLayout.setColorSchemeResources(R.color.selectedRed);
         refreshLayout.setOnRefreshListener(this);
 
@@ -69,7 +70,6 @@ public class AlbumDetailActivity extends PlayBarActivity implements SwipeRefresh
         simpleMusicListAdapter.onDestroy();
         simpleMusicListAdapter = null;
     }
-
 
     @Override
     public void onPlayingIndexChange(int index) {
