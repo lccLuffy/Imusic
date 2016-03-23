@@ -29,7 +29,7 @@ public class MusicianRankAdapter extends SimpleAdapter<MusicianRankAdapter.Holde
 
     @Override
     public void onBindViewHolder(final Holder holder, final int position) {
-        holder.bindData(data.get(position));
+        holder.bindData(data.get(position), position);
         if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -50,14 +50,18 @@ public class MusicianRankAdapter extends SimpleAdapter<MusicianRankAdapter.Holde
         @Bind(R.id.musicianRank_subtitle)
         TextView subtitle;
 
+        @Bind(R.id.musicianRank_pos)
+        TextView musicianRank_pos;
+
         public Holder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindData(Musician album) {
+        public void bindData(Musician album, int pos) {
+            musicianRank_pos.setText(String.valueOf(pos));
             title.setText(album.name);
-            subtitle.setText(String.format(Locale.CHINA, "热度:%d", random.nextInt() + 1000));
+            subtitle.setText(String.format(Locale.CHINA, "热度:%d", random.nextInt(1000) + 1000));
             Glide.with(itemView.getContext())
                     .load(album.avatar)
                     .into(avatar);
