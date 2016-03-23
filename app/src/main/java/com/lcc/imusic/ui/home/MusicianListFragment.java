@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
-import com.lcc.imusic.adapter.MusicGridAdapter;
+import com.lcc.imusic.adapter.MusicianRankAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.fragment.AttachFragment;
 import com.lcc.imusic.bean.Musician;
@@ -34,7 +34,7 @@ public class MusicianListFragment extends AttachFragment {
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
-    MusicGridAdapter musicGridAdapter;
+    MusicianRankAdapter musicGridAdapter;
 
 
     static List<Musician> albumList;
@@ -74,8 +74,8 @@ public class MusicianListFragment extends AttachFragment {
     public void initialize(@Nullable Bundle savedInstanceState) {
         super.initialize(savedInstanceState);
         refreshLayout.setEnabled(false);
-        musicGridAdapter = new MusicGridAdapter();
-        recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+        musicGridAdapter = new MusicianRankAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(musicGridAdapter);
         musicGridAdapter.setData(albumList);
         musicGridAdapter.setOnItemClickListener(new OnItemClickListener() {

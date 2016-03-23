@@ -11,17 +11,20 @@ import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
 import com.lcc.imusic.bean.Musician;
 
+import java.util.Locale;
+import java.util.Random;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
  * Created by lcc_luffy on 2016/3/22.
  */
-public class MusicGridAdapter extends SimpleAdapter<MusicGridAdapter.Holder, Musician> {
+public class MusicianRankAdapter extends SimpleAdapter<MusicianRankAdapter.Holder, Musician> {
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_musicion, parent, false));
+        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_musician_rank, parent, false));
     }
 
     @Override
@@ -38,11 +41,14 @@ public class MusicGridAdapter extends SimpleAdapter<MusicGridAdapter.Holder, Mus
     }
 
     protected class Holder extends RecyclerView.ViewHolder {
-        @Bind(R.id.musicGrid_cover)
-        ImageView cover;
+        @Bind(R.id.musicianRank_avatar)
+        ImageView avatar;
 
-        @Bind(R.id.musicGrid_title)
+        @Bind(R.id.musicianRank_title)
         TextView title;
+
+        @Bind(R.id.musicianRank_subtitle)
+        TextView subtitle;
 
         public Holder(View itemView) {
             super(itemView);
@@ -51,9 +57,12 @@ public class MusicGridAdapter extends SimpleAdapter<MusicGridAdapter.Holder, Mus
 
         public void bindData(Musician album) {
             title.setText(album.name);
+            subtitle.setText(String.format(Locale.CHINA, "热度:%d", random.nextInt() + 1000));
             Glide.with(itemView.getContext())
                     .load(album.avatar)
-                    .into(cover);
+                    .into(avatar);
         }
     }
+
+    static Random random = new Random();
 }
