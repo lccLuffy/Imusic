@@ -35,7 +35,10 @@
             android:name=".ui.MusicPlayerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.MusicianDetailActivity"
+            android:name=".ui.musician.MusicianDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.DownLoadActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service

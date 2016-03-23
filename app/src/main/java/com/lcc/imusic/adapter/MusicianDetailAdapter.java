@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.lcc.imusic.ui.home.MusicianFansFragment;
-import com.lcc.imusic.ui.home.MusicianMusicFragment;
+import com.lcc.imusic.ui.musician.MusicianFansFragment;
+import com.lcc.imusic.ui.musician.MusicianMusicFragment;
 
 import java.util.ArrayList;
 import java.util.List;

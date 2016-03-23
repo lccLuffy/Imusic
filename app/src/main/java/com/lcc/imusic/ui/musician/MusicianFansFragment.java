@@ -1,4 +1,4 @@
-package com.lcc.imusic.ui.home;
+package com.lcc.imusic.ui.musician;
 
 
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import butterknife.Bind;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class MusicianMusicFragment extends AttachFragment {
+public class MusicianFansFragment extends AttachFragment {
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -66,7 +66,7 @@ public class MusicianMusicFragment extends AttachFragment {
 
     @Override
     public String toString() {
-        return "TA的音乐";
+        return "TA的粉丝团";
     }
 
 }

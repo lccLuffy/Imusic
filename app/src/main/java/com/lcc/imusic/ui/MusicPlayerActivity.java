@@ -1,5 +1,6 @@
 package com.lcc.imusic.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.lcc.imusic.R;
@@ -9,9 +10,14 @@ import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
+import com.lcc.imusic.service.DownLoadHelper;
+import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.wiget.MusicListDialog;
 import com.lcc.imusic.wiget.StateImageView;
+import com.orhanobut.logger.Logger;
+
+import java.io.File;
 
 import butterknife.Bind;
 
@@ -22,6 +28,8 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     private CurrentMusicProvider currentMusicProvider;
 
     private MusicListDialog musicListDialog;
+
+    DownloadService.DownLoadEvent downLoadEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +96,11 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         super.onDestroy();
         if (musicListDialog != null) {
             musicListDialog.getAdapter().onDestroy();
+            musicListDialog = null;
+        }
+        if (downLoadEvent != null) {
+            DownLoadHelper.get().removeDownloadEvent(downLoadEvent);
+            downLoadEvent = null;
         }
         musicListDialog = null;
     }
@@ -97,7 +110,39 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         return R.layout.activity_music_player;
     }
 
-    private class MusicPlayerCallBackImpl implements MusicPlayerView.MusicPlayerCallBack {
+    private class MusicPlayerCallBackImpl extends MusicPlayerView.MusicPlayerCallBackAdapter {
+        @Override
+        public void onDownload() {
+            MusicItem item = currentMusicProvider.getPlayingMusic();
+            if (item != null) {
+
+                if (downLoadEvent == null) {
+                    downLoadEvent = new DownloadService.DownLoadEventAdapter() {
+                        @Override
+                        public void onDownLoadStart() {
+                            toast("onDownLoadStart");
+                        }
+
+                        @Override
+                        public void onSuccess(File file) {
+                            toast("onSuccess");
+                        }
+
+                        @Override
+                        public void onFail(Throwable throwable) {
+                            toast(throwable.toString());
+                        }
+                    };
+                    DownLoadHelper.get().addDownloadEvent(downLoadEvent);
+                }
+
+                Intent intent = new Intent(MusicPlayerActivity.this, DownloadService.class);
+                intent.putExtra("url", item.data);
+                intent.putExtra("fileName", item.title.trim() + "-" + item.artist.trim() + ".mp3");
+                Logger.i(intent.getStringExtra("fileName"));
+                startService(intent);
+            }
+        }
 
         @Override
         public void start() {
@@ -145,7 +190,6 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
             toast(StateImageView.state2String(playType));
         }
     }
-
 
     private void checkDialogIsNull() {
         if (musicListDialog == null) {

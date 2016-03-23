@@ -46,7 +46,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
         accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
-        /*download();*/
+        download();
 
     }
 
@@ -103,6 +103,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
     public List<IDrawerItem> onCreateMenuItem() {
         List<IDrawerItem> list = new ArrayList<>();
         list.add(new PrimaryDrawerItem().withName("Home").withIcon(FontAwesome.Icon.faw_home));
+        list.add(new PrimaryDrawerItem().withName("下载管理").withIcon(FontAwesome.Icon.faw_cloud_download));
         list.add(new PrimaryDrawerItem().withName("退出").withIcon(FontAwesome.Icon.faw_sign_out));
         return list;
     }
@@ -119,8 +120,11 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
     public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
         switch (position) {
             case 2:
+                startActivity(new Intent(this, DownLoadActivity.class));
+                break;
+            case 3:
                 finish();
-                stopService(new Intent(this, MusicPlayService.class));
+                startActivity(new Intent(this, MusicPlayService.class));
                 break;
         }
         return true;

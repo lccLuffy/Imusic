@@ -94,6 +94,9 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
             }
         });
 
+        View download = panel.findViewById(R.id.musicView_dl);
+        download.setOnClickListener(this);
+
         iv_prev.setOnClickListener(this);
         iv_next.setOnClickListener(this);
         musicView_src.setOnClickListener(this);
@@ -238,11 +241,64 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
                 case R.id.musicView_src:
                     musicPlayerCallBack.onShowMusicSrc();
                     break;
+                case R.id.musicView_dl:
+                    musicPlayerCallBack.onDownload();
+                    break;
             }
         }
     }
 
+    public static class MusicPlayerCallBackAdapter implements MusicPlayerCallBack {
+        @Override
+        public void onDownload() {
+
+        }
+
+        @Override
+        public void start() {
+
+        }
+
+        @Override
+        public void pause() {
+
+        }
+
+        @Override
+        public void next() {
+
+        }
+
+        @Override
+        public void prev() {
+
+        }
+
+        @Override
+        public void onShowMusicSrc() {
+
+        }
+
+        @Override
+        public void onSliderChanged(int second) {
+
+        }
+
+        @Override
+        public void onSliderFinished(int currentSecond) {
+
+        }
+
+        @Override
+        public void onPlayTypeChange(int playType) {
+
+        }
+    }
+
     public interface MusicPlayerCallBack {
+
+        void onDownload();
+
         /**
          * 开始按钮被按下
          */

@@ -1,4 +1,4 @@
-package com.lcc.imusic.ui;
+package com.lcc.imusic.ui.musician;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

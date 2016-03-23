@@ -2,13 +2,11 @@ package com.lcc.imusic.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.orhanobut.logger.Logger;
 
@@ -17,83 +15,68 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.ForwardingSource;
-import okio.Okio;
-import okio.Source;
 
 
 /**
  * Created by lcc_luffy on 2016/3/21.
  */
 public class DownloadService extends Service {
-    OkHttpClient okHttpClient = new OkHttpClient
-            .Builder()
-            /*.addNetworkInterceptor(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response response = chain.proceed(chain.request());
-                    Logger.i("intercept");
-                    return response.newBuilder()
-                            .body(new ProgressResponse(response.body()))
-                            .build();
-                }
-            })*/
-            .build();
-
-    MediaPlayer mediaPlayer;
+    OkHttpClient okHttpClient;
+    Handler handler;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.start();
-                int l = mp.getDuration() / 1000;
-                Logger.i("onPrepared,%d:%d", l / 60, l % 60);
-            }
-        });
-        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                Logger.i("error:%d,%d", what, extra);
-                return true;
-            }
-        });
+        Logger.i("DownloadService @ onCreate");
+    }
 
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                Logger.i("onCompletion");
-            }
-        });
-
-        final File file = new File(Environment.getExternalStorageDirectory(), "lcctest.mp3");
-        file.deleteOnExit();
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Logger.e(e, "");
-            }
+    private void check() {
+        if (okHttpClient == null) {
+            okHttpClient = new OkHttpClient
+                    .Builder()
+                    .build();
         }
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
+    }
 
-        final Handler handler = new Handler(Looper.getMainLooper());
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleIntent(intent);
+        return super.onStartCommand(intent, flags, startId);
+    }
 
+    private void handleIntent(Intent intent) {
+        if (intent != null) {
+            String url = intent.getStringExtra("url");
+            String fileName = intent.getStringExtra("fileName");
+            if (TextUtils.isEmpty(url) || TextUtils.isEmpty(fileName)) {
+                DownLoadHelper.get().dispatchFailEvent(new Exception("url and fileName cannot ne null"));
+                return;
+            }
+            if (!url.startsWith("http")) {
+                DownLoadHelper.get().dispatchFailEvent(new Exception("url is not right"));
+                return;
+            }
+            download(url, fileName);
+        }
+    }
 
+    private void download(String url, String fileName) {
+        check();
+
+        final File file = DownLoadHelper.makeFile(fileName);
+        if (file == null) {
+            DownLoadHelper.get().dispatchFailEvent(new Exception("create file failed!"));
+            return;
+        }
+        DownLoadHelper.get().dispatchStartEvent();
         final Request request = new Request.Builder()
-                .url("http://m2.music.126.net/ki94ZEXzV3GPc7gSA60aOA==/996157534774260.mp3")
+                .url(url)
                 .build();
         Logger.i("start download");
         new Thread(new Runnable() {
@@ -101,57 +84,48 @@ public class DownloadService extends Service {
             public void run() {
                 FileOutputStream fos = null;
                 InputStream is = null;
+                Throwable fail = null;
+                String failMsg = "";
                 try {
                     Response response = okHttpClient.newCall(request).execute();
                     if (response.isSuccessful()) {
-                        Logger.i("isSuccessful");
-                        long ed = 0;
-                        int len = 0;
-                        byte[] buf = new byte[2048];
+                        long downloadLen = 0;
+                        int readLen = 0;
+                        byte[] buffer = new byte[2048];
 
-                        long l = response.body().contentLength();
+                        long totalLen = response.body().contentLength();
                         is = response.body().byteStream();
                         fos = new FileOutputStream(file);
-
-
-                        boolean can = true;
-                        while ((len = is.read(buf)) != -1) {
-                            ed += len;
-                            fos.write(buf, 0, len);
-                            if (can && ed * 1.0f / l > 0.1f) {
-                                can = false;
-                                Logger.i("post");
-
-                                final FileOutputStream finalFos = fos;
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            mediaPlayer.setDataSource(file.getAbsolutePath());
-                                            mediaPlayer.prepareAsync();
-
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                                Logger.i("downloading:%d,(%d of %d)", len, ed, l);
-                            }
-
+                        while ((readLen = is.read(buffer)) != -1) {
+                            downloadLen += readLen;
+                            fos.write(buffer, 0, readLen);
+                            Logger.i("downloading:%d,(%d of %d)", readLen, downloadLen, totalLen);
+                            final int percent = (int) (downloadLen * 1.0f / totalLen * 100);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    DownLoadHelper.get().dispatchProgressEvent(percent);
+                                }
+                            });
                         }
                         fos.flush();
                         Logger.i("download finish");
-
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                DownLoadHelper.get().dispatchSuccessEvent(file);
+                            }
+                        });
+                        return;
                     } else {
-                        Logger.i("fail,%s", response.message());
+                        failMsg = response.message();
                     }
                 } catch (IOException e) {
+                    fail = e;
                     e.printStackTrace();
-                    Logger.e(e, "exception");
                 } catch (Throwable throwable) {
-                    Logger.e(throwable, "exception");
+                    fail = throwable;
                 } finally {
-
                     try {
                         if (fos != null)
                             fos.close();
@@ -159,60 +133,62 @@ public class DownloadService extends Service {
                             is.close();
                     } catch (IOException e) {
                         e.printStackTrace();
+                        fail = e;
                     }
-
                 }
+                final Throwable finalFail = fail;
+                final String finalFailMsg = failMsg;
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (finalFail == null) {
+                            DownLoadHelper.get().dispatchFailEvent(new Exception(finalFailMsg));
+                        } else {
+                            DownLoadHelper.get().dispatchFailEvent(finalFail);
+                        }
+                    }
+                });
             }
         }).start();
     }
-
-    private static class ProgressResponse extends ResponseBody {
-
-        private final ResponseBody responseBody;
-        private BufferedSource bufferedSource;
-
-        public ProgressResponse(ResponseBody responseBody) {
-            this.responseBody = responseBody;
-        }
-
-        @Override
-        public MediaType contentType() {
-            Logger.i(responseBody.contentType().toString());
-            return responseBody.contentType();
-        }
-
-        @Override
-        public long contentLength() {
-            return responseBody.contentLength();
-        }
-
-        @Override
-        public BufferedSource source() {
-            if (bufferedSource == null) {
-                bufferedSource = Okio.buffer(source(responseBody.source()));
-            }
-            return bufferedSource;
-        }
-
-        private Source source(Source source) {
-            return new ForwardingSource(source) {
-                long totalBytesRead = 0L;
-
-                @Override
-                public long read(Buffer sink, long byteCount) throws IOException {
-                    long bytesRead = super.read(sink, byteCount);
-                    totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                    Logger.i("%d%% done\n", (100 * totalBytesRead) / responseBody.contentLength());
-                    return bytesRead;
-                }
-            };
-        }
-    }
-
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+
+    public static class DownLoadEventAdapter implements DownLoadEvent {
+
+        @Override
+        public void onDownLoadStart() {
+
+        }
+
+        @Override
+        public void onSuccess(File file) {
+
+        }
+
+        @Override
+        public void onFail(Throwable throwable) {
+
+        }
+
+        @Override
+        public void onProgress(int percent) {
+
+        }
+    }
+
+    public interface DownLoadEvent {
+        void onDownLoadStart();
+
+        void onSuccess(File file);
+
+        void onFail(Throwable throwable);
+
+        void onProgress(int percent);
     }
 }

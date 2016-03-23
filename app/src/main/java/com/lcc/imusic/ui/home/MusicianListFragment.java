@@ -12,7 +12,7 @@ import com.lcc.imusic.adapter.MusicianRankAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.fragment.AttachFragment;
 import com.lcc.imusic.bean.Musician;
-import com.lcc.imusic.ui.MusicianDetailActivity;
+import com.lcc.imusic.ui.musician.MusicianDetailActivity;
 import com.lcc.imusic.wiget.StateLayout;
 
 import java.util.ArrayList;
