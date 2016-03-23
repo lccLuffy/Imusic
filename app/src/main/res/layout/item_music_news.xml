@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/musicNews_pic"
+        android:layout_width="128dp"
+        android:layout_height="96dp"
+        android:padding="1dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/mycover" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/musicNews_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:padding="5dp"
+            android:text="title"
+            android:textColor="@color/musicTextColorPrimary"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/musicNews_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:padding="5dp"
+            android:text="subtitle"
+            android:textColor="@color/musicTextColorSecondary"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+</LinearLayout>

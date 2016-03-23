@@ -3,6 +3,7 @@ package com.lcc.imusic.adapter;
 import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,10 +27,22 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
         data = new ArrayList<>();
     }
 
-    public void setData(List<DataType> musicItemList) {
+    public void setData(Collection<DataType> otherData) {
         data.clear();
-        data.addAll(musicItemList);
+        data.addAll(otherData);
         notifyDataSetChanged();
+    }
+
+    public void addData(Collection<DataType> otherData) {
+        if (otherData == null || otherData.isEmpty())
+            return;
+        if (otherData.isEmpty()) {
+            setData(otherData);
+            return;
+        }
+        int s = data.size();
+        data.addAll(otherData);
+        notifyItemRangeInserted(s, otherData.size());
     }
 
     @Override
