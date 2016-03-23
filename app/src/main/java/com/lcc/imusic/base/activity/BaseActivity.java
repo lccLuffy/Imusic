@@ -3,15 +3,14 @@ package com.lcc.imusic.base.activity;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.lcc.imusic.MainActivity;
 import com.lcc.imusic.R;
+import com.lcc.imusic.ui.MainActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,9 +32,6 @@ public abstract class BaseActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
-
-        BottomSheetBehavior bottomSheetBehavior;
-
 
         if(!((this instanceof MainActivity) || actionBar == null))
         {

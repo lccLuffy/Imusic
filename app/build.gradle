@@ -44,7 +44,7 @@ dependencies {
      * My own library
      */
     /** *************************************************************/
-    /*compile 'com.lcc.luffy:stateLayout:0.0.1'*/
+    compile 'com.lcc.luffy:stateLayout:0.0.2'
     /**
      * removeable
      */

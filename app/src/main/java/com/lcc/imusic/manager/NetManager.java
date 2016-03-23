@@ -16,50 +16,40 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class NetManager {
     public static final String DOMAIN = "http://115.28.69.91";
-    private static Retrofit retrofit;
+    private Retrofit retrofit;
+
+
+    private static class ClassHolder {
+        private static NetManager NET_MANAGER = new NetManager();
+    }
 
     private NetManager() {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+
+        OkHttpClient client =
+                new OkHttpClient
+                        .Builder()
+                        .addNetworkInterceptor(new AutInterceptor())
+                        .addInterceptor(loggingInterceptor)
+                        .build();
+
+        retrofit = new Retrofit
+                .Builder()
+                .baseUrl(DOMAIN + "/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
     }
 
-    public static Retrofit getRetrofit() {
-        if (retrofit == null) {
-            synchronized (NetManager.class)
-            {
-                if (retrofit == null)
-                {
-                    HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-                    loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-
-                    OkHttpClient client =
-                            new OkHttpClient
-                                    .Builder()
-                                    .addNetworkInterceptor(new AutInterceptor())
-                                    .addInterceptor(loggingInterceptor)
-                                    .build();
-
-                    retrofit = new Retrofit
-                            .Builder()
-                            .baseUrl(DOMAIN + "/api/")
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .client(client)
-                            .build();
-                }
-            }
-        }
-        return retrofit;
+    public static <T> T create(final Class<T> service) {
+        return ClassHolder.NET_MANAGER.retrofit.create(service);
     }
 
-    public static <T> T create(final Class<T> service)
-    {
-        return getRetrofit().create(service);
-    }
-
-    private static class AutInterceptor implements Interceptor
-    {
+    private static class AutInterceptor implements Interceptor {
         @Override
-        public Response intercept(Chain chain) throws IOException
-        {
+        public Response intercept(Chain chain) throws IOException {
             Request originRequest = chain.request();
             return chain.proceed(originRequest);
         }

@@ -29,6 +29,8 @@ public class MusicPlayService extends Service {
     public static final int PLAY_TYPE_ONE = 2;
     public static final int PLAY_TYPE_RANDOM = 3;
 
+    public static final String ACTION_PLAY_MUSIC_AT_INDEX = "12414125235";
+
     private MediaPlayer mediaPlayer;
     private Timer timer;
     private ProgressTask progressTask;
@@ -51,6 +53,14 @@ public class MusicPlayService extends Service {
         initMediaPlayer();
         initLocalMusicList();
         musicNotificationManager = new MusicNotificationManager(this);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && ACTION_PLAY_MUSIC_AT_INDEX.equals(intent.getAction())) {
+            playMusic(intent.getIntExtra("index", 0));
+        }
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private void initMediaPlayer() {

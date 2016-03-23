@@ -24,8 +24,6 @@ public class SimpleMusicListAdapter extends SimpleAdapter<SimpleMusicListAdapter
 
     private static List<SimpleMusicListAdapter> simpleMusicListAdapters;
 
-    OnItemClickListener onItemClickListener;
-
     public void setCurrentPlayingIndex(int currentPlayingIndex) {
         this.currentPlayingIndex = currentPlayingIndex;
     }
@@ -56,10 +54,6 @@ public class SimpleMusicListAdapter extends SimpleAdapter<SimpleMusicListAdapter
     @Override
     public MusicItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new MusicItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_music_list, parent, false));
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
     }
 
     @Override

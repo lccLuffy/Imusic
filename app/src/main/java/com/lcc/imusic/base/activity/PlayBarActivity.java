@@ -1,14 +1,10 @@
-package com.lcc.imusic;
+package com.lcc.imusic.base.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -17,40 +13,25 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.lcc.imusic.adapter.FragmentAdapter;
+import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
-import com.lcc.imusic.base.activity.AccountDelegate;
-import com.lcc.imusic.base.activity.MusicProgressCallActivity;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
 import com.lcc.imusic.model.LocalMusicProvider;
-import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
-import com.lcc.imusic.ui.home.AlbumFragment;
-import com.lcc.imusic.ui.home.LocalMusicFragment;
-import com.lcc.imusic.ui.home.NetMusicFragment;
 import com.lcc.imusic.wiget.MusicListDialog;
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 
-public class MainActivity extends MusicProgressCallActivity implements AccountDelegate.AccountListener
-        , View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-    @Bind(R.id.tabLayout)
-    SmartTabLayout tabLayout;
-
-    @Bind(R.id.viewPager)
-    ViewPager viewPager;
-
-
+/**
+ * Created by lcc_luffy on 2016/3/23.
+ */
+public abstract class PlayBarActivity extends MusicProgressCallActivity
+        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     @Bind(R.id.playBar_wrap)
     View playBar_wrap;
 
@@ -75,21 +56,18 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     @Bind(R.id.playBar_next)
     ImageView playBarPlayNext;
 
-    private AccountDelegate accountDelegate;
-
     CurrentMusicProvider currentMusicProvider;
 
+    private MusicListDialog musicListDialog;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        init();
         currentMusicProvider = CurrentMusicProviderImpl.getMusicProvider();
 
         if (currentMusicProvider.provideMusics().isEmpty()) {
             currentMusicProvider.copyToMe(LocalMusicProvider.getMusicProvider(this).provideMusics());
         }
-        accountDelegate = new AccountDelegate(this, toolbar, this);
-        accountDelegate.init();
 
         progressBar.setProgress(0);
 
@@ -97,116 +75,7 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
         playBarPlayToggle.setOnCheckedChangeListener(this);
         playBarPlayNext.setOnClickListener(this);
         playBarPlayList.setOnClickListener(this);
-        accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
-        setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
-        /*download();*/
-    }
 
-    private void download() {
-        startService(new Intent(this, DownloadService.class));
-    }
-
-
-    private void init() {
-        actionBar.setDisplayShowTitleEnabled(false);
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),
-                new LocalMusicFragment(), new NetMusicFragment(), new AlbumFragment());
-        viewPager.setAdapter(adapter);
-        tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
-            @Override
-            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
-                ImageView imageView = (ImageView) getLayoutInflater()
-                        .inflate(R.layout.tab_icon_imageview, container, false);
-                switch (position) {
-                    case 0:
-                        imageView.setImageResource(R.mipmap.actionbar_discover_selected);
-                        break;
-                    case 1:
-                        imageView.setImageResource(R.mipmap.actionbar_music_selected);
-                        break;
-                    case 2:
-                        imageView.setImageResource(R.mipmap.actionbar_friends_selected);
-                        break;
-                }
-                return imageView;
-            }
-        });
-        tabLayout.setViewPager(viewPager);
-        if (!MusicPlayService.HAS_STATED) {
-            Intent intent = new Intent(this, MusicPlayService.class);
-            startService(intent);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
-
-    @NonNull
-    @Override
-    public List<IDrawerItem> onCreateMenuItem() {
-        List<IDrawerItem> list = new ArrayList<>();
-        list.add(new PrimaryDrawerItem().withName("Home").withIcon(FontAwesome.Icon.faw_home));
-        list.add(new PrimaryDrawerItem().withName("退出").withIcon(FontAwesome.Icon.faw_sign_out));
-        return list;
-    }
-
-    @Override
-    protected void onDestroy() {
-        accountDelegate.destroy();
-        if (musicListDialog != null) {
-            musicListDialog.getAdapter().onDestroy();
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (isBind()) {
-            setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
-        }
-    }
-
-    @Override
-    public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
-        switch (position) {
-            case 2:
-                finish();
-                stopService(new Intent(this, MusicPlayService.class));
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_main;
-    }
-
-    private MusicListDialog musicListDialog;
-
-    private void checkDialogIsNull() {
-        if (musicListDialog == null) {
-            musicListDialog = new MusicListDialog(this);
-
-            musicListDialog.init().getAdapter().setData(currentMusicProvider.provideMusics());
-            musicListDialog.getAdapter().setCurrentPlayingIndex(currentMusicProvider.getPlayingMusicIndex());
-            musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(int position) {
-                    playMusic(position);
-                }
-            });
-        }
     }
 
     @Override
@@ -226,6 +95,37 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (isBind()) {
+            setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (musicListDialog != null) {
+            musicListDialog.getAdapter().onDestroy();
+        }
+        super.onDestroy();
+    }
+
+    private void checkDialogIsNull() {
+        if (musicListDialog == null) {
+            musicListDialog = new MusicListDialog(this);
+
+            musicListDialog.init().getAdapter().setData(currentMusicProvider.provideMusics());
+            musicListDialog.getAdapter().setCurrentPlayingIndex(currentMusicProvider.getPlayingMusicIndex());
+            musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    playMusic(position);
+                }
+            });
+        }
+    }
+
+    @Override
     protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
         setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
         if (musicServiceBind.isPlaying()) {
@@ -234,7 +134,10 @@ public class MainActivity extends MusicProgressCallActivity implements AccountDe
     }
 
     public void playMusic(int id) {
-        musicServiceBind.play(id);
+        Intent i = new Intent(this, MusicPlayService.class);
+        i.putExtra("index", id);
+        i.setAction(MusicPlayService.ACTION_PLAY_MUSIC_AT_INDEX);
+        startService(i);
     }
 
     private void setCurrentMusicItem(MusicItem musicItem) {

@@ -41,7 +41,7 @@ public class LocalMusicFragment extends AttachFragment {
         simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                mainActivity.playMusic(position);
+                playMusic(position);
             }
         });
     }
@@ -61,7 +61,7 @@ public class LocalMusicFragment extends AttachFragment {
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_musiclist;
+        return R.layout.fragment_list;
     }
 
     @Override

@@ -120,12 +120,13 @@ public class AccountDelegate {
     }
 
     public void destroy() {
-        drawer = null;
+        header.clear();
         header = null;
         profileDrawerItem = null;
         accountListener = null;
         activity = null;
         toolbar = null;
+        drawer = null;
     }
 
     public interface AccountListener {

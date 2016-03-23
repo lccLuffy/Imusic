@@ -1,8 +1,5 @@
 package com.lcc.imusic.adapter;
 
-import android.app.Activity;
-import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +10,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
 import com.lcc.imusic.bean.Album;
-import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,8 +25,16 @@ public class MusicGridAdapter extends SimpleAdapter<MusicGridAdapter.Holder, Alb
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(final Holder holder, final int position) {
         holder.bindData(data.get(position));
+        if (onItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(holder.getAdapterPosition());
+                }
+            });
+        }
     }
 
     protected class Holder extends RecyclerView.ViewHolder {

@@ -1,5 +1,4 @@
-package com.lcc.imusic.ui.home;
-
+package com.lcc.imusic.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
-import com.lcc.imusic.base.fragment.AttachFragment;
+import com.lcc.imusic.base.activity.PlayBarActivity;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.OnProvideMusics;
 import com.lcc.imusic.model.RemoteMusicProvider;
@@ -21,9 +20,9 @@ import java.util.List;
 import butterknife.Bind;
 
 /**
- * Created by lcc_luffy on 2016/3/8.
+ * Created by lcc_luffy on 2016/3/23.
  */
-public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class AlbumDetailActivity extends PlayBarActivity implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.stateLayout)
     StateLayout stateLayout;
 
@@ -38,18 +37,13 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
     private long id = 58451795;
     RemoteMusicProvider remoteMusicProvider;
 
-    public static RemoteMusicFragment newInstance(int id) {
-        RemoteMusicFragment fragment = new RemoteMusicFragment();
-        fragment.id = id;
-        return fragment;
-    }
-
     @Override
-    public void initialize(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         refreshLayout.setColorSchemeResources(R.color.selectedRed);
         refreshLayout.setOnRefreshListener(this);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         simpleMusicListAdapter = new SimpleMusicListAdapter();
         recyclerView.setAdapter(simpleMusicListAdapter);
@@ -62,6 +56,12 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
         remoteMusicProvider = new RemoteMusicProvider(id);
         getData();
     }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_album_detail;
+    }
+
 
     @Override
     public void onDestroy() {
@@ -102,15 +102,6 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
         });
     }
 
-    @Override
-    public int getLayoutId() {
-        return R.layout.fragment_list;
-    }
-
-    @Override
-    public String toString() {
-        return "联网音乐";
-    }
 
     @Override
     public void onRefresh() {
