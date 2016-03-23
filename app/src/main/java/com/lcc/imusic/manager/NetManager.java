@@ -32,7 +32,7 @@ public class NetManager {
                 new OkHttpClient
                         .Builder()
                         .addNetworkInterceptor(new AutInterceptor())
-                        .addInterceptor(loggingInterceptor)
+                        /*.addInterceptor(loggingInterceptor)*/
                         .build();
 
         retrofit = new Retrofit

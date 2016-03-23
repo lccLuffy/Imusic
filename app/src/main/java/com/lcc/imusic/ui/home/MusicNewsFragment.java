@@ -15,7 +15,7 @@ import butterknife.Bind;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class NetMusicFragment extends AttachFragment {
+public class MusicNewsFragment extends AttachFragment {
     @Bind(R.id.viewPage)
     ViewPager viewPager;
 
@@ -25,13 +25,7 @@ public class NetMusicFragment extends AttachFragment {
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
         super.initialize(savedInstanceState);
-        FragmentAdapter fragmentAdapter = new FragmentAdapter(getFragmentManager(),
-                RemoteMusicFragment.newInstance(58451795),
-                RemoteMusicFragment.newInstance(1),
-                RemoteMusicFragment.newInstance(317054928),
-                RemoteMusicFragment.newInstance(5845662),
-                RemoteMusicFragment.newInstance(306397077)
-        );
+        FragmentAdapter fragmentAdapter = new FragmentAdapter(getFragmentManager());
         viewPager.setAdapter(fragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -43,7 +37,7 @@ public class NetMusicFragment extends AttachFragment {
 
     @Override
     public String toString() {
-        return "网络音乐";
+        return "音乐资讯";
     }
 
 }

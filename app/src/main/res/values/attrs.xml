@@ -11,4 +11,9 @@
     <declare-styleable name="TintImageView">
         <attr name="tint" format="reference|color" />
     </declare-styleable>
+    <declare-styleable name="StateLayout">
+        <attr name="errorDrawable" format="reference" />
+        <attr name="emptyDrawable" format="reference" />
+        <attr name="progressView" format="reference" />
+    </declare-styleable>
 </resources>

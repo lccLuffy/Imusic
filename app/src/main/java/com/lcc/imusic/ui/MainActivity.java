@@ -17,9 +17,9 @@ import com.lcc.imusic.base.activity.AccountDelegate;
 import com.lcc.imusic.base.activity.PlayBarActivity;
 import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
-import com.lcc.imusic.ui.home.AlbumListFragment;
+import com.lcc.imusic.ui.home.MusicianListFragment;
 import com.lcc.imusic.ui.home.LocalMusicFragment;
-import com.lcc.imusic.ui.home.NetMusicFragment;
+import com.lcc.imusic.ui.home.MusicNewsFragment;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -58,7 +58,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
     private void init() {
         actionBar.setDisplayShowTitleEnabled(false);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),
-                new AlbumListFragment(), new LocalMusicFragment(), new NetMusicFragment());
+                new MusicianListFragment(), new LocalMusicFragment(), new MusicNewsFragment());
         viewPager.setAdapter(adapter);
         tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
@@ -67,13 +67,13 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
                         .inflate(R.layout.tab_icon_imageview, container, false);
                 switch (position) {
                     case 0:
-                        imageView.setImageResource(R.mipmap.actionbar_discover_selected);
+                        imageView.setImageResource(R.mipmap.actionbar_friends_selected);
                         break;
                     case 1:
                         imageView.setImageResource(R.mipmap.actionbar_music_selected);
                         break;
                     case 2:
-                        imageView.setImageResource(R.mipmap.actionbar_friends_selected);
+                        imageView.setImageResource(R.mipmap.actionbar_discover_selected);
                         break;
                 }
                 return imageView;

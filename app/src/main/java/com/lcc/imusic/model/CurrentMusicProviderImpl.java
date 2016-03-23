@@ -40,7 +40,7 @@ public class CurrentMusicProviderImpl implements CurrentMusicProvider {
     @Override
     public void provideMusics(OnProvideMusics onProvideMusics) {
         if (onProvideMusics != null)
-            onProvideMusics.onSuccess(musicList);
+            onProvideMusics.onSuccess(null);
     }
 
     @Override

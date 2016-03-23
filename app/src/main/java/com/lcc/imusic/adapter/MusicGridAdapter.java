@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
-import com.lcc.imusic.bean.Album;
+import com.lcc.imusic.bean.Musician;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -17,11 +17,11 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/22.
  */
-public class MusicGridAdapter extends SimpleAdapter<MusicGridAdapter.Holder, Album> {
+public class MusicGridAdapter extends SimpleAdapter<MusicGridAdapter.Holder, Musician> {
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_music, parent, false));
+        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_musicion, parent, false));
     }
 
     @Override
@@ -49,10 +49,10 @@ public class MusicGridAdapter extends SimpleAdapter<MusicGridAdapter.Holder, Alb
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindData(Album album) {
-            title.setText(album.title);
+        public void bindData(Musician album) {
+            title.setText(album.name);
             Glide.with(itemView.getContext())
-                    .load(album.cover)
+                    .load(album.avatar)
                     .into(cover);
         }
     }

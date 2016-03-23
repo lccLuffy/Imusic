@@ -18,6 +18,10 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
         this.onItemClickListener = onItemClickListener;
     }
 
+    public DataType getData(int position) {
+        return data.get(position);
+    }
+
     public SimpleAdapter() {
         data = new ArrayList<>();
     }

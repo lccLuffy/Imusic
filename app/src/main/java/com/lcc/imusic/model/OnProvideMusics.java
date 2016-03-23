@@ -1,14 +1,12 @@
 package com.lcc.imusic.model;
 
-import com.lcc.imusic.bean.MusicItem;
-
-import java.util.List;
+import com.lcc.imusic.bean.M163;
 
 /**
  * Created by lcc_luffy on 2016/3/21.
  */
 public interface OnProvideMusics {
-    void onSuccess(List<MusicItem> musicItems);
+    void onSuccess(M163 data);
 
-    void onFail(String reason);
+    void onFail(Throwable throwable);
 }

@@ -94,15 +94,7 @@ public class MusicNotificationManager {
         remoteViews.setTextViewText(R.id.notification_subtitle, musicItem.artist);
         remoteViews.setImageViewBitmap(R.id.notification_play_or_pause, pauseBitmap);
         managerCompat.notify(NOTIFICATION_ID, notification);
-        /*Glide.with(MusicPlayService.this)
-                    .load(item.cover)
-                    .placeholder(R.mipmap.mycover)
-                    .into(new SimpleTarget<GlideDrawable>() {
-                        @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                            remoteViews.setImageViewBitmap(R.id.notification_cover, Common.drawable2Bitmap(resource));
-                        }
-                    });*/
+
 
     }
 

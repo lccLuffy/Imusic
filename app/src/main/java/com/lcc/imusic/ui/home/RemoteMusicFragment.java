@@ -11,10 +11,11 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
+import com.lcc.imusic.bean.M163;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.OnProvideMusics;
 import com.lcc.imusic.model.RemoteMusicProvider;
-import com.lcc.stateLayout.StateLayout;
+import com.lcc.imusic.wiget.StateLayout;
 
 import java.util.List;
 
@@ -84,10 +85,11 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
             stateLayout.showContentView();
         remoteMusicProvider.provideMusics(new OnProvideMusics() {
             @Override
-            public void onSuccess(List<MusicItem> musicItems) {
-                simpleMusicListAdapter.setData(musicItems);
+            public void onSuccess(M163 musicItems) {
+                List<MusicItem> list = RemoteMusicProvider.m2l(musicItems);
+                simpleMusicListAdapter.setData(list);
                 refreshLayout.setRefreshing(false);
-                if (musicItems.isEmpty()) {
+                if (list.isEmpty()) {
                     stateLayout.showEmptyView();
                 } else {
                     stateLayout.showContentView();
@@ -95,7 +97,7 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
             }
 
             @Override
-            public void onFail(String reason) {
+            public void onFail(Throwable reason) {
                 stateLayout.showErrorView("网络出错");
                 refreshLayout.setRefreshing(false);
             }
