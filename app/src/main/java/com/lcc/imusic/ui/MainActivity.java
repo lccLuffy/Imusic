@@ -17,9 +17,9 @@ import com.lcc.imusic.base.activity.AccountDelegate;
 import com.lcc.imusic.base.activity.PlayBarActivity;
 import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
-import com.lcc.imusic.ui.home.MusicianListFragment;
-import com.lcc.imusic.ui.home.LocalMusicFragment;
+import com.lcc.imusic.ui.home.MusicFragment;
 import com.lcc.imusic.ui.home.MusicNewsFragment;
+import com.lcc.imusic.ui.home.MusicianListFragment;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -58,7 +58,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
     private void init() {
         actionBar.setDisplayShowTitleEnabled(false);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(),
-                new MusicianListFragment(), new LocalMusicFragment(), new MusicNewsFragment());
+                new MusicianListFragment(), new MusicFragment(), new MusicNewsFragment());
         viewPager.setAdapter(adapter);
         tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override

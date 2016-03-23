@@ -28,15 +28,12 @@ public class EventsManager {
     private EventsManager() {
     }
 
+    private static final class ClassHolder {
+        private static EventsManager eventsManager = new EventsManager();
+    }
+
     public static EventsManager get() {
-        if (eventsManager == null) {
-            synchronized (EventsManager.class) {
-                if (eventsManager == null) {
-                    eventsManager = new EventsManager();
-                }
-            }
-        }
-        return eventsManager;
+        return ClassHolder.eventsManager;
     }
 
 

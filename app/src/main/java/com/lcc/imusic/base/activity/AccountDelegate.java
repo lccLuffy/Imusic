@@ -45,7 +45,7 @@ public class AccountDelegate {
     public void init() {
         header = new AccountHeaderBuilder()
                 .withActivity(activity)
-                .withHeaderBackground(R.mipmap.user_info_bg)
+                .withHeaderBackground(R.color.colorPrimary)
                 .addProfiles(profileDrawerItem = new ProfileDrawerItem().withEmail("username").withName("email@example.com"))
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -56,6 +56,7 @@ public class AccountDelegate {
                     }
                 })
                 .build();
+
 
         final PrimaryDrawerItem setting = new PrimaryDrawerItem()
                 .withIcon(FontAwesome.Icon.faw_cogs)

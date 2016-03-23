@@ -49,8 +49,10 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     @Override
     public void onMusicReady(MusicItem musicItem) {
         canAutoProgress = true;
-        musicPlayerView.setTotalProgress(musicServiceBind.getTotalTime());
-        musicPlayerView.setPlayBtnState(true);
+        if (musicPlayerView != null) {
+            musicPlayerView.setTotalProgress(musicServiceBind.getTotalTime());
+            musicPlayerView.setPlayBtnState(true);
+        }
     }
 
     @Override
