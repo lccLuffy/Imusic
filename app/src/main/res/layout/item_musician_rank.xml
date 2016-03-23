@@ -4,49 +4,79 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="5dp">
-
-    <TextView
-        android:id="@+id/musicianRank_pos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:text="1"
-        android:textColor="@color/md_red_300"
-        android:textSize="36dp"
-        android:textStyle="italic"
-        android:typeface="serif" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/musicianRank_avatar"
-        android:layout_width="90dp"
-        android:layout_height="90dp" />
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-        <TextView
-            android:id="@+id/musicianRank_title"
+        <LinearLayout
+            android:layout_width="64dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/musicianRank_pos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="1"
+                android:textColor="@color/md_red_300"
+                android:textSize="36dp"
+                android:textStyle="italic"
+                android:typeface="serif" />
+
+            <TextView
+                android:id="@+id/musicianRank_upDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="5dp"
+                android:drawableStart="@mipmap/list_icn_up"
+                android:text="51"
+                android:textColor="@color/musicTextColorSecondary"
+                android:textSize="10dp" />
+        </LinearLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/musicianRank_avatar"
+            android:layout_width="90dp"
+            android:layout_height="90dp" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lines="1"
-            android:padding="5dp"
-            android:text="title"
-            android:textColor="@color/musicTextColorPrimary"
-            android:textSize="16dp" />
+            android:orientation="vertical"
+            android:paddingStart="10dp">
 
-        <TextView
-            android:id="@+id/musicianRank_subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:padding="5dp"
-            android:text="subtitle"
-            android:textColor="@color/musicTextColorSecondary"
-            android:textSize="12dp" />
+            <TextView
+                android:id="@+id/musicianRank_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:padding="5dp"
+                android:text="title"
+                android:textColor="@color/musicTextColorPrimary"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/musicianRank_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:padding="5dp"
+                android:text="subtitle"
+                android:textColor="@color/musicTextColorSecondary"
+                android:textSize="12dp" />
+        </LinearLayout>
     </LinearLayout>
+
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="250dp"
+        android:layout_height="0.75dp"
+        android:layout_gravity="end"
+        android:background="@color/divider" />
 </LinearLayout>
