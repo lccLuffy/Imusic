@@ -4,14 +4,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.DownloadAdapter;
 import com.lcc.imusic.base.activity.BaseActivity;
 import com.lcc.imusic.bean.DlBean;
+import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.service.DownLoadHelper;
 import com.lcc.imusic.service.DownloadService;
-import com.lcc.imusic.wiget.StateLayout;
 
 import java.io.File;
 
@@ -21,11 +23,17 @@ import butterknife.Bind;
  * Created by lcc_luffy on 2016/3/23.
  */
 public class DownLoadActivity extends BaseActivity implements DownloadService.DownLoadEvent {
-    @Bind(R.id.stateLayout)
-    StateLayout stateLayout;
-
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
+
+    @Bind(R.id.download_title)
+    TextView title;
+
+    @Bind(R.id.download_subtitle)
+    TextView subtitle;
+
+    @Bind(R.id.download_progress)
+    ProgressBar progressBar;
 
     DownloadAdapter downloadAdapter;
 
@@ -36,8 +44,14 @@ public class DownLoadActivity extends BaseActivity implements DownloadService.Do
         DownLoadHelper.get().addDownloadEvent(this);
         downloadAdapter = new DownloadAdapter();
         recyclerView.setAdapter(downloadAdapter);
-        downloadAdapter.addData(DownLoadHelper.get().getDownloadingDlBean());
         downloadAdapter.addData(DownLoadHelper.get().getDownloadQueue());
+        DlBean<MusicItem> dlBean = DownLoadHelper.get().getDownloadingDlBean();
+        if (dlBean != null) {
+            title.setText(dlBean.data.title);
+            subtitle.setText(dlBean.data.artist);
+        } else {
+            title.setText("没有下载的任务");
+        }
     }
 
     @Override
@@ -53,15 +67,11 @@ public class DownLoadActivity extends BaseActivity implements DownloadService.Do
 
     @Override
     public void onStart(DlBean dlBean) {
-        toast("start download " + dlBean.fileName);
     }
 
     @Override
     public void onSuccess(DlBean dlBean, File file) {
-        toast("download " + dlBean.fileName + "success");
-        downloadAdapter.addData(DownLoadHelper.get().getDownloadingDlBean());
-        downloadAdapter.addData(DownLoadHelper.get().getDownloadQueue());
-
+        downloadAdapter.setData(DownLoadHelper.get().getDownloadQueue());
     }
 
     @Override
@@ -71,7 +81,6 @@ public class DownLoadActivity extends BaseActivity implements DownloadService.Do
 
     @Override
     public void onProgress(DlBean dlBean, int percent) {
-        downloadAdapter.setProgress(percent);
-        downloadAdapter.notifyItemChanged(0);
+        progressBar.setProgress(percent);
     }
 }

@@ -130,9 +130,9 @@ public final class DownLoadHelper {
         return dlBeanList;
     }
 
-    private DlBean downloadingDlBean;
+    private DlBean<MusicItem> downloadingDlBean;
 
-    public DlBean getDownloadingDlBean() {
+    public DlBean<MusicItem> getDownloadingDlBean() {
         return downloadingDlBean;
     }
 

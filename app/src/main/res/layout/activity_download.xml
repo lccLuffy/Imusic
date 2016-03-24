@@ -23,16 +23,18 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.lcc.imusic.wiget.StateLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
         android:id="@+id/stateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include layout="@layout/item_download" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.lcc.imusic.wiget.StateLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

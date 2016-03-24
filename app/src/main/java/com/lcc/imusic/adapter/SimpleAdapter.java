@@ -29,10 +29,8 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
     }
 
     public void setData(Collection<DataType> otherData) {
-        if (otherData == null || otherData.isEmpty()) {
-            data.clear();
-        } else {
-            data.clear();
+        data.clear();
+        if (!(otherData == null || otherData.isEmpty())) {
             data.addAll(otherData);
         }
         notifyDataSetChanged();

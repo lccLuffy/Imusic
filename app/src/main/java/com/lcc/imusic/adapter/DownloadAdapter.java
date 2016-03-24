@@ -18,11 +18,6 @@ import butterknife.ButterKnife;
  * Created by lcc_luffy on 2016/3/24.
  */
 public class DownloadAdapter extends SimpleAdapter<DownloadAdapter.Holder, DlBean<MusicItem>> {
-    public void setProgress(int progress) {
-        this.progress = progress;
-    }
-
-    private int progress;
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -55,7 +50,6 @@ public class DownloadAdapter extends SimpleAdapter<DownloadAdapter.Holder, DlBea
             if (dlBean.isDownloading) {
                 subtitle.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
-                progressBar.setProgress(progress);
             } else {
                 subtitle.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
