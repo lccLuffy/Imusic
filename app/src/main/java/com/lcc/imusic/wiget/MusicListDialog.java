@@ -29,12 +29,9 @@ public class MusicListDialog extends BottomSheetDialog implements View.OnClickLi
     private SimpleMusicListAdapter adapter;
     RecyclerView recyclerView;
 
-    View download;
 
     public MusicListDialog init() {
         View content = getLayoutInflater().inflate(R.layout.dialog_bottom_music_play, null);
-        download = content.findViewById(R.id.download_all);
-        download.setOnClickListener(this);
         recyclerView = (RecyclerView) content.findViewById(R.id.dialog_recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

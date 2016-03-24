@@ -97,6 +97,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         View download = panel.findViewById(R.id.musicView_dl);
         download.setOnClickListener(this);
 
+        panel.findViewById(R.id.musicView_cmt).setOnClickListener(this);
+
         iv_prev.setOnClickListener(this);
         iv_next.setOnClickListener(this);
         musicView_src.setOnClickListener(this);
@@ -244,11 +246,19 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
                 case R.id.musicView_dl:
                     musicPlayerCallBack.onDownload();
                     break;
+                case R.id.musicView_cmt:
+                    musicPlayerCallBack.onComment();
+                    break;
             }
         }
     }
 
     public static class MusicPlayerCallBackAdapter implements MusicPlayerCallBack {
+        @Override
+        public void onComment() {
+
+        }
+
         @Override
         public void onDownload() {
 
@@ -296,6 +306,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     }
 
     public interface MusicPlayerCallBack {
+
+        void onComment();
 
         void onDownload();
 

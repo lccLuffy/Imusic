@@ -141,6 +141,11 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         }
 
         @Override
+        public void onComment() {
+            startActivity(new Intent(MusicPlayerActivity.this, CommentActivity.class));
+        }
+
+        @Override
         public void start() {
             musicServiceBind.startPlayOrResume();
         }

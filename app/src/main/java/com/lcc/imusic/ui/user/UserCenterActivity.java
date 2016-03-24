@@ -22,6 +22,7 @@ public class UserCenterActivity extends UserActivity {
     @Bind(R.id.tabLayout)
     TabLayout tabLayout;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

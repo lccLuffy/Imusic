@@ -2,17 +2,23 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentPanel"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.setting.SettingActivity">
+    tools:context=".ui.CommentActivity">
 
     <include layout="@layout/include_appbarlayout" />
 
-    <fragment
-        android:id="@+id/settings"
-        android:name="com.lcc.imusic.ui.setting.SettingFragment"
+    <com.lcc.imusic.wiget.StateLayout
+        android:id="@+id/stateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.lcc.imusic.wiget.StateLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -40,6 +40,9 @@
         <activity
             android:name=".ui.DownLoadActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.CommentActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.MusicPlayService"

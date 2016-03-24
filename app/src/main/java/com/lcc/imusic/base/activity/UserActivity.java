@@ -36,10 +36,10 @@ public abstract class UserActivity extends PlayBarActivity {
     @Bind(R.id.userInfoWrapper)
     LinearLayout linearLayout;
 
-    private String username;
-
     @Bind(R.id.beautyView)
     BeautyView beautyView;
+
+    private String username;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +87,6 @@ public abstract class UserActivity extends PlayBarActivity {
                 animateIn(linearLayout);
                 /*animateIn(username_tv);*/
             }
-            beautyView.onPullProgress(bounce, percent);
         }
 
 
