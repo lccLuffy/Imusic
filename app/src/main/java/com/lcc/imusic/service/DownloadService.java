@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.support.annotation.WorkerThread;
 
+import com.lcc.imusic.bean.DlBean;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -51,105 +53,127 @@ public class DownloadService extends Service {
     }
 
     private void handleIntent(Intent intent) {
-        if (intent != null) {
-            String url = intent.getStringExtra("url");
-            String fileName = intent.getStringExtra("fileName");
-            if (TextUtils.isEmpty(url) || TextUtils.isEmpty(fileName)) {
-                DownLoadHelper.get().dispatchFailEvent(new Exception("url and fileName cannot ne null"));
-                return;
+        startDownload();
+    }
+
+    private void startDownload() {
+        DlBean dlBean = DownLoadHelper.get().top();
+        if (dlBean == null) {
+            DownLoadHelper.get().dispatchFailEvent(DlBean.EMPTY_DL_BEAN, new Exception("cannot download empty!"));
+            return;
+        }
+        check();
+        new DownloadThread().start();
+    }
+
+
+    private class DownloadThread extends Thread {
+        @Override
+        public void run() {
+            DlBean dlBean = DownLoadHelper.get().pop();
+            while (dlBean != null) {
+                download(dlBean);
+                dlBean = DownLoadHelper.get().pop();
             }
-            if (!url.startsWith("http")) {
-                DownLoadHelper.get().dispatchFailEvent(new Exception("url is not right"));
-                return;
-            }
-            download(url, fileName);
         }
     }
 
-    private void download(String url, String fileName) {
-        check();
-
-        final File file = DownLoadHelper.makeFile(fileName);
-        if (file == null) {
-            DownLoadHelper.get().dispatchFailEvent(new Exception("create file failed!"));
+    @WorkerThread
+    private void download(@NonNull final DlBean dlBean) {
+        if (!dlBean.url.startsWith("http")) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    DownLoadHelper.get().dispatchFailEvent(dlBean, new IllegalArgumentException("unexpected url:" + dlBean.url));
+                }
+            });
             return;
         }
-        DownLoadHelper.get().dispatchStartEvent();
+        final File file = DownLoadHelper.makeFile(dlBean.fileName);
+        if (file == null) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    DownLoadHelper.get().dispatchFailEvent(dlBean, new Exception("create file failed!"));
+                }
+            });
+            return;
+        }
         final Request request = new Request.Builder()
-                .url(url)
+                .url(dlBean.url)
                 .build();
-        Logger.i("start download");
-        new Thread(new Runnable() {
+        FileOutputStream fos = null;
+        InputStream is = null;
+        Throwable fail = null;
+        String failMsg = "";
+        handler.post(new Runnable() {
             @Override
             public void run() {
-                FileOutputStream fos = null;
-                InputStream is = null;
-                Throwable fail = null;
-                String failMsg = "";
-                try {
-                    Response response = okHttpClient.newCall(request).execute();
-                    if (response.isSuccessful()) {
-                        long downloadLen = 0;
-                        int readLen = 0;
-                        byte[] buffer = new byte[2048];
+                DownLoadHelper.get().dispatchStartEvent(dlBean);
+            }
+        });
+        try {
+            Response response = okHttpClient.newCall(request).execute();
+            if (response.isSuccessful()) {
+                long downloadLen = 0;
+                int readLen = 0;
+                byte[] buffer = new byte[2048];
 
-                        long totalLen = response.body().contentLength();
-                        is = response.body().byteStream();
-                        fos = new FileOutputStream(file);
-                        while ((readLen = is.read(buffer)) != -1) {
-                            downloadLen += readLen;
-                            fos.write(buffer, 0, readLen);
-                            Logger.i("downloading:%d,(%d of %d)", readLen, downloadLen, totalLen);
-                            final int percent = (int) (downloadLen * 1.0f / totalLen * 100);
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    DownLoadHelper.get().dispatchProgressEvent(percent);
-                                }
-                            });
+                long totalLen = response.body().contentLength();
+                is = response.body().byteStream();
+                fos = new FileOutputStream(file);
+                while ((readLen = is.read(buffer)) != -1) {
+                    downloadLen += readLen;
+                    fos.write(buffer, 0, readLen);
+                    Logger.i("downloading:%d,(%d of %d)", readLen, downloadLen, totalLen);
+                    final int percent = (int) (downloadLen * 1.0f / totalLen * 100);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            DownLoadHelper.get().dispatchProgressEvent(dlBean, percent);
                         }
-                        fos.flush();
-                        Logger.i("download finish");
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                DownLoadHelper.get().dispatchSuccessEvent(file);
-                            }
-                        });
-                        return;
-                    } else {
-                        failMsg = response.message();
-                    }
-                } catch (IOException e) {
-                    fail = e;
-                    e.printStackTrace();
-                } catch (Throwable throwable) {
-                    fail = throwable;
-                } finally {
-                    try {
-                        if (fos != null)
-                            fos.close();
-                        if (is != null)
-                            is.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        fail = e;
-                    }
+                    });
                 }
-                final Throwable finalFail = fail;
-                final String finalFailMsg = failMsg;
+                fos.flush();
+                Logger.i("download finish");
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (finalFail == null) {
-                            DownLoadHelper.get().dispatchFailEvent(new Exception(finalFailMsg));
-                        } else {
-                            DownLoadHelper.get().dispatchFailEvent(finalFail);
-                        }
+                        DownLoadHelper.get().dispatchSuccessEvent(dlBean, file);
                     }
                 });
+                return;
+            } else {
+                failMsg = response.message();
             }
-        }).start();
+        } catch (IOException e) {
+            fail = e;
+            e.printStackTrace();
+        } catch (Throwable throwable) {
+            fail = throwable;
+        } finally {
+            try {
+                if (fos != null)
+                    fos.close();
+                if (is != null)
+                    is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                fail = e;
+            }
+        }
+        final Throwable finalFail = fail;
+        final String finalFailMsg = failMsg;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (finalFail == null) {
+                    DownLoadHelper.get().dispatchFailEvent(dlBean, new Exception(finalFailMsg));
+                } else {
+                    DownLoadHelper.get().dispatchFailEvent(dlBean, finalFail);
+                }
+            }
+        });
     }
 
     @Nullable
@@ -159,36 +183,35 @@ public class DownloadService extends Service {
     }
 
 
-    public static class DownLoadEventAdapter implements DownLoadEvent {
-
+    public static class DownLoadEventAdapter<T> implements DownLoadEvent<T> {
         @Override
-        public void onDownLoadStart() {
+        public void onStart(DlBean<T> dlBean) {
 
         }
 
         @Override
-        public void onSuccess(File file) {
+        public void onSuccess(DlBean<T> dlBean, File file) {
 
         }
 
         @Override
-        public void onFail(Throwable throwable) {
+        public void onFail(DlBean<T> dlBean, Throwable throwable) {
 
         }
 
         @Override
-        public void onProgress(int percent) {
+        public void onProgress(DlBean<T> dlBean, int percent) {
 
         }
     }
 
-    public interface DownLoadEvent {
-        void onDownLoadStart();
+    public interface DownLoadEvent<T> {
+        void onStart(DlBean<T> dlBean);
 
-        void onSuccess(File file);
+        void onSuccess(DlBean<T> dlBean, File file);
 
-        void onFail(Throwable throwable);
+        void onFail(DlBean<T> dlBean, Throwable throwable);
 
-        void onProgress(int percent);
+        void onProgress(DlBean<T> dlBean, int percent);
     }
 }

@@ -2,10 +2,12 @@ package com.lcc.imusic.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.activity.MusicProgressCallActivity;
+import com.lcc.imusic.bean.DlBean;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
@@ -15,7 +17,6 @@ import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.wiget.MusicListDialog;
 import com.lcc.imusic.wiget.StateImageView;
-import com.orhanobut.logger.Logger;
 
 import java.io.File;
 
@@ -36,6 +37,23 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         super.onCreate(savedInstanceState);
         currentMusicProvider = CurrentMusicProviderImpl.getMusicProvider();
         setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
+        downLoadEvent = new DownloadService.DownLoadEventAdapter() {
+            @Override
+            public void onStart(DlBean dlBean) {
+                toast("start download " + dlBean.fileName);
+            }
+
+            @Override
+            public void onSuccess(DlBean dlBean, File file) {
+                toast("download " + dlBean.fileName + "success");
+            }
+
+            @Override
+            public void onFail(DlBean dlBean, Throwable throwable) {
+                toast("download " + dlBean.fileName + " failed," + throwable.getMessage());
+            }
+        };
+        DownLoadHelper.get().addDownloadEvent(downLoadEvent);
     }
 
     @Override
@@ -57,7 +75,7 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     @Override
     public void onMusicReady(MusicItem musicItem) {
         canAutoProgress = true;
-        if (musicPlayerView != null) {
+        if (musicServiceBind != null) {
             musicPlayerView.setTotalProgress(musicServiceBind.getTotalTime());
             musicPlayerView.setPlayBtnState(true);
         }
@@ -115,31 +133,9 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         public void onDownload() {
             MusicItem item = currentMusicProvider.getPlayingMusic();
             if (item != null) {
-
-                if (downLoadEvent == null) {
-                    downLoadEvent = new DownloadService.DownLoadEventAdapter() {
-                        @Override
-                        public void onDownLoadStart() {
-                            toast("onDownLoadStart");
-                        }
-
-                        @Override
-                        public void onSuccess(File file) {
-                            toast("onSuccess");
-                        }
-
-                        @Override
-                        public void onFail(Throwable throwable) {
-                            toast(throwable.toString());
-                        }
-                    };
-                    DownLoadHelper.get().addDownloadEvent(downLoadEvent);
-                }
-
+                DlBean<MusicItem> dlBean = new DlBean<>(item.data, item.title.trim() + "-" + item.artist.trim() + ".mp3", item);
+                DownLoadHelper.get().enqueue(dlBean);
                 Intent intent = new Intent(MusicPlayerActivity.this, DownloadService.class);
-                intent.putExtra("url", item.data);
-                intent.putExtra("fileName", item.title.trim() + "-" + item.artist.trim() + ".mp3");
-                Logger.i(intent.getStringExtra("fileName"));
                 startService(intent);
             }
         }
@@ -194,7 +190,13 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     private void checkDialogIsNull() {
         if (musicListDialog == null) {
             musicListDialog = new MusicListDialog(this);
-
+            musicListDialog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toast("download all");
+                    DownLoadHelper.get().downloadAll(MusicPlayerActivity.this, currentMusicProvider.provideMusics());
+                }
+            });
             musicListDialog.init().getAdapter().setData(currentMusicProvider.provideMusics());
             musicListDialog.getAdapter().setCurrentPlayingIndex(currentMusicProvider.getPlayingMusicIndex());
             musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {

@@ -48,6 +48,6 @@ dependencies {
     /**
      * removeable
      */
-
+    compile 'com.github.moduth:blockcanary-ui:1.2.0'
     compile 'com.orhanobut:logger:1.9'
 }

@@ -43,7 +43,6 @@ public class SimpleMusicListAdapter extends SimpleAdapter<SimpleMusicListAdapter
         simpleMusicListAdapters.add(this);
     }
 
-
     public void setData(List<MusicItem> musicItemList, int currentPlayingIndex) {
         this.currentPlayingIndex = currentPlayingIndex;
         data.clear();

@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.lcc.imusic.service.MusicPlayService;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
@@ -22,22 +24,23 @@ public class App extends Application {
 
     private static App app;
 
-    public static int screenWidth, screenHeight;
-
     @Override
     public void onCreate() {
         super.onCreate();
+        BlockCanary.install(this, new BlockCanaryContext() {
+            @Override
+            public int getConfigBlockThreshold() {
+                return 400;
+            }
+        }).start();
         app = this;
         Logger.init("main");
         DrawerImageLoader.init(new ImageLoader());
-
         /*setTheme(R.style.AppThemeNight);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);*/
         WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(dm);
-        screenWidth = dm.widthPixels;
-        screenHeight = dm.heightPixels;
         Intent intent = new Intent(this, MusicPlayService.class);
         startService(intent);
     }

@@ -2,11 +2,13 @@ package com.lcc.imusic.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.adapter.DownloadAdapter;
 import com.lcc.imusic.base.activity.BaseActivity;
+import com.lcc.imusic.bean.DlBean;
 import com.lcc.imusic.service.DownLoadHelper;
 import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.wiget.StateLayout;
@@ -25,13 +27,17 @@ public class DownLoadActivity extends BaseActivity implements DownloadService.Do
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    @Bind(R.id.refreshLayout)
-    SwipeRefreshLayout refreshLayout;
+    DownloadAdapter downloadAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         DownLoadHelper.get().addDownloadEvent(this);
+        downloadAdapter = new DownloadAdapter();
+        recyclerView.setAdapter(downloadAdapter);
+        downloadAdapter.addData(DownLoadHelper.get().getDownloadingDlBean());
+        downloadAdapter.addData(DownLoadHelper.get().getDownloadQueue());
     }
 
     @Override
@@ -46,22 +52,26 @@ public class DownLoadActivity extends BaseActivity implements DownloadService.Do
     }
 
     @Override
-    public void onDownLoadStart() {
-        toast("start");
+    public void onStart(DlBean dlBean) {
+        toast("start download " + dlBean.fileName);
     }
 
     @Override
-    public void onSuccess(File file) {
-        toast(file.getAbsolutePath());
+    public void onSuccess(DlBean dlBean, File file) {
+        toast("download " + dlBean.fileName + "success");
+        downloadAdapter.addData(DownLoadHelper.get().getDownloadingDlBean());
+        downloadAdapter.addData(DownLoadHelper.get().getDownloadQueue());
+
     }
 
     @Override
-    public void onFail(Throwable throwable) {
-        toast(throwable.toString());
+    public void onFail(DlBean dlBean, Throwable throwable) {
+        toast("download " + dlBean.fileName + " failed," + throwable.getMessage());
     }
 
     @Override
-    public void onProgress(int percent) {
-        toast(String.valueOf(percent));
+    public void onProgress(DlBean dlBean, int percent) {
+        downloadAdapter.setProgress(percent);
+        downloadAdapter.notifyItemChanged(0);
     }
 }
