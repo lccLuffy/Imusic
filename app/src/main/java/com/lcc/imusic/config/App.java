@@ -30,7 +30,7 @@ public class App extends Application {
         BlockCanary.install(this, new BlockCanaryContext() {
             @Override
             public int getConfigBlockThreshold() {
-                return 400;
+                return 600;
             }
         }).start();
         app = this;

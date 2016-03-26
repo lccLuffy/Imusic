@@ -16,8 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/app_name"
+            android:name=".ui.SplashActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -25,6 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ui.setting.SettingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -43,6 +47,9 @@
         <activity
             android:name=".ui.CommentActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.MusicPlayService"
@@ -52,7 +59,8 @@
             android:name=".service.DownloadService"
             android:enabled="true"
             android:exported="true" />
-        <!--<receiver
+        <!--
+        <receiver
             android:name=".service.MusicControllerReceiver"
             android:enabled="true"
             android:exported="true">
@@ -61,7 +69,9 @@
                 <action android:name="com.lcc.music.next" />
                 <action android:name="com.lcc.music.pause" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
+        -->
+
     </application>
 
 </manifest>

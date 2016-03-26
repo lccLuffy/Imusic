@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
         accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
-        download();
+        /*download();*/
 
     }
 
@@ -94,8 +96,12 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                startActivity(new Intent(this, SearchActivity.class));
+                break;
+        }
+        return true;
     }
 
     @NonNull
@@ -112,7 +118,17 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
     protected void onDestroy() {
         accountDelegate.destroy();
         accountDelegate = null;
+        Logger.i("onDestroy");
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(false);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 
@@ -124,7 +140,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
                 break;
             case 3:
                 finish();
-                startActivity(new Intent(this, MusicPlayService.class));
+                stopService(new Intent(this, MusicPlayService.class));
                 break;
         }
         return true;

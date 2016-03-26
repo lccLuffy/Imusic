@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 public abstract class BaseActivity extends AppCompatActivity {
 
     @Bind(R.id.toolbar)
+    @Nullable
     protected Toolbar toolbar;
 
     protected ActionBar actionBar;
