@@ -185,14 +185,12 @@ public class StateLayout extends FrameLayout {
         switchWithAnimation(progressView);
     }
 
-    public void setErrorAction(@Nullable String action, final OnClickListener onErrorButtonClickListener) {
-        errorTextView.setText(action);
+    public void setErrorAction(final OnClickListener onErrorButtonClickListener) {
         errorView.setOnClickListener(onErrorButtonClickListener);
     }
 
 
-    public void setEmptyAction(@Nullable String action, final OnClickListener onEmptyButtonClickListener) {
-        emptyTextView.setText(action);
+    public void setEmptyAction(final OnClickListener onEmptyButtonClickListener) {
         emptyView.setOnClickListener(onEmptyButtonClickListener);
     }
 

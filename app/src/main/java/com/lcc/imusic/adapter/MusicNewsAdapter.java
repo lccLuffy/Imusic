@@ -18,19 +18,15 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/23.
  */
-public class MusicNewsAdapter extends FreshAdapter<MusicNewsAdapter.Holder, MusicNews> {
-
-    public MusicNewsAdapter(Context context) {
-        super(context);
-    }
+public class MusicNewsAdapter extends SimpleAdapter<MusicNewsAdapter.Holder, MusicNews> {
 
     @Override
-    public RecyclerView.ViewHolder onCreateHolder(ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_music_news, parent, false));
     }
 
     @Override
-    public void onBind(Holder holder, int position) {
+    public void onBindViewHolder(Holder holder, int position) {
         holder.bind(data.get(position));
     }
 

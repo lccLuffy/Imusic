@@ -3,6 +3,7 @@ package com.lcc.imusic.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
+import android.view.View;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.base.activity.BaseActivity;
@@ -29,14 +30,7 @@ public class SearchActivity extends BaseActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                toast("searching:" + query);
-                stateLayout.showProgressView();
-                stateLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        stateLayout.showEmptyView("nothing had been searched");
-                    }
-                }, 1000);
+                search();
                 return false;
             }
 
@@ -45,6 +39,22 @@ public class SearchActivity extends BaseActivity {
                 return false;
             }
         });
+        stateLayout.setEmptyAction(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search();
+            }
+        });
+    }
+
+    public void search() {
+        stateLayout.showProgressView();
+        stateLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                stateLayout.showEmptyView("nothing had been searched");
+            }
+        }, 1000);
     }
 
     @Override
