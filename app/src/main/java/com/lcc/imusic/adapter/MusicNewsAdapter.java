@@ -1,5 +1,6 @@
 package com.lcc.imusic.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +18,19 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/23.
  */
-public class MusicNewsAdapter extends SimpleAdapter<MusicNewsAdapter.Holder, MusicNews> {
+public class MusicNewsAdapter extends FreshAdapter<MusicNewsAdapter.Holder, MusicNews> {
+
+    public MusicNewsAdapter(Context context) {
+        super(context);
+    }
+
     @Override
-    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateHolder(ViewGroup parent, int viewType) {
         return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_music_news, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBind(Holder holder, int position) {
         holder.bind(data.get(position));
     }
 

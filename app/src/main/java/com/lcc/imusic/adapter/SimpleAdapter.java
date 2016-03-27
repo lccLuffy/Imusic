@@ -1,6 +1,7 @@
 package com.lcc.imusic.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +14,7 @@ import java.util.List;
 public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, DataType> extends RecyclerView.Adapter<Holder> {
 
     protected List<DataType> data;
-
+    protected LayoutInflater inflater;
     protected OnItemClickListener onItemClickListener;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -75,6 +76,7 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
         Collections.addAll(data, otherData);
         notifyItemRangeInserted(s, otherData.length);
     }
+
 
     @Override
     public int getItemCount() {

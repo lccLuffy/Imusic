@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.adapter.FreshAdapter;
 import com.lcc.imusic.adapter.MusicNewsAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
 import com.lcc.imusic.bean.MusicNews;
@@ -16,6 +17,7 @@ import com.lcc.imusic.wiget.StateLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 
@@ -32,7 +34,7 @@ public class MusicNewsFragment extends AttachFragment implements OnRefreshListen
     @Bind(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
-    MusicNewsAdapter musicNewsAdapter;
+    MusicNewsAdapter adapter;
 
     static List<MusicNews> list;
 
@@ -79,10 +81,17 @@ public class MusicNewsFragment extends AttachFragment implements OnRefreshListen
     public void initialize(@Nullable Bundle savedInstanceState) {
         super.initialize(savedInstanceState);
         refreshLayout.setOnRefreshListener(this);
-        musicNewsAdapter = new MusicNewsAdapter();
+        adapter = new MusicNewsAdapter(context);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(musicNewsAdapter);
-        getData();
+        recyclerView.setAdapter(adapter);
+        adapter.showLoadMoreView();
+        addData();
+        adapter.setLoadMoreListener(new FreshAdapter.LoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                addData();
+            }
+        });
     }
 
     @Override
@@ -90,17 +99,38 @@ public class MusicNewsFragment extends AttachFragment implements OnRefreshListen
         return R.layout.fragment_list;
     }
 
-    boolean first = true;
 
-    private void getData() {
-        recyclerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                musicNewsAdapter.addData(list);
-                refreshLayout.setRefreshing(false);
-            }
-        }, first ? 0 : 2000);
-        first = false;
+    Random random = new Random(System.currentTimeMillis());
+
+    private void addData() {
+
+        int r = random.nextInt(10);
+        if (r >= 8) {
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.showErrorView();
+                    refreshLayout.setRefreshing(false);
+                }
+            }, 1500);
+        } else if (r >= 5) {
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.hide();
+                    refreshLayout.setRefreshing(false);
+                }
+            }, 1500);
+        }
+        else {
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.addData(list);
+                    refreshLayout.setRefreshing(false);
+                }
+            }, 1500);
+        }
     }
 
     @Override
@@ -110,6 +140,6 @@ public class MusicNewsFragment extends AttachFragment implements OnRefreshListen
 
     @Override
     public void onRefresh() {
-        getData();
+        adapter.setData(list);
     }
 }
