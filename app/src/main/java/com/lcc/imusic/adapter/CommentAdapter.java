@@ -23,8 +23,7 @@ public class CommentAdapter extends SimpleAdapter<CommentAdapter.Holder, Comment
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (inflater == null)
-            inflater = LayoutInflater.from(parent.getContext());
+        super.onCreateViewHolder(parent, viewType);
         return new Holder(inflater.inflate(R.layout.item_comment, parent, false));
     }
 

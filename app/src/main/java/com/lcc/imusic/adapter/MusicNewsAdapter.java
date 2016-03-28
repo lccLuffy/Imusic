@@ -1,8 +1,6 @@
 package com.lcc.imusic.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,7 +20,8 @@ public class MusicNewsAdapter extends SimpleAdapter<MusicNewsAdapter.Holder, Mus
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_music_news, parent, false));
+        super.onCreateViewHolder(parent, viewType);
+        return new Holder(inflater.inflate(R.layout.item_music_news, parent, false));
     }
 
     @Override

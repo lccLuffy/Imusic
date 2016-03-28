@@ -2,7 +2,6 @@ package com.lcc.imusic.adapter;
 
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,7 +24,8 @@ public class MusicianRankAdapter extends SimpleAdapter<MusicianRankAdapter.Holde
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_musician_rank, parent, false));
+        super.onCreateViewHolder(parent, viewType);
+        return new Holder(inflater.inflate(R.layout.item_musician_rank, parent, false));
     }
 
     @Override

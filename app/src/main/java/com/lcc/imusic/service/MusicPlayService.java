@@ -128,7 +128,7 @@ public class MusicPlayService extends Service {
     }
 
     public void nextMusic() {
-        int r = 0;
+        int r;
         if (currentIndex != -1) {
             r = currentIndex + 1;
         } else {
@@ -140,7 +140,7 @@ public class MusicPlayService extends Service {
     }
 
     public void prevMusic() {
-        int r = 0;
+        int r;
         if (currentIndex != -1) {
             r = currentIndex - 1;
         } else {

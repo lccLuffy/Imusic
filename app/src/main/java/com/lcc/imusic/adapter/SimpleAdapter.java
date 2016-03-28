@@ -2,6 +2,7 @@ package com.lcc.imusic.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,6 +47,13 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
         notifyDataSetChanged();
     }
 
+
+    @Override
+    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (inflater == null)
+            inflater = LayoutInflater.from(parent.getContext());
+        return null;
+    }
 
     public List<DataType> getData() {
         return data;

@@ -12,7 +12,4 @@ import retrofit2.http.Query;
 public interface TestApi {
     @GET("http://music.163.com/api/playlist/detail")
     Call<M163> get(@Query("id") long id);
-
-    @GET("http://m2.music.126.net/PrQkC81MDD6nuxnsQvQe0w==/1894458534713315.mp3")
-    Call<byte[]> download();
 }
