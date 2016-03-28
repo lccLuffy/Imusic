@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -40,7 +39,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-
     private Toast toast;
 
     public void toast(CharSequence msg) {
@@ -58,18 +56,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /*@Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }*/
-
-
-    @Override
-    public void onPanelClosed(int featureId, Menu menu) {
-        super.onPanelClosed(featureId, menu);
     }
 
     @LayoutRes
