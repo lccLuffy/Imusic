@@ -18,9 +18,6 @@ import butterknife.ButterKnife;
  * Created by lcc_luffy on 2016/3/24.
  */
 public class CommentAdapter extends SimpleAdapter<CommentAdapter.Holder, CommentBean> {
-
-    LayoutInflater inflater;
-
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         super.onCreateViewHolder(parent, viewType);
