@@ -99,6 +99,7 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
         super.onResume();
         if (isBind()) {
             setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
+            playBarPlayToggle.setChecked(musicServiceBind.isPlaying());
         }
     }
 
@@ -129,9 +130,7 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
     @Override
     protected void onBind(MusicPlayService.MusicServiceBind musicServiceBind) {
         setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
-        if (musicServiceBind.isPlaying()) {
-            playBarPlayToggle.setChecked(musicServiceBind.isPlaying());
-        }
+        playBarPlayToggle.setChecked(musicServiceBind.isPlaying());
     }
 
     public void playMusic(int id) {

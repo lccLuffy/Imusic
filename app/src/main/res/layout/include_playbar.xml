@@ -13,7 +13,7 @@
         android:id="@+id/progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="1.5dp"
+        android:layout_height="1dp"
         android:progressDrawable="@drawable/draw_music_progress" />
 
     <LinearLayout

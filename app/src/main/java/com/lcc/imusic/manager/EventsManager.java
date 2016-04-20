@@ -16,8 +16,6 @@ import java.util.List;
  * Created by lcc_luffy on 2016/3/21.
  */
 public class EventsManager {
-    private static EventsManager eventsManager;
-
     private List<PlayingIndexChangeListener> playingIndexChangeListeners;
 
     private List<MusicPlayService.MusicPlayListener> musicPlayListeners;

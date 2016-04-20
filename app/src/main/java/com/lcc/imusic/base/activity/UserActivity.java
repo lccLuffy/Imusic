@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
-import com.lcc.imusic.wiget.BeautyView;
 
 import butterknife.Bind;
 
@@ -35,9 +34,6 @@ public abstract class UserActivity extends PlayBarActivity {
 
     @Bind(R.id.userInfoWrapper)
     LinearLayout linearLayout;
-
-    @Bind(R.id.beautyView)
-    BeautyView beautyView;
 
     private String username;
 

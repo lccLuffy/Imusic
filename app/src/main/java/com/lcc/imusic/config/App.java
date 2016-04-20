@@ -1,17 +1,12 @@
 package com.lcc.imusic.config;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.lcc.imusic.service.MusicPlayService;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
@@ -27,20 +22,9 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        BlockCanary.install(this, new BlockCanaryContext() {
-            @Override
-            public int getConfigBlockThreshold() {
-                return 600;
-            }
-        }).start();
         app = this;
         Logger.init("main");
         DrawerImageLoader.init(new ImageLoader());
-        /*setTheme(R.style.AppThemeNight);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);*/
-        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(dm);
         Intent intent = new Intent(this, MusicPlayService.class);
         startService(intent);
     }
@@ -48,6 +32,7 @@ public class App extends Application {
     public static App getApp() {
         return app;
     }
+
 
     private class ImageLoader extends AbstractDrawerImageLoader {
         @Override

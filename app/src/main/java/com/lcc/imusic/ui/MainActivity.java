@@ -16,7 +16,6 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.base.activity.AccountDelegate;
 import com.lcc.imusic.base.activity.PlayBarActivity;
-import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.home.MusicFragment;
 import com.lcc.imusic.ui.home.MusicNewsFragment;
@@ -48,14 +47,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
         accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
-        /*download();*/
-
     }
-
-    private void download() {
-        startService(new Intent(this, DownloadService.class));
-    }
-
 
     private void init() {
         actionBar.setDisplayShowTitleEnabled(false);
