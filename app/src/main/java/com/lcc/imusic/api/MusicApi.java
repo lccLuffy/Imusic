@@ -1,5 +1,9 @@
 package com.lcc.imusic.api;
 
+import com.lcc.imusic.bean.LoginBean;
+import com.lcc.imusic.bean.Msg;
+
+import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -17,7 +21,7 @@ public interface MusicApi {
 
     @FormUrlEncoded
     @POST("auth/login")
-    String login(@Field("username") String username, @Field("password") String password);
+    Call<Msg<LoginBean>> login(@Field("username") String username, @Field("password") String password);
 
     @FormUrlEncoded
     @DELETE("auth/logout")

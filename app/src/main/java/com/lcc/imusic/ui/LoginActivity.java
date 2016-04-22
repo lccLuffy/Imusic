@@ -1,20 +1,104 @@
 package com.lcc.imusic.ui;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.base.activity.BaseActivity;
+import com.lcc.imusic.bean.LoginBean;
+import com.lcc.imusic.bean.Msg;
+import com.lcc.imusic.manager.NetManager_;
+import com.lcc.imusic.manager.UserManager;
 
-public class LoginActivity extends BaseActivity {
+import butterknife.Bind;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
+
+    @Bind(R.id.username)
+    EditText et_username;
+
+    @Bind(R.id.password)
+    EditText et_password;
+
+    @Bind(R.id.login)
+    Button bt_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        if (UserManager.isLogin()) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+        setTitle("登录");
+        bt_login.setOnClickListener(this);
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_login;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.login) {
+            login();
+        }
+    }
+
+
+    ProgressDialog progressDialog;
+
+    private void login() {
+        String username = et_username.getText().toString().trim();
+        String password = et_password.getText().toString().trim();
+
+        if (TextUtils.isEmpty(username)) {
+            toast("用户名为空");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            toast("密码为空");
+            return;
+        }
+        if (progressDialog == null)
+            progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("正在登录...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+
+        Call<Msg<LoginBean>> call = NetManager_.API().login(username, password);
+        call.enqueue(new Callback<Msg<LoginBean>>() {
+            @Override
+            public void onResponse(Call<Msg<LoginBean>> call, Response<Msg<LoginBean>> response) {
+                progressDialog.dismiss();
+                Msg<LoginBean> msg = response.body();
+                if (msg.Code == 100) {
+                    toast(response.body().Result.username);
+                } else {
+                    toast("登陆失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Msg<LoginBean>> call, Throwable t) {
+                progressDialog.dismiss();
+                toast("登陆失败");
+            }
+        });
+
+        /*startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        progressDialog.dismiss();
+        finish();*/
     }
 }

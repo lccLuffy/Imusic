@@ -1,6 +1,8 @@
 package com.lcc.imusic.manager;
 
 
+import com.lcc.imusic.api.MusicApi;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -17,7 +19,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetManager_ {
     public static final String DOMAIN = "http://uestc.xyz:8080/api/";
     private Retrofit retrofit;
-
 
     private static class ClassHolder {
         private static NetManager_ NET_MANAGER = new NetManager_();
@@ -41,6 +42,13 @@ public class NetManager_ {
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
+    }
+
+    private MusicApi musicApi;
+
+    public static MusicApi API() {
+        return ClassHolder.NET_MANAGER.musicApi != null ? ClassHolder.NET_MANAGER.musicApi
+                : (ClassHolder.NET_MANAGER.musicApi = create(MusicApi.class));
     }
 
     public static <T> T create(final Class<T> service) {

@@ -5,24 +5,23 @@ package com.lcc.imusic.manager;
  */
 public class UserManager {
 
-    private UserManager(){}
+    private UserManager() {
+    }
 
-    public static String username()
-    {
+    public static String username() {
         return "lcc";
     }
 
 
-    public static boolean isLogin(){
+    public static boolean isLogin() {
         return false;
     }
 
-    public static void login()
-    {
+    public static void login() {
 
     }
-    public static void logout()
-    {
+
+    public static void logout() {
 
     }
 }

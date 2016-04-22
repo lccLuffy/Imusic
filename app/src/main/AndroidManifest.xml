@@ -21,7 +21,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -50,6 +49,9 @@
         <activity
             android:name=".ui.SearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.MusicPlayService"
@@ -71,9 +73,6 @@
             </intent-filter>
         </receiver>
         -->
-
-        <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.GuideActivity"></activity>
     </application>
 
 </manifest>
