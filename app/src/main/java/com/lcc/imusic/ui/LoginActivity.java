@@ -84,7 +84,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 progressDialog.dismiss();
                 Msg<LoginBean> msg = response.body();
                 if (msg.Code == 100) {
-                    toast(response.body().Result.username);
+                    UserManager.save(msg.Result);
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
                     toast("登陆失败");
                 }
