@@ -2,6 +2,7 @@ package com.lcc.imusic.manager;
 
 
 import com.lcc.imusic.api.MusicApi;
+import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 
@@ -33,7 +34,6 @@ public class NetManager_ {
                 new OkHttpClient
                         .Builder()
                         .addNetworkInterceptor(new AutInterceptor())
-                        /*.addInterceptor(loggingInterceptor)*/
                         .build();
 
         retrofit = new Retrofit
@@ -59,6 +59,13 @@ public class NetManager_ {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request originRequest = chain.request();
+            if (UserManager.isLogin()) {
+                originRequest = originRequest
+                        .newBuilder()
+                        .addHeader("authentication", UserManager.token())
+                        .build();
+                Logger.i("authentication");
+            }
             return chain.proceed(originRequest);
         }
     }

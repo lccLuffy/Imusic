@@ -86,6 +86,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 if (msg.Code == 100) {
                     UserManager.save(msg.Result);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
                 } else {
                     toast("登陆失败");
                 }

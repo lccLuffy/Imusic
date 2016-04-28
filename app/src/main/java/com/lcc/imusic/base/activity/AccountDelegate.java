@@ -130,6 +130,11 @@ public class AccountDelegate {
         drawer = null;
     }
 
+    public void close()
+    {
+        drawer.closeDrawer();
+    }
+
     public interface AccountListener {
         boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem);
 

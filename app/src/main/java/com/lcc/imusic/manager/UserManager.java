@@ -20,6 +20,10 @@ public class UserManager {
         loginBean = Json.fromJson(PrfUtil.get().getString(KEY, null), LoginBean.class);
     }
 
+    public static String token() {
+        return instance().loginBean != null ? instance().loginBean.token : null;
+    }
+
     public static UserManager instance() {
         return ClassHolder.USER_MANAGER;
     }
@@ -29,10 +33,11 @@ public class UserManager {
     }
 
     public static void logout() {
-        PrfUtil.start().remove(KEY);
+        PrfUtil.start().remove(KEY).commit();
     }
 
     public static void save(LoginBean loginBean) {
+        instance().loginBean = loginBean;
         PrfUtil.start().putString(KEY, Json.toJson(loginBean)).commit();
     }
 }
