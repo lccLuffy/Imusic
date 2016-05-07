@@ -62,9 +62,9 @@ public class NetManager_ {
             if (UserManager.isLogin()) {
                 originRequest = originRequest
                         .newBuilder()
-                        .addHeader("authentication", UserManager.token())
+                        .addHeader("token", UserManager.token())
                         .build();
-                Logger.i("authentication");
+                Logger.i("token");
             }
             return chain.proceed(originRequest);
         }

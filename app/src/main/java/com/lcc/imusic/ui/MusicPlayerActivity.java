@@ -142,7 +142,8 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
 
         @Override
         public void onComment() {
-            startActivity(new Intent(MusicPlayerActivity.this, CommentActivity.class));
+            MusicItem item = currentMusicProvider.getPlayingMusic();
+            CommentActivity.jumpToMe(MusicPlayerActivity.this,1,item.title);
         }
 
         @Override

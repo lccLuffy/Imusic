@@ -1,5 +1,7 @@
 package com.lcc.imusic.ui;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -149,6 +151,11 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
     public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
         if (UserManager.isLogin()) {
             switch (position) {
+                case 1:
+                    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText("token", UserManager.token()));
+                    toast(UserManager.token());
+                    break;
                 case 2:
                     startActivity(new Intent(this, DownLoadActivity.class));
                     break;

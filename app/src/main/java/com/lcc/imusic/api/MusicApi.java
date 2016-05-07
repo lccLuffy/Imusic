@@ -18,7 +18,11 @@ public interface MusicApi {
 
     @FormUrlEncoded
     @POST("auth/signup")
-    String signUp(@Field("username") String username, @Field("password") String password);
+    Call<JsonObject> signUp(@Field("username") String username,
+                            @Field("password") String password,
+                            @Field("safeque") String safeque,
+                            @Field("safeans") String safeans
+    );
 
 
     @FormUrlEncoded

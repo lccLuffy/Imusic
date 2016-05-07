@@ -64,5 +64,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="登录" />
+
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:padding="5dp"
+            android:text="注册" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

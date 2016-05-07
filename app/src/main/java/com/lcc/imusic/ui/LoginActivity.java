@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.base.activity.BaseActivity;
@@ -31,16 +32,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Bind(R.id.login)
     Button bt_login;
 
+    @Bind(R.id.register)
+    TextView register;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("登录");
+        actionBar.setDisplayHomeAsUpEnabled(false);
         if (UserManager.isLogin()) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
             return;
         }
-        setTitle("登录");
         bt_login.setOnClickListener(this);
+        register.setOnClickListener(this);
     }
 
     @Override
@@ -52,6 +58,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) {
         if (v.getId() == R.id.login) {
             login();
+        } else if (v.getId() == R.id.register) {
+            startActivity(new Intent(this, RegisterActivity.class));
         }
     }
 
