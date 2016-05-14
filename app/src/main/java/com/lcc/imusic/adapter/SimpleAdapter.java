@@ -85,6 +85,13 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
         notifyItemRangeInserted(s, otherData.length);
     }
 
+    public void remove(int location) {
+        if (location >= 0 && location < data.size()) {
+            data.remove(location);
+            notifyItemRemoved(location);
+        }
+    }
+
 
     @Override
     public int getItemCount() {

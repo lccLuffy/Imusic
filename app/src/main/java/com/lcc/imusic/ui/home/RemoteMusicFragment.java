@@ -15,6 +15,7 @@ import com.lcc.imusic.bean.M163;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.OnProvideMusics;
 import com.lcc.imusic.model.RemoteMusicProvider;
+import com.lcc.imusic.service.DownLoadHelper;
 import com.lcc.imusic.wiget.StateLayout;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
 
     SimpleMusicListAdapter simpleMusicListAdapter;
 
-    private long id = 58451795;
+    private long id = 147085039;
     RemoteMusicProvider remoteMusicProvider;
 
     public static RemoteMusicFragment newInstance(int id) {
@@ -94,6 +95,7 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
                 } else {
                     stateLayout.showContentView();
                 }
+                DownLoadHelper.get().downloadAll(context, list);
             }
 
             @Override

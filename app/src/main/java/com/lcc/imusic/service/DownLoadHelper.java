@@ -117,8 +117,10 @@ public final class DownLoadHelper {
         Collections.addAll(dlBeanList, dlBeans);
     }
 
+
+
     @Nullable
-    public DlBean pop() {
+    public DlBean<MusicItem> pop() {
         synchronized (DownLoadHelper.class) {
             if (dlBeanList == null || dlBeanList.isEmpty())
                 return downloadingDlBean = null;
@@ -148,7 +150,7 @@ public final class DownLoadHelper {
     }
 
     @Nullable
-    public DlBean top() {
+    public DlBean<MusicItem> top() {
         if (dlBeanList == null || dlBeanList.isEmpty())
             return null;
         return dlBeanList.get(0);

@@ -22,7 +22,7 @@ import butterknife.Bind;
 /**
  * Created by lcc_luffy on 2016/3/23.
  */
-public class DownLoadActivity extends BaseActivity implements DownloadService.DownLoadEvent {
+public class DownLoadActivity extends BaseActivity implements DownloadService.DownLoadEvent<MusicItem> {
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
 
@@ -31,6 +31,9 @@ public class DownLoadActivity extends BaseActivity implements DownloadService.Do
 
     @Bind(R.id.download_subtitle)
     TextView subtitle;
+
+    @Bind(R.id.download_percent)
+    TextView percent;
 
     @Bind(R.id.download_progress)
     ProgressBar progressBar;
@@ -66,21 +69,24 @@ public class DownLoadActivity extends BaseActivity implements DownloadService.Do
     }
 
     @Override
-    public void onStart(DlBean dlBean) {
+    public void onStart(DlBean<MusicItem> dlBean) {
+        title.setText(dlBean.data.title);
+        subtitle.setText(dlBean.data.artist);
     }
 
     @Override
-    public void onSuccess(DlBean dlBean, File file) {
-        downloadAdapter.setData(DownLoadHelper.get().getDownloadQueue());
+    public void onSuccess(DlBean<MusicItem> dlBean, File file) {
+        downloadAdapter.remove(0);
     }
 
     @Override
-    public void onFail(DlBean dlBean, Throwable throwable) {
+    public void onFail(DlBean<MusicItem> dlBean, Throwable throwable) {
         toast("download " + dlBean.fileName + " failed," + throwable.getMessage());
     }
 
     @Override
-    public void onProgress(DlBean dlBean, int percent) {
+    public void onProgress(DlBean<MusicItem> dlBean, int percent) {
         progressBar.setProgress(percent);
+        this.percent.setText(percent+"%");
     }
 }

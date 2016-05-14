@@ -22,5 +22,5 @@ public class DlBean<Data> {
         this.data = data;
     }
 
-    public static final DlBean EMPTY_DL_BEAN = new DlBean("invilate url", "invailate file fileName");
+    public static final DlBean<MusicItem> EMPTY_DL_BEAN = new DlBean<>("invilate url", "invailate file fileName");
 }

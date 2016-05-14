@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import com.lcc.imusic.bean.DlBean;
+import com.lcc.imusic.bean.MusicItem;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -70,8 +71,9 @@ public class DownloadService extends Service {
     private class DownloadThread extends Thread {
         @Override
         public void run() {
-            DlBean dlBean = DownLoadHelper.get().pop();
+            DlBean<MusicItem> dlBean = DownLoadHelper.get().pop();
             while (dlBean != null) {
+                Logger.i("loop download music! "+dlBean.fileName);
                 download(dlBean);
                 dlBean = DownLoadHelper.get().pop();
             }
@@ -79,7 +81,7 @@ public class DownloadService extends Service {
     }
 
     @WorkerThread
-    private void download(@NonNull final DlBean dlBean) {
+    private void download(@NonNull final DlBean<MusicItem> dlBean) {
         if (!dlBean.url.startsWith("http")) {
             handler.post(new Runnable() {
                 @Override
@@ -125,7 +127,6 @@ public class DownloadService extends Service {
                 while ((readLen = is.read(buffer)) != -1) {
                     downloadLen += readLen;
                     fos.write(buffer, 0, readLen);
-                    Logger.i("downloading:%d,(%d of %d)", readLen, downloadLen, totalLen);
                     final int percent = (int) (downloadLen * 1.0f / totalLen * 100);
                     handler.post(new Runnable() {
                         @Override
@@ -135,7 +136,7 @@ public class DownloadService extends Service {
                     });
                 }
                 fos.flush();
-                Logger.i("download finish");
+                Logger.i("download finish"+dlBean.fileName);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
