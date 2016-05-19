@@ -74,7 +74,8 @@
             </intent-filter>
         </receiver>
         -->
-        <activity android:name=".ui.RegisterActivity"></activity>
+        <activity android:name=".ui.RegisterActivity" />
+        <activity android:name=".ui.MusicListActivity"></activity>
     </application>
 
 </manifest>

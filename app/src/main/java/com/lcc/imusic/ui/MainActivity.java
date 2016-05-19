@@ -138,6 +138,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
                     ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     clipboardManager.setPrimaryClip(ClipData.newPlainText("token", UserManager.token()));
                     toast(UserManager.token());
+                    startActivity(new Intent(this, MusicListActivity.class));
                     break;
                 case 2:
                     startActivity(new Intent(this, DownLoadActivity.class));
@@ -154,6 +155,9 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
             }
         } else {
             switch (position) {
+                case 1:
+                    startActivity(new Intent(this, MusicListActivity.class));
+                    break;
                 case 2:
                     startActivity(new Intent(this, DownLoadActivity.class));
                     break;
