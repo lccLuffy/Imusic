@@ -11,6 +11,7 @@ import com.lcc.imusic.service.MusicPlayService;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.orhanobut.logger.Logger;
+import com.orm.SugarContext;
 
 /**
  * Created by lcc_luffy on 2016/3/5.
@@ -22,6 +23,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        SugarContext.init(this);
         app = this;
         Logger.init("main");
         DrawerImageLoader.init(new ImageLoader());
@@ -33,7 +35,6 @@ public class App extends Application {
         return app;
     }
 
-
     private class ImageLoader extends AbstractDrawerImageLoader {
         @Override
         public void set(ImageView imageView, Uri uri, Drawable placeholder) {
@@ -44,5 +45,11 @@ public class App extends Application {
         public void cancel(ImageView imageView) {
             Glide.clear(imageView);
         }
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        SugarContext.terminate();
     }
 }

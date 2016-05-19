@@ -15,6 +15,7 @@ import com.lcc.imusic.bean.M163;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.OnProvideMusics;
 import com.lcc.imusic.model.RemoteMusicProvider;
+import com.lcc.imusic.utils.PrfUtil;
 import com.lcc.imusic.wiget.StateLayout;
 
 import java.util.List;
@@ -71,6 +72,16 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
         simpleMusicListAdapter = null;
     }
 
+
+    @Override
+    public void onCreateView() {
+        long tmpId = PrfUtil.get().getLong("current_play_list", id);
+        if (tmpId != id) {
+            id = tmpId;
+            remoteMusicProvider.setId(id);
+            getId();
+        }
+    }
 
     @Override
     public void onPlayingIndexChange(int index) {

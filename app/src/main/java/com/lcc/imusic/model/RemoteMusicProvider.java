@@ -19,9 +19,18 @@ import retrofit2.Response;
  */
 public class RemoteMusicProvider extends SimpleMusicProviderImpl {
 
+
     private long id;
 
     public RemoteMusicProvider(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 
