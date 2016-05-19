@@ -228,19 +228,17 @@ public class MusicPlayService extends Service {
     private int playType = PLAY_TYPE_LOOP;
 
     private int indexByPlayType() {
-        int result = 0;
         switch (playType) {
             case PLAY_TYPE_ONE:
-                result = currentIndex;
+                return currentIndex;
             case PLAY_TYPE_RANDOM:
-                result = randomIndex();
+                return randomIndex();
             default:
-                result = currentIndex + 1;
+                int result = currentIndex + 1;
                 if (result >= musicProvider.provideMusics().size())
                     result = 0;
-                break;
+                return result;
         }
-        return result;
     }
 
     private class MediaListener implements MediaPlayer.OnPreparedListener
@@ -271,7 +269,6 @@ public class MusicPlayService extends Service {
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
             EventsManager.get().dispatchOnBufferingEvent(percent);
-            /*Logger.i("onBufferingUpdate:%d%%", percent);*/
         }
 
         @Override

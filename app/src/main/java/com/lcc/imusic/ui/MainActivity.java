@@ -14,12 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.google.gson.JsonObject;
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.base.activity.AccountDelegate;
 import com.lcc.imusic.base.activity.PlayBarActivity;
-import com.lcc.imusic.manager.NetManager_;
 import com.lcc.imusic.manager.UserManager;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.home.MusicFragment;
@@ -35,9 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends PlayBarActivity implements AccountDelegate.AccountListener {
     @Bind(R.id.tabLayout)
