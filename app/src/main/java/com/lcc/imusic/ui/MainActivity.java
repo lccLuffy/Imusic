@@ -55,18 +55,6 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
         accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
-
-        NetManager_.API().me().enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                toast(response.body().toString());
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                toast(t.toString());
-            }
-        });
     }
 
     private void init() {

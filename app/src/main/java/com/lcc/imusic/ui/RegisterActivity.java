@@ -38,6 +38,7 @@ public class RegisterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("注册");
         bt_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
