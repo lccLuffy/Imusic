@@ -248,6 +248,7 @@ public class MusicPlayService extends Service {
         public void onPrepared(MediaPlayer mp) {
             lockPrepared = true;
             mp.start();
+            musicProvider.getPlayingMusic().duration = mp.getDuration() / 1000;
             EventsManager.get().dispatchOnMusicReadyEvent(musicProvider.getPlayingMusic());
             if (progressTask == null) {
                 progressTask = new ProgressTask();

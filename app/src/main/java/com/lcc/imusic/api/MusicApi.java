@@ -3,6 +3,7 @@ package com.lcc.imusic.api;
 import com.google.gson.JsonObject;
 import com.lcc.imusic.bean.LoginBean;
 import com.lcc.imusic.bean.Msg;
+import com.lcc.imusic.bean.SongsBean;
 
 import retrofit2.Call;
 import retrofit2.http.DELETE;
@@ -35,4 +36,7 @@ public interface MusicApi {
 
     @GET("auth/me")
     Call<JsonObject> me();
+
+    @GET("song")
+    Call<Msg<SongsBean>> songs();
 }

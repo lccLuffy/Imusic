@@ -23,8 +23,16 @@ public class PlayListAdapter extends SimpleAdapter<PlayListAdapter.Holder, Music
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(final Holder holder, int position) {
         holder.onBind(data.get(position));
+        if (onItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(holder.getAdapterPosition());
+                }
+            });
+        }
     }
 
     class Holder extends RecyclerView.ViewHolder {

@@ -3,9 +3,11 @@ package com.lcc.imusic.model;
 import android.support.annotation.NonNull;
 
 import com.lcc.imusic.api.TestApi;
-import com.lcc.imusic.bean.M163;
+import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.bean.SongsBean;
 import com.lcc.imusic.manager.NetManager;
+import com.lcc.imusic.manager.NetManager_;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,34 +39,39 @@ public class RemoteMusicProvider extends SimpleMusicProviderImpl {
     @Override
     public void provideMusics(final OnProvideMusics onProvideMusics) {
         TestApi testApi = NetManager.create(TestApi.class);
-        testApi.get(id).enqueue(new Callback<M163>() {
-            @Override
-            public void onResponse(Call<M163> call, Response<M163> response) {
-                M163 m163 = response.body();
 
-                if (onProvideMusics != null) {
-                    onProvideMusics.onSuccess(m163);
+        NetManager_.API().songs().enqueue(new Callback<Msg<SongsBean>>() {
+            @Override
+            public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
+                SongsBean songsBean = response.body().Result;
+                if (songsBean != null) {
+                    onProvideMusics.onSuccess(songsBean);
                 }
+
             }
 
             @Override
-            public void onFailure(Call<M163> call, Throwable t) {
+            public void onFailure(Call<Msg<SongsBean>> call, Throwable t) {
                 if (onProvideMusics != null) {
                     onProvideMusics.onFail(t);
                 }
             }
         });
+
+
     }
 
-    public static List<MusicItem> m2l(@NonNull M163 m163) {
+    public static final String DOMAIN = "http://uestc.xyz:8080/api";
+
+    public static List<MusicItem> m2l(@NonNull SongsBean songsBean) {
         List<MusicItem> musicList = new ArrayList<>();
-        for (M163.ResultBean.TracksBean tracksBean : m163.result.tracks) {
+        for (SongsBean.ListBean tracksBean : songsBean.list) {
             MusicItem musicItem = new MusicItem();
-            musicItem.title = tracksBean.name;
-            musicItem.duration = tracksBean.duration / 1000;
-            musicItem.data = tracksBean.mp3Url;
-            musicItem.artist = tracksBean.artists.get(0).name;
-            musicItem.cover = tracksBean.album.picUrl;
+            musicItem.title = tracksBean.songname;
+            musicItem.duration = 0;
+            musicItem.data = DOMAIN + tracksBean.songpath;
+            musicItem.artist = tracksBean.musicianName;
+            musicItem.cover = DOMAIN + tracksBean.cover;
             musicList.add(musicItem);
         }
         return musicList;

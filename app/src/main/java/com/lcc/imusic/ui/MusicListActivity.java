@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -81,11 +83,9 @@ public class MusicListActivity extends BaseActivity {
 
                         /**重新读取数据*/
                         musicLists = MusicList.listAll(MusicList.class);
-                        if(playListAdapter == null)
-                        {
+                        if (playListAdapter == null) {
                             initRecy();
-                        }
-                        else {
+                        } else {
                             playListAdapter.setData(musicLists);
                         }
 
@@ -98,8 +98,22 @@ public class MusicListActivity extends BaseActivity {
         dialog.show();
     }
 
-    private void initRecy()
-    {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_music_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add) {
+            addMusicList();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void initRecy() {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         playListAdapter = new PlayListAdapter();
         recyclerView.setAdapter(playListAdapter);

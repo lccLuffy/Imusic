@@ -11,8 +11,8 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
-import com.lcc.imusic.bean.M163;
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.bean.SongsBean;
 import com.lcc.imusic.model.OnProvideMusics;
 import com.lcc.imusic.model.RemoteMusicProvider;
 import com.lcc.imusic.utils.PrfUtil;
@@ -96,8 +96,8 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
             stateLayout.showContentView();
         remoteMusicProvider.provideMusics(new OnProvideMusics() {
             @Override
-            public void onSuccess(M163 musicItems) {
-                List<MusicItem> list = RemoteMusicProvider.m2l(musicItems);
+            public void onSuccess(SongsBean songsBean) {
+                List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
                 simpleMusicListAdapter.setData(list);
                 refreshLayout.setRefreshing(false);
                 if (list.isEmpty()) {
