@@ -17,7 +17,6 @@ import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.bean.SongsBean;
 import com.lcc.imusic.manager.NetManager_;
 import com.lcc.imusic.model.RemoteMusicProvider;
-import com.lcc.imusic.utils.PrfUtil;
 import com.lcc.imusic.wiget.StateLayout;
 
 import java.util.List;
@@ -42,17 +41,8 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
 
     SimpleMusicListAdapter simpleMusicListAdapter;
 
-    private long id = 147085039;
-
     private int currentPageNum = 1;
 
-    private int totalPage = 1;
-
-    public static RemoteMusicFragment newInstance(int id) {
-        RemoteMusicFragment fragment = new RemoteMusicFragment();
-        fragment.id = id;
-        return fragment;
-    }
 
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
@@ -83,15 +73,6 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
 
 
     @Override
-    public void onCreateView() {
-        long tmpId = PrfUtil.get().getLong("current_play_list", id);
-        if (tmpId != id) {
-            id = tmpId;
-            getId();
-        }
-    }
-
-    @Override
     public void onPlayingIndexChange(int index) {
         if (simpleMusicListAdapter != null)
             simpleMusicListAdapter.playingIndexChangeTo(index);
@@ -108,13 +89,16 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
             public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
                 SongsBean songsBean = response.body().Result;
                 if (songsBean != null) {
-                    totalPage = songsBean.totalPage;
                     List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
-
                     if (pageNum == 1) {
+                        simpleMusicListAdapter.canLoadMore();
                         simpleMusicListAdapter.setData(list);
                     } else {
-                        simpleMusicListAdapter.addData(list);
+                        if (list.isEmpty()) {
+                            simpleMusicListAdapter.noMoreData();
+                        } else {
+                            simpleMusicListAdapter.addData(list);
+                        }
                     }
                     refreshLayout.setRefreshing(false);
                     if (simpleMusicListAdapter.isDataEmpty()) {
@@ -149,17 +133,12 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
     @Override
     public void onRefresh() {
         currentPageNum = 1;
-        getData(1);
+        getData(currentPageNum);
     }
 
     @Override
     public void onLoadMore() {
-        if (currentPageNum >= totalPage) {
-            simpleMusicListAdapter.noMoreData();
-        } else {
-            simpleMusicListAdapter.canLoadMore();
-            currentPageNum++;
-            getData(currentPageNum);
-        }
+        currentPageNum++;
+        getData(currentPageNum);
     }
 }

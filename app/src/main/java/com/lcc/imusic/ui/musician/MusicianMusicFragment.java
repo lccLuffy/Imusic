@@ -47,7 +47,6 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
 
     private int currentPageNum = 1;
 
-    private int totalPage = 1;
 
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
@@ -70,7 +69,6 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
         });
         simpleMusicListAdapter.setLoadMoreListener(this);
         getData(currentPageNum);
-        simpleMusicListAdapter.hideFooter();
     }
 
     private void getData(final int pageNum) {
@@ -82,18 +80,21 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
                     public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
                         SongsBean songsBean = response.body().Result;
                         if (songsBean != null) {
-                            totalPage = songsBean.totalPage;
                             if (songsBean.list.isEmpty()) {
                                 stateLayout.showEmptyView();
                             } else {
                                 stateLayout.showContentView();
                                 List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
                                 if (pageNum == 1) {
+                                    simpleMusicListAdapter.canLoadMore();
                                     simpleMusicListAdapter.setData(list);
                                 } else {
-                                    simpleMusicListAdapter.addData(list);
+                                    if (list.isEmpty()) {
+                                        simpleMusicListAdapter.noMoreData();
+                                    } else {
+                                        simpleMusicListAdapter.addData(list);
+                                    }
                                 }
-
                             }
 
                         }
@@ -133,12 +134,7 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
 
     @Override
     public void onLoadMore() {
-        if (currentPageNum >= totalPage) {
-            simpleMusicListAdapter.noMoreData();
-        } else {
-            simpleMusicListAdapter.canLoadMore();
-            currentPageNum++;
-            getData(currentPageNum);
-        }
+        currentPageNum++;
+        getData(currentPageNum);
     }
 }

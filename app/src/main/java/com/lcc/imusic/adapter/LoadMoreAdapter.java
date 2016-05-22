@@ -83,6 +83,9 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
             switch (state) {
                 case STATE_LOAD_MORE:
                     loadMore();
+                    if (loadMoreListener != null) {
+                        loadMoreListener.onLoadMore();
+                    }
                     break;
                 case STATE_NO_MORE:
                     noMore();
@@ -99,10 +102,6 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
                 footerProgressBar.setVisibility(View.VISIBLE);
             }
             footerText.setText(loadMoreMsg);
-
-            if (loadMoreListener != null) {
-                loadMoreListener.onLoadMore();
-            }
         }
 
         private void noMore() {
@@ -133,24 +132,34 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
 
     public void noMoreData() {
         state = FooterViewHolder.STATE_NO_MORE;
+        if (footerViewHolder != null)
+            footerViewHolder.noMore();
     }
 
     public void noMoreData(String noMoreMsg) {
         state = FooterViewHolder.STATE_NO_MORE;
         this.noMoreMsg = noMoreMsg;
+        if (footerViewHolder != null)
+            footerViewHolder.noMore();
     }
 
     public void canLoadMore() {
         state = FooterViewHolder.STATE_LOAD_MORE;
+        if (footerViewHolder != null)
+            footerViewHolder.loadMore();
     }
 
     public void canLoadMore(String loadMoreMsg) {
         state = FooterViewHolder.STATE_LOAD_MORE;
         this.loadMoreMsg = loadMoreMsg;
+        if (footerViewHolder != null)
+            footerViewHolder.loadMore();
     }
 
     public void hideFooter() {
         state = FooterViewHolder.STATE_GONE;
+        if (footerViewHolder != null)
+            footerViewHolder.hide();
     }
 
     public interface LoadMoreListener {
