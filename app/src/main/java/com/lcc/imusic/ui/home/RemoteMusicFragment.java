@@ -12,9 +12,10 @@ import com.lcc.imusic.adapter.LoadMoreAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
+import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.bean.SongsBean;
-import com.lcc.imusic.model.OnProvideMusics;
+import com.lcc.imusic.manager.NetManager_;
 import com.lcc.imusic.model.RemoteMusicProvider;
 import com.lcc.imusic.utils.PrfUtil;
 import com.lcc.imusic.wiget.StateLayout;
@@ -22,11 +23,14 @@ import com.lcc.imusic.wiget.StateLayout;
 import java.util.List;
 
 import butterknife.Bind;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshLayout.OnRefreshListener ,LoadMoreAdapter.LoadMoreListener{
+public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshLayout.OnRefreshListener, LoadMoreAdapter.LoadMoreListener {
     @Bind(R.id.stateLayout)
     StateLayout stateLayout;
 
@@ -39,7 +43,10 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
     SimpleMusicListAdapter simpleMusicListAdapter;
 
     private long id = 147085039;
-    RemoteMusicProvider remoteMusicProvider;
+
+    private int currentPageNum = 1;
+
+    private int totalPage = 1;
 
     public static RemoteMusicFragment newInstance(int id) {
         RemoteMusicFragment fragment = new RemoteMusicFragment();
@@ -62,8 +69,7 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
                 playMusic(position);
             }
         });
-        remoteMusicProvider = new RemoteMusicProvider(id);
-        getData();
+        getData(1);
         simpleMusicListAdapter.setLoadMoreListener(this);
         simpleMusicListAdapter.canLoadMore();
     }
@@ -81,7 +87,6 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
         long tmpId = PrfUtil.get().getLong("current_play_list", id);
         if (tmpId != id) {
             id = tmpId;
-            remoteMusicProvider.setId(id);
             getId();
         }
     }
@@ -92,30 +97,43 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
             simpleMusicListAdapter.playingIndexChangeTo(index);
     }
 
-    public void getData() {
+    public void getData(final int pageNum) {
         if (simpleMusicListAdapter.getItemCount() == 0)
             stateLayout.showProgressView();
         else
             stateLayout.showContentView();
-        remoteMusicProvider.provideMusics(new OnProvideMusics() {
+
+        NetManager_.API().songs(pageNum).enqueue(new Callback<Msg<SongsBean>>() {
             @Override
-            public void onSuccess(SongsBean songsBean) {
-                List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
-                simpleMusicListAdapter.setData(list);
-                refreshLayout.setRefreshing(false);
-                if (list.isEmpty()) {
-                    stateLayout.showEmptyView();
-                } else {
-                    stateLayout.showContentView();
+            public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
+                SongsBean songsBean = response.body().Result;
+                if (songsBean != null) {
+                    totalPage = songsBean.totalPage;
+                    List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
+
+                    if (pageNum == 1) {
+                        simpleMusicListAdapter.setData(list);
+                    } else {
+                        simpleMusicListAdapter.addData(list);
+                    }
+                    refreshLayout.setRefreshing(false);
+                    if (simpleMusicListAdapter.isDataEmpty()) {
+                        stateLayout.showEmptyView();
+                    } else {
+                        stateLayout.showContentView();
+                    }
                 }
+
             }
 
             @Override
-            public void onFail(Throwable reason) {
+            public void onFailure(Call<Msg<SongsBean>> call, Throwable t) {
                 stateLayout.showErrorView("网络出错");
                 refreshLayout.setRefreshing(false);
             }
         });
+
+
     }
 
     @Override
@@ -130,29 +148,18 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
 
     @Override
     public void onRefresh() {
-        getData();
+        currentPageNum = 1;
+        getData(1);
     }
 
     @Override
     public void onLoadMore() {
-        remoteMusicProvider.provideMusics(new OnProvideMusics() {
-            @Override
-            public void onSuccess(SongsBean songsBean) {
-                List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
-                simpleMusicListAdapter.addData(list);
-                refreshLayout.setRefreshing(false);
-                if (list.isEmpty()) {
-                    stateLayout.showEmptyView();
-                } else {
-                    stateLayout.showContentView();
-                }
-            }
-
-            @Override
-            public void onFail(Throwable reason) {
-                stateLayout.showErrorView("网络出错");
-                refreshLayout.setRefreshing(false);
-            }
-        });
+        if (currentPageNum >= totalPage) {
+            simpleMusicListAdapter.noMoreData();
+        } else {
+            simpleMusicListAdapter.canLoadMore();
+            currentPageNum++;
+            getData(currentPageNum);
+        }
     }
 }

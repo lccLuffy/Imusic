@@ -40,10 +40,10 @@ public interface MusicApi {
     Call<JsonObject> me();
 
     @GET("song")
-    Call<Msg<SongsBean>> songs();
+    Call<Msg<SongsBean>> songs(@Query("pageNum") int pageNum);
 
     @GET("song")
-    Call<Msg<SongsBean>> songs(@Query("musicianid") long id);
+    Call<Msg<SongsBean>> songs(@Query("musicianid") long id, @Query("pageNum") int pageNum);
 
     @GET("musician")
     Call<Msg<MusiciansBean>> musicians();

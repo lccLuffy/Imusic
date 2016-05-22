@@ -37,7 +37,7 @@ public class RemoteMusicProvider extends SimpleMusicProviderImpl {
     @Override
     public void provideMusics(final OnProvideMusics onProvideMusics) {
 
-        NetManager_.API().songs().enqueue(new Callback<Msg<SongsBean>>() {
+        NetManager_.API().songs(1).enqueue(new Callback<Msg<SongsBean>>() {
             @Override
             public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
                 SongsBean songsBean = response.body().Result;

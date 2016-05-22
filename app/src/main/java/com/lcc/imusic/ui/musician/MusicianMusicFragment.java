@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.adapter.LoadMoreAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
@@ -29,7 +30,7 @@ import retrofit2.Response;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class MusicianMusicFragment extends AttachFragment {
+public class MusicianMusicFragment extends AttachFragment implements LoadMoreAdapter.LoadMoreListener {
 
     @Bind(R.id.stateLayout)
     StateLayout stateLayout;
@@ -43,6 +44,10 @@ public class MusicianMusicFragment extends AttachFragment {
     SimpleMusicListAdapter simpleMusicListAdapter;
 
     public long id;
+
+    private int currentPageNum = 1;
+
+    private int totalPage = 1;
 
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
@@ -59,28 +64,36 @@ public class MusicianMusicFragment extends AttachFragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getData();
+                currentPageNum = 1;
+                getData(1);
             }
         });
-        getData();
+        simpleMusicListAdapter.setLoadMoreListener(this);
+        getData(currentPageNum);
         simpleMusicListAdapter.hideFooter();
     }
 
-    private void getData() {
+    private void getData(final int pageNum) {
         if (simpleMusicListAdapter.isDataEmpty())
             stateLayout.showProgressView();
-        NetManager_.API().songs(id)
+        NetManager_.API().songs(id, pageNum)
                 .enqueue(new Callback<Msg<SongsBean>>() {
                     @Override
                     public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
                         SongsBean songsBean = response.body().Result;
                         if (songsBean != null) {
+                            totalPage = songsBean.totalPage;
                             if (songsBean.list.isEmpty()) {
                                 stateLayout.showEmptyView();
                             } else {
                                 stateLayout.showContentView();
                                 List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
-                                simpleMusicListAdapter.setData(list);
+                                if (pageNum == 1) {
+                                    simpleMusicListAdapter.setData(list);
+                                } else {
+                                    simpleMusicListAdapter.addData(list);
+                                }
+
                             }
 
                         }
@@ -118,4 +131,14 @@ public class MusicianMusicFragment extends AttachFragment {
         return "TA的音乐";
     }
 
+    @Override
+    public void onLoadMore() {
+        if (currentPageNum >= totalPage) {
+            simpleMusicListAdapter.noMoreData();
+        } else {
+            simpleMusicListAdapter.canLoadMore();
+            currentPageNum++;
+            getData(currentPageNum);
+        }
+    }
 }
