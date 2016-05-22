@@ -135,6 +135,24 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
 
     @Override
     public void onLoadMore() {
-        toast("load more");
+        remoteMusicProvider.provideMusics(new OnProvideMusics() {
+            @Override
+            public void onSuccess(SongsBean songsBean) {
+                List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
+                simpleMusicListAdapter.addData(list);
+                refreshLayout.setRefreshing(false);
+                if (list.isEmpty()) {
+                    stateLayout.showEmptyView();
+                } else {
+                    stateLayout.showContentView();
+                }
+            }
+
+            @Override
+            public void onFail(Throwable reason) {
+                stateLayout.showErrorView("网络出错");
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
 }

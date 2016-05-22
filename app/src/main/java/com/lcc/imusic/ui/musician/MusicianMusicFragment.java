@@ -63,6 +63,7 @@ public class MusicianMusicFragment extends AttachFragment {
             }
         });
         getData();
+        simpleMusicListAdapter.hideFooter();
     }
 
     private void getData() {
