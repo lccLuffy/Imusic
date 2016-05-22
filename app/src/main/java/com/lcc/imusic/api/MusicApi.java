@@ -6,12 +6,15 @@ import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusiciansBean;
 import com.lcc.imusic.bean.SongsBean;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -31,6 +34,10 @@ public interface MusicApi {
     @FormUrlEncoded
     @POST("auth/login")
     Call<Msg<LoginBean>> login(@Field("username") String username, @Field("password") String password);
+
+    @Multipart
+    @POST("auth/avatar")
+    void upload(@Part("photo") MultipartBody photo);
 
     @FormUrlEncoded
     @DELETE("auth/logout")
