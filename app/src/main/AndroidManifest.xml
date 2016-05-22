@@ -75,7 +75,6 @@
         </receiver>
         -->
         <activity android:name=".ui.RegisterActivity" />
-        <activity android:name=".ui.MusicListActivity" />
 
         <meta-data
             android:name="DATABASE"

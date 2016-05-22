@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.adapter.LoadMoreAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
@@ -25,7 +26,7 @@ import butterknife.Bind;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshLayout.OnRefreshListener ,LoadMoreAdapter.LoadMoreListener{
     @Bind(R.id.stateLayout)
     StateLayout stateLayout;
 
@@ -63,6 +64,8 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
         });
         remoteMusicProvider = new RemoteMusicProvider(id);
         getData();
+        simpleMusicListAdapter.setLoadMoreListener(this);
+        simpleMusicListAdapter.canLoadMore();
     }
 
     @Override
@@ -128,5 +131,10 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
     @Override
     public void onRefresh() {
         getData();
+    }
+
+    @Override
+    public void onLoadMore() {
+        toast("load more");
     }
 }

@@ -28,12 +28,20 @@ public class UserManager {
         return ClassHolder.USER_MANAGER;
     }
 
+    public static String avatar() {
+        return instance().loginBean != null ? NetManager_.DOMAIN + instance().loginBean.avatar : null;
+    }
+
+    public static String username() {
+        return instance().loginBean != null ? instance().loginBean.username : null;
+    }
+
     public static boolean isLogin() {
         return instance().loginBean != null;
     }
 
-    public static void logout() {
-        PrfUtil.start().remove(KEY).commit();
+    public static boolean logout() {
+        return PrfUtil.start().remove(KEY).commit();
     }
 
     public static void save(LoginBean loginBean) {

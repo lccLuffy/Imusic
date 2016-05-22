@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/20.
  */
-public class SimpleMusicListAdapter extends SimpleAdapter<SimpleMusicListAdapter.MusicItemViewHolder, MusicItem> {
+public class SimpleMusicListAdapter extends LoadMoreAdapter<MusicItem> {
 
     private static List<SimpleMusicListAdapter> simpleMusicListAdapters;
 
@@ -49,14 +49,11 @@ public class SimpleMusicListAdapter extends SimpleAdapter<SimpleMusicListAdapter
         notifyDataSetChanged();
     }
 
-    @Override
-    public MusicItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        super.onCreateViewHolder(parent, viewType);
-        return new MusicItemViewHolder(inflater.inflate(R.layout.item_music_list, parent, false));
-    }
 
     @Override
-    public void onBindViewHolder(final MusicItemViewHolder holder, final int position) {
+    public void onBindHolder(final RecyclerView.ViewHolder holder1, final int position) {
+        final MusicItemViewHolder holder = (MusicItemViewHolder) holder1;
+
         holder.onBindData(data.get(position), position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +74,11 @@ public class SimpleMusicListAdapter extends SimpleAdapter<SimpleMusicListAdapter
                 }
             }
         });
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateHolder(ViewGroup parent, int viewType) {
+        return new MusicItemViewHolder(inflater.inflate(R.layout.item_music_list, parent, false));
     }
 
     public void onDestroy() {

@@ -49,7 +49,12 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         init();
         accountDelegate = new AccountDelegate(this, toolbar, this);
         accountDelegate.init();
-        accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
+        if (UserManager.isLogin()) {
+            accountDelegate.setAvatar(UserManager.avatar());
+            accountDelegate.setUsername(UserManager.username());
+        } else {
+            accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
+        }
     }
 
     private void init() {
@@ -138,7 +143,6 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
                     ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     clipboardManager.setPrimaryClip(ClipData.newPlainText("token", UserManager.token()));
                     toast(UserManager.token());
-                    startActivity(new Intent(this, MusicListActivity.class));
                     break;
                 case 2:
                     startActivity(new Intent(this, DownLoadActivity.class));
@@ -155,9 +159,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
             }
         } else {
             switch (position) {
-                case 1:
-                    startActivity(new Intent(this, MusicListActivity.class));
-                    break;
+
                 case 2:
                     startActivity(new Intent(this, DownLoadActivity.class));
                     break;
