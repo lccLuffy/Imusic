@@ -38,6 +38,11 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
         notifyDataSetChanged();
     }
 
+
+    public boolean isDataEmpty() {
+        return data.isEmpty();
+    }
+
     @SafeVarargs
     public final void setData(DataType... otherData) {
         data.clear();

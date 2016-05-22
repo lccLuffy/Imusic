@@ -16,10 +16,12 @@ import java.util.List;
 public class MusicianDetailAdapter extends FragmentPagerAdapter {
     List<Fragment> fragments;
 
-    public MusicianDetailAdapter(FragmentManager fm) {
+    public MusicianDetailAdapter(FragmentManager fm, long id) {
         super(fm);
         fragments = new ArrayList<>(2);
-        fragments.add(new MusicianMusicFragment());
+        MusicianMusicFragment musicianMusicFragment = new MusicianMusicFragment();
+        musicianMusicFragment.id = id;
+        fragments.add(musicianMusicFragment);
         fragments.add(new MusicianFansFragment());
     }
 

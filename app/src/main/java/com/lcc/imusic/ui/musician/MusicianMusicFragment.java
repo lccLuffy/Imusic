@@ -11,15 +11,28 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
-import com.lcc.imusic.model.LocalMusicProvider;
+import com.lcc.imusic.bean.Msg;
+import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.bean.SongsBean;
+import com.lcc.imusic.manager.NetManager_;
+import com.lcc.imusic.model.RemoteMusicProvider;
+import com.lcc.imusic.wiget.StateLayout;
+
+import java.util.List;
 
 import butterknife.Bind;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
 public class MusicianMusicFragment extends AttachFragment {
+
+    @Bind(R.id.stateLayout)
+    StateLayout stateLayout;
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -29,21 +42,56 @@ public class MusicianMusicFragment extends AttachFragment {
 
     SimpleMusicListAdapter simpleMusicListAdapter;
 
+    public long id;
+
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
-        refreshLayout.setEnabled(false);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         simpleMusicListAdapter = new SimpleMusicListAdapter();
         recyclerView.setAdapter(simpleMusicListAdapter);
-
-        simpleMusicListAdapter.setData(LocalMusicProvider.getMusicProvider(context).provideMusics());
         simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 playMusic(position);
             }
         });
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+            }
+        });
+        getData();
+    }
+
+    private void getData() {
+        if (simpleMusicListAdapter.isDataEmpty())
+            stateLayout.showProgressView();
+        NetManager_.API().songs(id)
+                .enqueue(new Callback<Msg<SongsBean>>() {
+                    @Override
+                    public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
+                        SongsBean songsBean = response.body().Result;
+                        if (songsBean != null) {
+                            if (songsBean.list.isEmpty()) {
+                                stateLayout.showEmptyView();
+                            } else {
+                                stateLayout.showContentView();
+                                List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
+                                simpleMusicListAdapter.setData(list);
+                            }
+
+                        }
+                        refreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Msg<SongsBean>> call, Throwable t) {
+                        refreshLayout.setRefreshing(false);
+                        stateLayout.showErrorView(t.toString());
+                    }
+                });
     }
 
     @Override

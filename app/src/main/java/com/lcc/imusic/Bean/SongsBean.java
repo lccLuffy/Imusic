@@ -25,9 +25,9 @@ public class SongsBean {
      * status : 2
      */
 
-    public List<ListBean> list;
+    public List<SongItem> list;
 
-    public static class ListBean {
+    public static class SongItem {
         public String cover;
         public String songpath;
         public String lyric;

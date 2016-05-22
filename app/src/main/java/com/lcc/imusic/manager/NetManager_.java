@@ -18,7 +18,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by lcc_luffy on 2016/3/5.
  */
 public class NetManager_ {
-    public static final String DOMAIN = "http://uestc.xyz:8080/api/";
+    public static final String DOMAIN = "http://uestc.xyz:8080/api";
+    private static final String base_url = "http://uestc.xyz:8080/api/";
     private Retrofit retrofit;
 
     private static class ClassHolder {
@@ -38,7 +39,7 @@ public class NetManager_ {
 
         retrofit = new Retrofit
                 .Builder()
-                .baseUrl(DOMAIN)
+                .baseUrl(base_url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
