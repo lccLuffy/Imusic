@@ -20,8 +20,8 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
     private LoadMoreListener loadMoreListener;
     private FooterViewHolder footerViewHolder;
 
-    private String loadMoreMsg = "loading";
-    private String noMoreMsg = "-- end --";
+    private String loadMoreMsg = "Loading";
+    private String noMoreMsg = "-- END --";
 
     @Override
     public int getItemCount() {

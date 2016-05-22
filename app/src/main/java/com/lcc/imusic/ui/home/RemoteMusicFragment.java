@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.LoadMoreAdapter;
@@ -59,6 +60,13 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
                 playMusic(position);
             }
         });
+        stateLayout.setErrorAction(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRefresh();
+            }
+        });
+
         getData(1);
         simpleMusicListAdapter.setLoadMoreListener(this);
         simpleMusicListAdapter.canLoadMore();
@@ -81,14 +89,14 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
     public void getData(final int pageNum) {
         if (simpleMusicListAdapter.getItemCount() == 0)
             stateLayout.showProgressView();
-        else
-            stateLayout.showContentView();
+
 
         NetManager_.API().songs(pageNum).enqueue(new Callback<Msg<SongsBean>>() {
             @Override
             public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
                 SongsBean songsBean = response.body().Result;
                 if (songsBean != null) {
+                    stateLayout.showContentView();
                     List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
                     if (pageNum == 1) {
                         simpleMusicListAdapter.canLoadMore();

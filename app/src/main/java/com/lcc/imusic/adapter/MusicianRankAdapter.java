@@ -20,16 +20,16 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/22.
  */
-public class MusicianRankAdapter extends SimpleAdapter<MusicianRankAdapter.Holder, Musician> {
+public class MusicianRankAdapter extends LoadMoreAdapter<Musician> {
 
     @Override
-    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        super.onCreateViewHolder(parent, viewType);
+    public RecyclerView.ViewHolder onCreateHolder(ViewGroup parent, int viewType) {
         return new Holder(inflater.inflate(R.layout.item_musician_rank, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final Holder holder, final int position) {
+    public void onBindHolder(RecyclerView.ViewHolder holder1, int position) {
+        final Holder holder = (Holder) holder1;
         holder.bindData(data.get(position), position);
         if (onItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -21,19 +21,19 @@ import butterknife.Bind;
  */
 public abstract class UserActivity extends PlayBarActivity {
     @Bind(R.id.appBarLayout)
-    AppBarLayout appBarLayout;
+    protected AppBarLayout appBarLayout;
 
     @Bind(R.id.collapsingToolbarLayout)
-    CollapsingToolbarLayout collapsingToolbarLayout;
+    protected CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Bind(R.id.username)
-    TextView username_tv;
+    protected TextView username_tv;
 
     @Bind(R.id.avatar)
-    ImageView avatar_iv;
+    protected ImageView avatar_iv;
 
     @Bind(R.id.userInfoWrapper)
-    LinearLayout linearLayout;
+    protected LinearLayout linearLayout;
 
     private String username;
 

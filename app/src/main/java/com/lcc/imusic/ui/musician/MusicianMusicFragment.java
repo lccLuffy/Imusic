@@ -80,7 +80,7 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
                     public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
                         SongsBean songsBean = response.body().Result;
                         if (songsBean != null) {
-                            if (songsBean.list.isEmpty()) {
+                            if (simpleMusicListAdapter.isDataEmpty() && songsBean.list.isEmpty()) {
                                 stateLayout.showEmptyView();
                             } else {
                                 stateLayout.showContentView();

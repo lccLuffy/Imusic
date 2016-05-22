@@ -2,6 +2,7 @@ package com.lcc.imusic.ui.musician;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
@@ -22,6 +23,9 @@ import retrofit2.Response;
  */
 public class MusicianDetailActivity extends UserActivity {
 
+    @Bind(R.id.collapsingToolbarLayout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
     @Bind(R.id.viewPage)
     ViewPager viewPager;
 
@@ -40,7 +44,6 @@ public class MusicianDetailActivity extends UserActivity {
         id = getIntent().getLongExtra("id", 1);
         avatar = getIntent().getStringExtra("avatar");
         name = getIntent().getStringExtra("name");
-
         setAvatar(avatar);
         setUsername(name);
 
