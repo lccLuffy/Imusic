@@ -12,4 +12,6 @@ public class MusicItem {
      * in second
      */
     public int duration;
+
+    public long id;
 }

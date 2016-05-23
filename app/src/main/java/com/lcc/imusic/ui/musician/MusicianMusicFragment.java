@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.LoadMoreAdapter;
@@ -54,6 +55,20 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
         stateLayout.setEmptyContentViewMargin(0, -275, 0, 0);
         stateLayout.setErrorContentViewMargin(0, -275, 0, 0);
         stateLayout.setProgressContentViewMargin(0, -275, 0, 0);
+
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (simpleMusicListAdapter.isDataEmpty())
+                    stateLayout.showProgressView();
+                getData(1);
+            }
+        };
+
+        stateLayout.setErrorAction(listener);
+        stateLayout.setEmptyAction(listener);
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         simpleMusicListAdapter = new SimpleMusicListAdapter();

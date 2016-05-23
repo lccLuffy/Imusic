@@ -94,21 +94,22 @@ public class MusicPlayService extends Service {
 
     public void playMusic(int index) {
         checkBoundary(index);
-        if (currentIndex == index && mediaPlayer.isPlaying()) {
-            return;
-        }
 
+        MusicItem playingMusicItem = musicProvider.getPlayingMusic();
+        MusicItem willPlayMusicItem = musicProvider.provideMusics().get(index);
+
+        if (playingMusicItem != null && mediaPlayer.isPlaying() && willPlayMusicItem.id == playingMusicItem.id)
+            return;
         currentIndex = index;
-        MusicItem musicItem = musicProvider.provideMusics().get(index);
         try {
 
             musicProvider.setPlayingMusic(index);
 
             mediaPlayer.reset();
 
-            EventsManager.get().dispatchOnMusicWillPlayEvent(musicItem);
+            EventsManager.get().dispatchOnMusicWillPlayEvent(willPlayMusicItem);
 
-            mediaPlayer.setDataSource(musicItem.data);
+            mediaPlayer.setDataSource(willPlayMusicItem.data);
             lockPrepared = false;
             mediaPlayer.prepareAsync();
 

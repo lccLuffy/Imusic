@@ -68,6 +68,7 @@ public class RemoteMusicProvider extends SimpleMusicProviderImpl {
             musicItem.data = NetManager_.DOMAIN + tracksBean.songpath;
             musicItem.artist = tracksBean.musicianName;
             musicItem.cover = NetManager_.DOMAIN + tracksBean.cover;
+            musicItem.id = tracksBean.id;
             musicList.add(musicItem);
         }
         return musicList;

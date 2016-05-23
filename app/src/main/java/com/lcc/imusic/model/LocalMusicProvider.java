@@ -19,6 +19,7 @@ public class LocalMusicProvider extends SimpleMusicProviderImpl {
             Media.DATA,
             Media.DURATION,
             Media.ALBUM,
+            Media._ID
     };
 
     private String url1 = "http://www.n63.com/zutu/n63/?N=X2hiJTI2MC4tJTI4LSUyRiU1RCU1QzElMkJZJTJBMCU1QjAlNUQlMkIlMkElMkMtJTVFJTI4JTI4JTI5JTJGJTJDWiUyQiU1QyUyQjElMkMwWSUyNyUyQzBZ&v=.jpg";
@@ -49,12 +50,14 @@ public class LocalMusicProvider extends SimpleMusicProviderImpl {
             String artist = cursor.getString(1);
             String path = cursor.getString(2);
             int duration = cursor.getInt(3) / 1000;
+            long id = cursor.getLong(5);
+
             MusicItem musicItem = new MusicItem();
             musicItem.data = path;
             musicItem.title = name;
             musicItem.artist = artist;
             musicItem.duration = duration;
-
+            musicItem.id = id;
             int r = random.nextInt(3);
             if (r == 0)
                 musicItem.cover = url1;
