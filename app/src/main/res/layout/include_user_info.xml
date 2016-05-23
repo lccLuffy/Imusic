@@ -13,10 +13,11 @@
         app:contentScrim="?attr/colorPrimary"
         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-        <com.lcc.imusic.wiget.BeautyView
-            android:id="@+id/beautyView"
+        <ImageView
+            android:id="@+id/user_bg"
             android:layout_width="match_parent"
-            android:layout_height="250dp" />
+            android:layout_height="250dp"
+            android:scaleType="centerCrop" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -47,6 +48,10 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:padding="5dp"
+                android:shadowColor="@android:color/background_dark"
+                android:shadowDx="3"
+                android:shadowDy="3"
+                android:shadowRadius="1"
                 android:text="username"
                 android:textColor="#FFF"
                 android:textSize="16sp"
@@ -66,6 +71,10 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:padding="5dp"
+                    android:shadowColor="@android:color/background_dark"
+                    android:shadowDx="3"
+                    android:shadowDy="3"
+                    android:shadowRadius="1"
                     android:text="歌曲\n666"
                     android:textColor="#FFF" />
 
@@ -75,6 +84,10 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:padding="5dp"
+                    android:shadowColor="@android:color/background_dark"
+                    android:shadowDx="3"
+                    android:shadowDy="3"
+                    android:shadowRadius="1"
                     android:text="粉丝\n91154"
                     android:textColor="#FFF" />
             </LinearLayout>

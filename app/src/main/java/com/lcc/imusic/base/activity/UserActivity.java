@@ -32,6 +32,9 @@ public abstract class UserActivity extends PlayBarActivity {
     @Bind(R.id.avatar)
     protected ImageView avatar_iv;
 
+    @Bind(R.id.user_bg)
+    protected ImageView user_bg;
+
     @Bind(R.id.userInfoWrapper)
     protected LinearLayout linearLayout;
 

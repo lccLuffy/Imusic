@@ -3,7 +3,6 @@ package com.lcc.imusic.wiget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -21,9 +20,15 @@ import com.lcc.imusic.R;
  */
 public class StateLayout extends FrameLayout {
     private View contentView;
+
     private View emptyView;
+    private View emptyContentView;
+
     private View errorView;
+    private View errorContentView;
+
     private View progressView;
+    private View progressContentView;
 
     private TextView emptyTextView;
     private TextView errorTextView;
@@ -82,6 +87,7 @@ public class StateLayout extends FrameLayout {
         } else {
             progressView = inflater.inflate(R.layout.view_progress, this, false);
             progressTextView = (TextView) progressView.findViewById(R.id.progressTextView);
+            progressContentView = progressView.findViewById(R.id.progress_content);
         }
 
         addView(progressView);
@@ -90,6 +96,7 @@ public class StateLayout extends FrameLayout {
         /******************************************************************************************/
 
         errorView = inflater.inflate(R.layout.view_error, this, false);
+        errorContentView = errorView.findViewById(R.id.error_content);
         errorTextView = (TextView) errorView.findViewById(R.id.errorTextView);
         errorImageView = (ImageView) errorView.findViewById(R.id.errorImageView);
         if (errorDrawable != null) {
@@ -103,6 +110,7 @@ public class StateLayout extends FrameLayout {
         /******************************************************************************************/
 
         emptyView = inflater.inflate(R.layout.view_empty, this, false);
+        emptyContentView = emptyView.findViewById(R.id.empty_content);
         emptyTextView = (TextView) emptyView.findViewById(R.id.emptyTextView);
         emptyImageView = (ImageView) emptyView.findViewById(R.id.emptyImageView);
         if (emptyDrawable != null) {
@@ -147,6 +155,17 @@ public class StateLayout extends FrameLayout {
         }
     }
 
+    public void setEmptyContentViewMargin(int left, int top, int right, int bottom) {
+        ((LayoutParams) emptyContentView.getLayoutParams()).setMargins(left, top, right, bottom);
+    }
+
+    public void setErrorContentViewMargin(int left, int top, int right, int bottom) {
+        ((LayoutParams) errorContentView.getLayoutParams()).setMargins(left, top, right, bottom);
+    }
+
+    public void setProgressContentViewMargin(int left, int top, int right, int bottom) {
+        ((LayoutParams) progressContentView.getLayoutParams()).setMargins(left, top, right, bottom);
+    }
 
     public void showContentView() {
         switchWithAnimation(contentView);

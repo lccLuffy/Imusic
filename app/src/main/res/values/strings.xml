@@ -11,4 +11,5 @@
     <string name="error">出错了</string>
     <string name="retry">轻触屏幕重试</string>
     <string name="empty">啥也没有</string>
+    <string name="download_manager">下载管理</string>
 </resources>

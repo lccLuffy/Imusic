@@ -43,6 +43,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.DownLoadActivity"
+            android:label="@string/download_manager"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.CommentActivity"

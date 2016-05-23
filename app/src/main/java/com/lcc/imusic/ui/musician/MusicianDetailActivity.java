@@ -2,10 +2,10 @@ package com.lcc.imusic.ui.musician;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.MusicianDetailAdapter;
 import com.lcc.imusic.base.activity.UserActivity;
@@ -22,9 +22,6 @@ import retrofit2.Response;
  * Created by lcc_luffy on 2016/3/23.
  */
 public class MusicianDetailActivity extends UserActivity {
-
-    @Bind(R.id.collapsingToolbarLayout)
-    CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Bind(R.id.viewPage)
     ViewPager viewPager;
@@ -57,18 +54,19 @@ public class MusicianDetailActivity extends UserActivity {
 
     private void initData() {
         NetManager_.API().musicians(id)
-                .enqueue(new Callback<Msg<MusiciansBean.MuiscianItem>>() {
+                .enqueue(new Callback<Msg<MusiciansBean.MusicianItem>>() {
                     @Override
-                    public void onResponse(Call<Msg<MusiciansBean.MuiscianItem>> call, Response<Msg<MusiciansBean.MuiscianItem>> response) {
-                        MusiciansBean.MuiscianItem muiscianItem = response.body().Result;
-                        if (muiscianItem != null) {
-                            setAvatar(NetManager_.DOMAIN + muiscianItem.avatar);
-                            setUsername(muiscianItem.nickname);
+                    public void onResponse(Call<Msg<MusiciansBean.MusicianItem>> call, Response<Msg<MusiciansBean.MusicianItem>> response) {
+                        MusiciansBean.MusicianItem musicianItem = response.body().Result;
+                        if (musicianItem != null) {
+                            setAvatar(NetManager_.DOMAIN + musicianItem.avatar);
+                            setUsername(musicianItem.nickname);
+                            Glide.with(MusicianDetailActivity.this).load(NetManager_.DOMAIN + musicianItem.IDphotopath).into(user_bg);
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<Msg<MusiciansBean.MuiscianItem>> call, Throwable t) {
+                    public void onFailure(Call<Msg<MusiciansBean.MusicianItem>> call, Throwable t) {
 
                     }
                 });

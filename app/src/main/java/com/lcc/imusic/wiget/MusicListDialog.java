@@ -36,6 +36,7 @@ public class MusicListDialog extends BottomSheetDialog implements View.OnClickLi
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(getAdapter());
+        getAdapter().noMoreData();
         setContentView(content);
         return this;
     }

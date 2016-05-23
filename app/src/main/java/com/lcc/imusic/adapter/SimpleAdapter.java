@@ -1,6 +1,7 @@
 package com.lcc.imusic.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -94,6 +95,8 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
         if (location >= 0 && location < data.size()) {
             data.remove(location);
             notifyItemRemoved(location);
+        } else {
+            Log.i("main", "remove data out of data bounds");
         }
     }
 

@@ -18,7 +18,6 @@ import com.lcc.imusic.bean.MusiciansBean;
 import com.lcc.imusic.manager.NetManager_;
 import com.lcc.imusic.ui.musician.MusicianDetailActivity;
 import com.lcc.imusic.wiget.StateLayout;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +92,7 @@ public class MusicianListFragment extends AttachFragment implements LoadMoreAdap
                 if (musiciansBean != null) {
                     stateLayout.showContentView();
                     List<Musician> list = new ArrayList<>();
-                    for (MusiciansBean.MuiscianItem item : musiciansBean.list) {
+                    for (MusiciansBean.MusicianItem item : musiciansBean.list) {
                         list.add(new Musician(item.id, NetManager_.DOMAIN + item.avatar, item.nickname));
                     }
                     if (pageNum == 1) {

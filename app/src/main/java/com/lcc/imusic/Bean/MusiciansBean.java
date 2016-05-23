@@ -14,9 +14,9 @@ public class MusiciansBean {
     public int totalPage;
     public int pageSize;
 
-    public List<MuiscianItem> list;
+    public List<MusicianItem> list;
 
-    public static class MuiscianItem {
+    public static class MusicianItem {
         public String IDnumber;
         public String IDphotopath;
         public String addtime;

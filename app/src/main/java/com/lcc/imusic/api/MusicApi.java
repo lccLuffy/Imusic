@@ -56,5 +56,5 @@ public interface MusicApi {
     Call<Msg<MusiciansBean>> musicians(@Query("pageNum") int pageNum);
 
     @GET("musician")
-    Call<Msg<MusiciansBean.MuiscianItem>> musicians(@Query("id") long id);
+    Call<Msg<MusiciansBean.MusicianItem>> musicians(@Query("id") long id);
 }
