@@ -97,7 +97,7 @@ public class EventsManager {
     public void removeMusicPlayListener(MusicPlayService.MusicPlayListener listener) {
         if (musicPlayListeners != null) {
             musicPlayListeners.remove(listener);
-            Logger.i("remove @ " + listener);
+            //Logger.i("remove @ " + listener);
         }
     }
 
@@ -110,7 +110,7 @@ public class EventsManager {
     public void removeMusicProgressListener(MusicPlayService.MusicProgressListener listener) {
         if (musicProgressListeners != null) {
             musicProgressListeners.remove(listener);
-            Logger.i("remove @ " + listener);
+            //Logger.i("remove @ " + listener);
         }
     }
 

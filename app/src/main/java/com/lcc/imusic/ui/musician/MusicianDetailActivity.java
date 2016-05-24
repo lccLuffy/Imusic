@@ -10,7 +10,7 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.MusicianDetailAdapter;
 import com.lcc.imusic.base.activity.UserActivity;
 import com.lcc.imusic.bean.Msg;
-import com.lcc.imusic.bean.MusiciansBean;
+import com.lcc.imusic.bean.MusicianItem;
 import com.lcc.imusic.manager.NetManager_;
 
 import butterknife.Bind;
@@ -54,10 +54,10 @@ public class MusicianDetailActivity extends UserActivity {
 
     private void initData() {
         NetManager_.API().musicians(id)
-                .enqueue(new Callback<Msg<MusiciansBean.MusicianItem>>() {
+                .enqueue(new Callback<Msg<MusicianItem>>() {
                     @Override
-                    public void onResponse(Call<Msg<MusiciansBean.MusicianItem>> call, Response<Msg<MusiciansBean.MusicianItem>> response) {
-                        MusiciansBean.MusicianItem musicianItem = response.body().Result;
+                    public void onResponse(Call<Msg<MusicianItem>> call, Response<Msg<MusicianItem>> response) {
+                        MusicianItem musicianItem = response.body().Result;
                         if (musicianItem != null) {
                             setAvatar(NetManager_.DOMAIN + musicianItem.avatar);
                             setUsername(musicianItem.nickname);
@@ -66,7 +66,7 @@ public class MusicianDetailActivity extends UserActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<Msg<MusiciansBean.MusicianItem>> call, Throwable t) {
+                    public void onFailure(Call<Msg<MusicianItem>> call, Throwable t) {
 
                     }
                 });

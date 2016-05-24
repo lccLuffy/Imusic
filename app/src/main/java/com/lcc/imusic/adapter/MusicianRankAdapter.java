@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
-import com.lcc.imusic.bean.Musician;
+import com.lcc.imusic.bean.MusicianItem;
 
 import java.util.Locale;
 import java.util.Random;
@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/22.
  */
-public class MusicianRankAdapter extends LoadMoreAdapter<Musician> {
+public class MusicianRankAdapter extends LoadMoreAdapter<MusicianItem> {
 
     @Override
     public RecyclerView.ViewHolder onCreateHolder(ViewGroup parent, int viewType) {
@@ -62,12 +62,12 @@ public class MusicianRankAdapter extends LoadMoreAdapter<Musician> {
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindData(Musician album, int pos) {
+        public void bindData(MusicianItem musicianItem, int pos) {
             musicianRank_pos.setText(String.valueOf(pos + 1));
-            title.setText(album.name);
-            subtitle.setText(String.format(Locale.CHINA, "热度:%d", random.nextInt(1000) + 1000));
+            title.setText(musicianItem.nickname);
+            subtitle.setText(String.format(Locale.CHINA, "查看次数:%d", musicianItem.views));
             Glide.with(itemView.getContext())
-                    .load(album.avatar)
+                    .load(musicianItem.avatar)
                     .into(avatar);
             if (pos <= 2) {
                 musicianRank_pos.setTextColor(itemView.getResources().getColor(R.color.selectedRed));

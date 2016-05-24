@@ -22,6 +22,7 @@ import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.lcc.imusic.wiget.MusicListDialog;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -121,6 +122,7 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
             musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
+                    Logger.i("position is :" + position);
                     playMusic(position);
                 }
             });
@@ -173,8 +175,10 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
 
     @Override
     public void onPlayingIndexChange(int index) {
-        if (musicListDialog != null)
+        Logger.i("index change to:" + index);
+        if (musicListDialog != null) {
             musicListDialog.getAdapter().playingIndexChangeTo(index);
+        }
     }
 
     @Override
@@ -198,6 +202,9 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
     @Override
     public void onCurrentPlayingListChange(@NonNull List<MusicItem> musicItems) {
         if (musicListDialog != null) {
+
+            Logger.i("musicItems size:" + musicItems.size() + ",index:" + currentMusicProvider.getPlayingMusicIndex());
+
             musicListDialog.getAdapter().setData(musicItems, currentMusicProvider.getPlayingMusicIndex());
         }
     }

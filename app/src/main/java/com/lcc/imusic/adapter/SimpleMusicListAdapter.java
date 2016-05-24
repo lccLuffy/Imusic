@@ -23,6 +23,12 @@ public class SimpleMusicListAdapter extends LoadMoreAdapter<MusicItem> {
 
     private static List<SimpleMusicListAdapter> simpleMusicListAdapters;
 
+    private boolean alwaysPlaying = false;
+
+    public void setAlwaysPlaying(boolean value) {
+        this.alwaysPlaying = value;
+    }
+
     public void setCurrentPlayingIndex(int currentPlayingIndex) {
         this.currentPlayingIndex = currentPlayingIndex;
     }
@@ -65,7 +71,7 @@ public class SimpleMusicListAdapter extends LoadMoreAdapter<MusicItem> {
                     if (onItemClickListener != null)
                         onItemClickListener.onItemClick(holder.getAdapterPosition());
                     for (SimpleMusicListAdapter adapter : simpleMusicListAdapters) {
-                        if (adapter != SimpleMusicListAdapter.this) {
+                        if (adapter != SimpleMusicListAdapter.this && !adapter.alwaysPlaying) {
                             adapter.notPlayAnyMore();
                         }
                     }

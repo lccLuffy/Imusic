@@ -13,7 +13,7 @@ import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 /**
  * Created by lcc_luffy on 2016/3/19.
  */
-public class MusicListDialog extends BottomSheetDialog implements View.OnClickListener {
+public class MusicListDialog extends BottomSheetDialog {
     public MusicListDialog(@NonNull Context context) {
         super(context);
     }
@@ -43,20 +43,10 @@ public class MusicListDialog extends BottomSheetDialog implements View.OnClickLi
 
     @NonNull
     public SimpleMusicListAdapter getAdapter() {
-        if (adapter == null)
+        if (adapter == null) {
             adapter = new SimpleMusicListAdapter();
+            adapter.setAlwaysPlaying(true);
+        }
         return adapter;
     }
-
-    @Override
-    public void onClick(View v) {
-        if (onClickListener != null)
-            onClickListener.onClick(v);
-    }
-
-    public void setOnClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-    }
-
-    View.OnClickListener onClickListener;
 }

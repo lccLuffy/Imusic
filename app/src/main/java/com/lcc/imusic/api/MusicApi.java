@@ -3,6 +3,7 @@ package com.lcc.imusic.api;
 import com.google.gson.JsonObject;
 import com.lcc.imusic.bean.LoginBean;
 import com.lcc.imusic.bean.Msg;
+import com.lcc.imusic.bean.MusicianItem;
 import com.lcc.imusic.bean.MusiciansBean;
 import com.lcc.imusic.bean.SongsBean;
 
@@ -56,5 +57,5 @@ public interface MusicApi {
     Call<Msg<MusiciansBean>> musicians(@Query("pageNum") int pageNum);
 
     @GET("musician")
-    Call<Msg<MusiciansBean.MusicianItem>> musicians(@Query("id") long id);
+    Call<Msg<MusicianItem>> musicians(@Query("id") long id);
 }

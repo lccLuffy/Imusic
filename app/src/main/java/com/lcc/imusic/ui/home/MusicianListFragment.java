@@ -13,7 +13,7 @@ import com.lcc.imusic.adapter.MusicianRankAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.fragment.AttachFragment;
 import com.lcc.imusic.bean.Msg;
-import com.lcc.imusic.bean.Musician;
+import com.lcc.imusic.bean.MusicianItem;
 import com.lcc.imusic.bean.MusiciansBean;
 import com.lcc.imusic.manager.NetManager_;
 import com.lcc.imusic.ui.musician.MusicianDetailActivity;
@@ -70,7 +70,7 @@ public class MusicianListFragment extends AttachFragment implements LoadMoreAdap
                 Intent i = new Intent(context, MusicianDetailActivity.class);
                 i.putExtra("id", musicianRankAdapter.getData(position).id);
                 i.putExtra("avatar", musicianRankAdapter.getData(position).avatar);
-                i.putExtra("name", musicianRankAdapter.getData(position).name);
+                i.putExtra("name", musicianRankAdapter.getData(position).nickname);
                 startActivity(i);
             }
         });
@@ -91,9 +91,11 @@ public class MusicianListFragment extends AttachFragment implements LoadMoreAdap
                 MusiciansBean musiciansBean = response.body().Result;
                 if (musiciansBean != null) {
                     stateLayout.showContentView();
-                    List<Musician> list = new ArrayList<>();
-                    for (MusiciansBean.MusicianItem item : musiciansBean.list) {
-                        list.add(new Musician(item.id, NetManager_.DOMAIN + item.avatar, item.nickname));
+                    List<MusicianItem> list = new ArrayList<>();
+                    for (MusicianItem item : musiciansBean.list) {
+                        item.avatar = NetManager_.DOMAIN + item.avatar;
+                        item.IDphotopath = NetManager_.DOMAIN + item.IDphotopath;
+                        list.add(item);
                     }
                     if (pageNum == 1) {
                         musicianRankAdapter.setData(list);

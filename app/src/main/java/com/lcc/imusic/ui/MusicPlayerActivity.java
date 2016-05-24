@@ -2,7 +2,6 @@ package com.lcc.imusic.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
@@ -17,6 +16,7 @@ import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.wiget.MusicListDialog;
 import com.lcc.imusic.wiget.StateImageView;
+import com.orhanobut.logger.Logger;
 
 import java.io.File;
 
@@ -143,7 +143,7 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         @Override
         public void onComment() {
             MusicItem item = currentMusicProvider.getPlayingMusic();
-            CommentActivity.jumpToMe(MusicPlayerActivity.this,1,item.title);
+            CommentActivity.jumpToMe(MusicPlayerActivity.this, 1, item.title);
         }
 
         @Override
@@ -196,18 +196,12 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
     private void checkDialogIsNull() {
         if (musicListDialog == null) {
             musicListDialog = new MusicListDialog(this);
-            musicListDialog.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    toast("download all");
-                    DownLoadHelper.get().downloadAll(MusicPlayerActivity.this, currentMusicProvider.provideMusics());
-                }
-            });
             musicListDialog.init().getAdapter().setData(currentMusicProvider.provideMusics());
             musicListDialog.getAdapter().setCurrentPlayingIndex(currentMusicProvider.getPlayingMusicIndex());
             musicListDialog.getAdapter().setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
+                    Logger.i("index is:" + position);
                     musicServiceBind.play(position);
                 }
             });
