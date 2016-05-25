@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
@@ -52,8 +53,6 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         if (UserManager.isLogin()) {
             accountDelegate.setAvatar(UserManager.avatar());
             accountDelegate.setUsername(UserManager.username());
-        } else {
-            accountDelegate.setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
         }
     }
 
@@ -148,9 +147,14 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
                     startActivity(new Intent(this, DownLoadActivity.class));
                     break;
                 case 3:
-                    UserManager.logout();
-                    accountDelegate.close();
-                    toast("已退出登录");
+                    Snackbar.make(toolbar, "确定退出吗？", Snackbar.LENGTH_INDEFINITE).setAction("确定", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            UserManager.logout();
+                            accountDelegate.close();
+                            toast("已退出登录");
+                        }
+                    }).show();
                     break;
                 case 4:
                     finish();

@@ -21,7 +21,25 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
     private FooterViewHolder footerViewHolder;
 
     private String loadMoreMsg = "Loading";
-    private String noMoreMsg = "-- END --";
+    private String noMoreMsg = " - - - - - - - - - - - - - - - - - - - - ";
+
+    public LoadMoreAdapter() {
+        registerAdapterDataObserver(new DataObserver());
+    }
+
+    private class DataObserver extends RecyclerView.AdapterDataObserver {
+        @Override
+        public void onChanged() {
+            if (footerViewHolder != null) {
+                if (isDataEmpty())
+                    footerViewHolder.hide();
+                else
+                    footerViewHolder.show();
+            }
+
+        }
+    }
+
 
     @Override
     public int getItemCount() {
@@ -48,6 +66,7 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
         if (ITEM_TYPE_FOOTER == viewType) {
             if (footerViewHolder == null) {
                 footerViewHolder = new FooterViewHolder(inflater.inflate(R.layout.item_footer_load_more, parent, false));
+                footerViewHolder.hide();
             }
             return footerViewHolder;
         }
@@ -130,12 +149,19 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
         this.loadMoreListener = loadMoreListener;
     }
 
+    /**
+     * tell tha adapter there will not be data ,so the progress will hide,and the load more callback will not be invoked.
+     */
     public void noMoreData() {
         state = FooterViewHolder.STATE_NO_MORE;
         if (footerViewHolder != null)
             footerViewHolder.noMore();
     }
 
+    /**
+     * @param noMoreMsg show when no more data
+     *                  tell tha adapter there will not be data ,so the progress will hide,and the load more callback will not be invoked.
+     */
     public void noMoreData(String noMoreMsg) {
         state = FooterViewHolder.STATE_NO_MORE;
         this.noMoreMsg = noMoreMsg;
@@ -143,12 +169,19 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
             footerViewHolder.noMore();
     }
 
+
+    /**
+     * tell tha adapter there will be more data ,so the progress will show,and the load more callback will be invoked.
+     */
     public void canLoadMore() {
         state = FooterViewHolder.STATE_LOAD_MORE;
         if (footerViewHolder != null)
             footerViewHolder.loadMore();
     }
 
+    /**
+     * tell tha adapter there will be more data ,so the progress will show,and the load more callback will be invoked.
+     */
     public void canLoadMore(String loadMoreMsg) {
         state = FooterViewHolder.STATE_LOAD_MORE;
         this.loadMoreMsg = loadMoreMsg;
@@ -156,6 +189,10 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
             footerViewHolder.loadMore();
     }
 
+
+    /**
+     * set visibility gone
+     */
     public void hideFooter() {
         state = FooterViewHolder.STATE_GONE;
         if (footerViewHolder != null)

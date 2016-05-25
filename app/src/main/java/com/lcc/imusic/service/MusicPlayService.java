@@ -72,6 +72,30 @@ public class MusicPlayService extends Service {
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "music_play_lock");
         wifiLock.acquire();
 
+        AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        int result = audioManager.requestAudioFocus(new AudioManager.OnAudioFocusChangeListener() {
+            @Override
+            public void onAudioFocusChange(int focusChange) {
+                switch (focusChange) {
+                    case AudioManager.AUDIOFOCUS_GAIN:
+                        if (!mediaPlayer.isPlaying())
+                            mediaPlayer.start();
+                        break;
+                    case AudioManager.AUDIOFOCUS_LOSS:
+                        if (mediaPlayer.isPlaying())
+                            mediaPlayer.stop();
+                        mediaPlayer.release();
+                        break;
+
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                        pauseMusic();
+                        break;
+                }
+
+            }
+        }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
+
         MediaListener mediaListener = new MediaListener();
         mediaPlayer.setOnPreparedListener(mediaListener);
         mediaPlayer.setOnCompletionListener(mediaListener);
