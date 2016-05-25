@@ -40,6 +40,12 @@ dependencies {
     compile 'com.github.satyan:sugar:1.5'
 
     compile 'com.mikepenz:fontawesome-typeface:4.5.0.1@aar'
+
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+
     /**
      * My own library
      */

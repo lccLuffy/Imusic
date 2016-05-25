@@ -12,6 +12,7 @@ import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.orhanobut.logger.Logger;
 import com.orm.SugarContext;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by lcc_luffy on 2016/3/5.
@@ -24,6 +25,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         SugarContext.init(this);
+        LeakCanary.install(this);
         app = this;
         Logger.init("main");
         DrawerImageLoader.init(new ImageLoader());
