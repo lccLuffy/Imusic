@@ -3,6 +3,7 @@ package com.lcc.imusic.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.lcc.imusic.R;
@@ -60,5 +61,23 @@ public class SearchActivity extends BaseActivity {
     @Override
     protected int getLayoutId() {
         return R.layout.activity_search;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            overridePendingTransition(0,R.anim.activity_bottom_close);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!getSupportFragmentManager().popBackStackImmediate()) {
+            finish();
+            overridePendingTransition(0,R.anim.activity_bottom_close);
+        }
     }
 }

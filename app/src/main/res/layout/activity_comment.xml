@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@drawable/playbar_bg"
-        android:minHeight="20dp"
+        android:minHeight="52dp"
         android:orientation="horizontal"
         app:layout_behavior="@string/footer_behavior">
 
@@ -43,8 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="5"
-            android:hint="评论"
-            android:padding="5dp" />
+            android:hint="评论" />
 
         <FrameLayout
             android:layout_width="0dp"

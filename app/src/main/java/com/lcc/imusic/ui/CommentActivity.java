@@ -144,6 +144,7 @@ public class CommentActivity extends BaseActivity implements LoadMoreAdapter.Loa
                 Msg<JsonObject> msg = response.body();
                 if (msg != null) {
                     if (msg.Code == 100) {
+                        stateLayout.showContentView();
                         commentEditView.setText("");
                         toast("评论成功");
                         CommentItem commentItem = new CommentItem();
@@ -161,7 +162,6 @@ public class CommentActivity extends BaseActivity implements LoadMoreAdapter.Loa
                     } else {
                         toast("评论失败," + msg.Msg);
                     }
-
                 } else {
                     toast("评论失败");
                 }
