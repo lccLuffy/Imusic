@@ -32,6 +32,10 @@ public class UserManager {
         return instance().loginBean != null ? NetManager_.DOMAIN + instance().loginBean.avatar : null;
     }
 
+    public static String avatarWithOutDomain() {
+        return instance().loginBean != null ? instance().loginBean.avatar : null;
+    }
+
     public static String username() {
         return instance().loginBean != null ? instance().loginBean.username : null;
     }

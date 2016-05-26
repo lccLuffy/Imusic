@@ -100,6 +100,11 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
         }
     }
 
+    public void insert(int location, DataType otherData) {
+        data.add(location, otherData);
+        notifyItemInserted(location);
+    }
+
 
     @Override
     public int getItemCount() {
