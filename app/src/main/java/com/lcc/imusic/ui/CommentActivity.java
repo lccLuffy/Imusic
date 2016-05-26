@@ -142,23 +142,28 @@ public class CommentActivity extends BaseActivity implements LoadMoreAdapter.Loa
                 commentSubmitBtn.setVisibility(View.VISIBLE);
                 comment_progress.setVisibility(View.GONE);
                 Msg<JsonObject> msg = response.body();
-                if (msg != null && msg.Code == 100) {
-                    commentEditView.setText("");
-                    toast("评论成功");
-                    CommentItem commentItem = new CommentItem();
-                    commentItem.enable = 1;
-                    commentItem.content = content;
-                    commentItem.avatar = UserManager.avatarWithOutDomain();
-                    commentItem.authorName = UserManager.username();
-                    commentItem.songid = songId;
+                if (msg != null) {
+                    if (msg.Code == 100) {
+                        commentEditView.setText("");
+                        toast("评论成功");
+                        CommentItem commentItem = new CommentItem();
+                        commentItem.enable = 1;
+                        commentItem.content = content;
+                        commentItem.avatar = UserManager.avatarWithOutDomain();
+                        commentItem.authorName = UserManager.username();
+                        commentItem.songid = songId;
 
-                    if (dateFormat == null)
-                        dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm::ss", Locale.CHINA);
-                    commentItem.addtime = dateFormat.format(new Date());
-                    adapter.insert(0, commentItem);
-                    recyclerView.smoothScrollToPosition(0);
+                        if (dateFormat == null)
+                            dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm::ss", Locale.CHINA);
+                        commentItem.addtime = dateFormat.format(new Date());
+                        adapter.insert(0, commentItem);
+                        recyclerView.smoothScrollToPosition(0);
+                    } else {
+                        toast("评论失败," + msg.Msg);
+                    }
+
                 } else {
-                    toast("评论失败," + msg != null ? msg.Msg : "");
+                    toast("评论失败");
                 }
             }
 
