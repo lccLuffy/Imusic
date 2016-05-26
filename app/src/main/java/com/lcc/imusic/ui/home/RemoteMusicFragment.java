@@ -90,7 +90,6 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
         if (adapter.getItemCount() == 0)
             stateLayout.showProgressView();
 
-
         NetManager_.API().songs(pageNum).enqueue(new Callback<Msg<SongsBean>>() {
             @Override
             public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
