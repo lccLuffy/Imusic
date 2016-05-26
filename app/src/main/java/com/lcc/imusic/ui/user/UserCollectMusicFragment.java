@@ -13,13 +13,13 @@ import com.lcc.imusic.adapter.LoadMoreAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
+import com.lcc.imusic.bean.CollectedSongs;
 import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusicItem;
-import com.lcc.imusic.bean.SongsBean;
 import com.lcc.imusic.manager.NetManager_;
-import com.lcc.imusic.model.RemoteMusicProvider;
 import com.lcc.imusic.wiget.StateLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -80,14 +80,20 @@ public class UserCollectMusicFragment extends AttachFragment implements LoadMore
     private void getData(final int pageNum) {
         if (adapter.isDataEmpty())
             stateLayout.showProgressView();
-        NetManager_.API().collectedSongs(pageNum).enqueue(new Callback<Msg<SongsBean>>() {
+
+        NetManager_.API().collectedSongs(pageNum).enqueue(new Callback<Msg<CollectedSongs>>() {
             @Override
-            public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
-                SongsBean songsBean = response.body().Result;
+            public void onResponse(Call<Msg<CollectedSongs>> call, Response<Msg<CollectedSongs>> response) {
+                CollectedSongs collectedSongs = response.body().Result;
                 refreshLayout.setRefreshing(false);
-                if (songsBean != null) {
-                    stateLayout.showContentView();
-                    List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
+                if (collectedSongs != null) {
+                    List<MusicItem> list = new ArrayList<>();
+                    for (CollectedSongs.CollectedSongItem item : collectedSongs.list) {
+                        MusicItem musicItem = new MusicItem();
+                        musicItem.id = item.songid;
+                        musicItem.title = item.name;
+                        list.add(musicItem);
+                    }
                     if (pageNum == 1) {
                         adapter.canLoadMore();
                         adapter.setData(list);
@@ -108,7 +114,7 @@ public class UserCollectMusicFragment extends AttachFragment implements LoadMore
             }
 
             @Override
-            public void onFailure(Call<Msg<SongsBean>> call, Throwable t) {
+            public void onFailure(Call<Msg<CollectedSongs>> call, Throwable t) {
                 if (adapter.isDataEmpty()) {
                     stateLayout.showErrorView("网络出错");
                 }

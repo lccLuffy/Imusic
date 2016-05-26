@@ -133,9 +133,9 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         return super.onKeyDown(keyCode, event);
     }
 
-
     @Override
     public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
+        accountDelegate.close();
         if (UserManager.isLogin()) {
             switch (position) {
                 case 1:
@@ -147,12 +147,15 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
                     startActivity(new Intent(this, DownLoadActivity.class));
                     break;
                 case 3:
-                    Snackbar.make(toolbar, "确定退出吗？", Snackbar.LENGTH_INDEFINITE).setAction("确定", new View.OnClickListener() {
+                    Snackbar.make(toolbar, "确定退出吗？", Snackbar.LENGTH_LONG).setAction("确定", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            UserManager.logout();
-                            accountDelegate.close();
-                            toast("已退出登录");
+                            if (UserManager.logout()) {
+                                accountDelegate.setUsername("点击登录");
+                                toast("已退出登录");
+                            } else {
+                                toast("退出登录失败");
+                            }
                         }
                     }).show();
                     break;

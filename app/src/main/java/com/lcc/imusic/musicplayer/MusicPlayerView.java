@@ -33,6 +33,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
     private SeekBar seekBar;
 
+    private CheckBox musicView_love;
+
     private TextView tv_totalTime;
     private TextView tv_currentTime;
 
@@ -71,6 +73,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         View panel = LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
         addView(panel);
 
+        musicView_love = (CheckBox) panel.findViewById(R.id.musicView_love);
+
         needleImageView = (NeedleImageView) panel.findViewById(R.id.musicView_needleImageView);
 
         tv_totalTime = (TextView) panel.findViewById(R.id.musicView_totalTime);
@@ -104,6 +108,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         musicView_src.setOnClickListener(this);
 
         cb_play.setOnCheckedChangeListener(this);
+        musicView_love.setOnCheckedChangeListener(this);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -197,36 +202,51 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         return !cb_play.isChecked();
     }
 
+    public void setLikeEnable(boolean enable) {
+        musicView_love.setEnabled(enable);
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.musicView_play:
 
-        if (fromUser) {
-            fromUser = false;
-            if (isChecked) {
-                cover.resume();
-                needleImageView.quickResume();
-            } else {
-                cover.pause();
-                needleImageView.quickPause();
-            }
-            return;
+                if (fromUser) {
+                    fromUser = false;
+                    if (isChecked) {
+                        cover.resume();
+                        needleImageView.quickResume();
+                    } else {
+                        cover.pause();
+                        needleImageView.quickPause();
+                    }
+                    return;
+                }
+
+                if (isChecked) {
+                    cover.resume();
+                    needleImageView.resume();
+                } else {
+                    cover.pause();
+                    needleImageView.pause();
+                }
+
+                if (musicPlayerCallBack != null) {
+                    if (isChecked) {
+                        musicPlayerCallBack.start();
+                    } else {
+                        musicPlayerCallBack.pause();
+                    }
+                }
+
+                break;
+            case R.id.musicView_love:
+                if (musicPlayerCallBack != null) {
+                    musicPlayerCallBack.onLike(isChecked);
+                }
+                break;
         }
 
-        if (isChecked) {
-            cover.resume();
-            needleImageView.resume();
-        } else {
-            cover.pause();
-            needleImageView.pause();
-        }
-
-        if (musicPlayerCallBack != null) {
-            if (isChecked) {
-                musicPlayerCallBack.start();
-            } else {
-                musicPlayerCallBack.pause();
-            }
-        }
 
     }
 
@@ -254,6 +274,11 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     }
 
     public static class MusicPlayerCallBackAdapter implements MusicPlayerCallBack {
+        @Override
+        public void onLike(boolean like) {
+
+        }
+
         @Override
         public void onComment() {
 
@@ -306,6 +331,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     }
 
     public interface MusicPlayerCallBack {
+
+        void onLike(boolean like);
 
         void onComment();
 

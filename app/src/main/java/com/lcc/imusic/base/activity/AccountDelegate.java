@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.manager.UserManager;
+import com.lcc.imusic.ui.LoginActivity;
 import com.lcc.imusic.ui.setting.SettingActivity;
 import com.lcc.imusic.ui.user.UserCenterActivity;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -46,12 +48,17 @@ public class AccountDelegate {
         header = new AccountHeaderBuilder()
                 .withActivity(activity)
                 .withHeaderBackground(R.color.colorPrimary)
-                .addProfiles(profileDrawerItem = new ProfileDrawerItem().withEmail("username").withName("email@example.com"))
+                .addProfiles(profileDrawerItem = new ProfileDrawerItem().withName("username"))
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        activity.startActivity(new Intent(activity, UserCenterActivity.class));
                         drawer.closeDrawer();
+                        if (UserManager.isLogin()) {
+                            activity.startActivity(new Intent(activity, UserCenterActivity.class));
+                        } else {
+                            activity.finish();
+                            activity.startActivity(new Intent(activity, LoginActivity.class));
+                        }
                         return true;
                     }
                 })
@@ -130,8 +137,7 @@ public class AccountDelegate {
         drawer = null;
     }
 
-    public void close()
-    {
+    public void close() {
         drawer.closeDrawer();
     }
 

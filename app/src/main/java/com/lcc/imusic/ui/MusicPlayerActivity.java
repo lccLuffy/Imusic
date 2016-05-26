@@ -7,7 +7,9 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.base.activity.MusicProgressCallActivity;
 import com.lcc.imusic.bean.DlBean;
+import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.manager.NetManager_;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
 import com.lcc.imusic.musicplayer.MusicPlayerView;
@@ -21,6 +23,9 @@ import com.orhanobut.logger.Logger;
 import java.io.File;
 
 import butterknife.Bind;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MusicPlayerActivity extends MusicProgressCallActivity {
     @Bind(R.id.musicPlayer)
@@ -148,6 +153,28 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
                 Intent intent = new Intent(MusicPlayerActivity.this, DownloadService.class);
                 startService(intent);
             }
+        }
+
+        @Override
+        public void onLike(boolean like) {
+            musicPlayerView.setLikeEnable(false);
+            NetManager_.API().collectSong(currentMusicProvider.getPlayingMusic().id).enqueue(new Callback<Msg<String>>() {
+                @Override
+                public void onResponse(Call<Msg<String>> call, Response<Msg<String>> response) {
+                    musicPlayerView.setLikeEnable(true);
+                    if (response.body().Code == 100) {
+                        toast("收藏成功");
+                    } else {
+                        toast("收藏失败");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Msg<String>> call, Throwable t) {
+                    musicPlayerView.setLikeEnable(true);
+                    toast("收藏失败");
+                }
+            });
         }
 
         @Override

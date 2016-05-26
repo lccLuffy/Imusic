@@ -41,6 +41,7 @@ public class UserManager {
     }
 
     public static boolean logout() {
+        instance().loginBean = null;
         return PrfUtil.start().remove(KEY).commit();
     }
 

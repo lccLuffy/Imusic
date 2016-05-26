@@ -73,9 +73,11 @@ public class MusicPlayService extends Service {
         wifiLock.acquire();
 
         AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        int result = audioManager.requestAudioFocus(new AudioManager.OnAudioFocusChangeListener() {
+        audioManager.requestAudioFocus(new AudioManager.OnAudioFocusChangeListener() {
             @Override
             public void onAudioFocusChange(int focusChange) {
+                if (mediaPlayer == null)
+                    return;
                 switch (focusChange) {
                     case AudioManager.AUDIOFOCUS_GAIN:
                         if (!mediaPlayer.isPlaying())

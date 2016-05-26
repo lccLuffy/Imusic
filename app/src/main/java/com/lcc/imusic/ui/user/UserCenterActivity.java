@@ -11,6 +11,7 @@ import android.view.View;
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.base.activity.UserActivity;
+import com.lcc.imusic.manager.UserManager;
 
 import butterknife.Bind;
 
@@ -29,8 +30,10 @@ public class UserCenterActivity extends UserActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setAvatar("http://upload.jianshu.io/users/upload_avatars/1438934/e9fe359cbaf2.jpeg");
-        setUsername("lcc_luffy");
+        if (UserManager.isLogin()) {
+            setAvatar(UserManager.avatar());
+            setUsername(UserManager.username());
+        }
         FragmentAdapter fa = new FragmentAdapter(getSupportFragmentManager(),
                 new UserCollectMusicFragment(),
                 new UserHistroyMusicFragment()
