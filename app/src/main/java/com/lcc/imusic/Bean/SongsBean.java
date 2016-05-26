@@ -26,17 +26,4 @@ public class SongsBean {
      */
 
     public List<SongItem> list;
-
-    public static class SongItem {
-        public String cover;
-        public String songpath;
-        public String lyric;
-        public String addtime;
-        public String musicianName;
-        public int musicianid;
-        public int id;
-        public int views;
-        public String songname;
-        public int status;
-    }
 }

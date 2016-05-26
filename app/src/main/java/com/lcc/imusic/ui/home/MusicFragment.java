@@ -27,7 +27,7 @@ public class MusicFragment extends AttachFragment {
     public void initialize(@Nullable Bundle savedInstanceState) {
         super.initialize(savedInstanceState);
         FragmentAdapter fa = new FragmentAdapter(getFragmentManager(),
-                new LocalMusicFragment(),
+                /*new LocalMusicFragment(),*/
                 new RemoteMusicFragment(),
                 new TestFragment()
         );

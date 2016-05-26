@@ -40,7 +40,7 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
     @Bind(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
-    SimpleMusicListAdapter simpleMusicListAdapter;
+    SimpleMusicListAdapter adapter;
 
     private int currentPageNum = 1;
 
@@ -52,15 +52,15 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        simpleMusicListAdapter = new SimpleMusicListAdapter();
-        recyclerView.setAdapter(simpleMusicListAdapter);
-        simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
+        adapter = new SimpleMusicListAdapter();
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 playMusic(position);
             }
         });
-        stateLayout.setErrorAction(new View.OnClickListener() {
+        stateLayout.setErrorAndEmptyAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onRefresh();
@@ -68,26 +68,26 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
         });
 
         getData(1);
-        simpleMusicListAdapter.setLoadMoreListener(this);
-        simpleMusicListAdapter.canLoadMore();
+        adapter.setLoadMoreListener(this);
+        adapter.canLoadMore();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        simpleMusicListAdapter.onDestroy();
-        simpleMusicListAdapter = null;
+        adapter.onDestroy();
+        adapter = null;
     }
 
 
     @Override
     public void onPlayingIndexChange(int index) {
-        if (simpleMusicListAdapter != null)
-            simpleMusicListAdapter.playingIndexChangeTo(index);
+        if (adapter != null)
+            adapter.playingIndexChangeTo(index);
     }
 
     public void getData(final int pageNum) {
-        if (simpleMusicListAdapter.getItemCount() == 0)
+        if (adapter.getItemCount() == 0)
             stateLayout.showProgressView();
 
 
@@ -95,21 +95,21 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
             @Override
             public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
                 SongsBean songsBean = response.body().Result;
+                refreshLayout.setRefreshing(false);
                 if (songsBean != null) {
                     stateLayout.showContentView();
                     List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
                     if (pageNum == 1) {
-                        simpleMusicListAdapter.canLoadMore();
-                        simpleMusicListAdapter.setData(list);
+                        adapter.canLoadMore();
+                        adapter.setData(list);
                     } else {
                         if (list.isEmpty()) {
-                            simpleMusicListAdapter.noMoreData();
+                            adapter.noMoreData();
                         } else {
-                            simpleMusicListAdapter.addData(list);
+                            adapter.addData(list);
                         }
                     }
-                    refreshLayout.setRefreshing(false);
-                    if (simpleMusicListAdapter.isDataEmpty()) {
+                    if (adapter.isDataEmpty()) {
                         stateLayout.showEmptyView();
                     } else {
                         stateLayout.showContentView();
@@ -120,7 +120,9 @@ public class RemoteMusicFragment extends AttachFragment implements SwipeRefreshL
 
             @Override
             public void onFailure(Call<Msg<SongsBean>> call, Throwable t) {
-                stateLayout.showErrorView("网络出错");
+                if (adapter.isDataEmpty()) {
+                    stateLayout.showErrorView("网络出错");
+                }
                 refreshLayout.setRefreshing(false);
             }
         });

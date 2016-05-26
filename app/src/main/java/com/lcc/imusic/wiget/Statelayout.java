@@ -167,6 +167,13 @@ public class StateLayout extends FrameLayout {
         ((LayoutParams) progressContentView.getLayoutParams()).setMargins(left, top, right, bottom);
     }
 
+    public void setInfoContentViewMargin(int left, int top, int right, int bottom) {
+        ((LayoutParams) emptyContentView.getLayoutParams()).setMargins(left, top, right, bottom);
+        ((LayoutParams) errorContentView.getLayoutParams()).setMargins(left, top, right, bottom);
+        ((LayoutParams) progressContentView.getLayoutParams()).setMargins(left, top, right, bottom);
+    }
+
+
     public void showContentView() {
         switchWithAnimation(contentView);
     }
@@ -208,9 +215,14 @@ public class StateLayout extends FrameLayout {
         errorView.setOnClickListener(onErrorButtonClickListener);
     }
 
-
     public void setEmptyAction(final OnClickListener onEmptyButtonClickListener) {
         emptyView.setOnClickListener(onEmptyButtonClickListener);
+    }
+
+
+    public void setErrorAndEmptyAction(final OnClickListener errorAndEmptyAction) {
+        errorView.setOnClickListener(errorAndEmptyAction);
+        emptyView.setOnClickListener(errorAndEmptyAction);
     }
 
     protected void onHideContentView() {

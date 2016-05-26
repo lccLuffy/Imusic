@@ -41,6 +41,7 @@ dependencies {
 
     compile 'com.mikepenz:fontawesome-typeface:4.5.0.1@aar'
 
+    compile 'com.github.moduth:blockcanary-android:1.2.1'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.bean.SongItem;
 import com.lcc.imusic.bean.SongsBean;
 import com.lcc.imusic.manager.NetManager_;
 
@@ -61,7 +62,7 @@ public class RemoteMusicProvider extends SimpleMusicProviderImpl {
 
     public static List<MusicItem> m2l(@NonNull SongsBean songsBean) {
         List<MusicItem> musicList = new ArrayList<>();
-        for (SongsBean.SongItem tracksBean : songsBean.list) {
+        for (SongItem tracksBean : songsBean.list) {
             MusicItem musicItem = new MusicItem();
             musicItem.title = tracksBean.songname;
             musicItem.duration = 0;

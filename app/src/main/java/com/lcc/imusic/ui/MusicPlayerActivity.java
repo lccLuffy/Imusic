@@ -56,6 +56,16 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         DownLoadHelper.get().addDownloadEvent(downLoadEvent);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isBind()) {
+            setCurrentMusicItem(currentMusicProvider.getPlayingMusic());
+            musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
+        }
+    }
+
     @Override
     protected void onBind(final MusicPlayService.MusicServiceBind musicServiceBind) {
         musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
@@ -143,7 +153,7 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         @Override
         public void onComment() {
             MusicItem item = currentMusicProvider.getPlayingMusic();
-            CommentActivity.jumpToMe(MusicPlayerActivity.this, 1, item.title);
+            CommentActivity.jumpToMe(MusicPlayerActivity.this, item.id, item.title);
         }
 
         @Override

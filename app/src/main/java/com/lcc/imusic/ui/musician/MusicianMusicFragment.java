@@ -52,23 +52,15 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
 
-        stateLayout.setEmptyContentViewMargin(0, -275, 0, 0);
-        stateLayout.setErrorContentViewMargin(0, -275, 0, 0);
-        stateLayout.setProgressContentViewMargin(0, -275, 0, 0);
+        stateLayout.setInfoContentViewMargin(0, -275, 0, 0);
 
 
-        View.OnClickListener listener = new View.OnClickListener() {
+        stateLayout.setErrorAndEmptyAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (simpleMusicListAdapter.isDataEmpty())
-                    stateLayout.showProgressView();
                 getData(1);
             }
-        };
-
-        stateLayout.setErrorAction(listener);
-        stateLayout.setEmptyAction(listener);
-
+        });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         simpleMusicListAdapter = new SimpleMusicListAdapter();

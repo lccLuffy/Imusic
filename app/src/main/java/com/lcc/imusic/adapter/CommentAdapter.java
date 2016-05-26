@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lcc.imusic.R;
-import com.lcc.imusic.bean.CommentBean;
+import com.lcc.imusic.bean.CommentItem;
+import com.lcc.imusic.manager.NetManager_;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -16,15 +17,15 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/3/24.
  */
-public class CommentAdapter extends SimpleAdapter<CommentAdapter.Holder, CommentBean> {
+public class CommentAdapter extends LoadMoreAdapter<CommentItem> {
     @Override
-    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        super.onCreateViewHolder(parent, viewType);
+    public Holder onCreateHolder(ViewGroup parent, int viewType) {
         return new Holder(inflater.inflate(R.layout.item_comment, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindHolder(RecyclerView.ViewHolder holder1, int position) {
+        Holder holder = (Holder) holder1;
         holder.bind(data.get(position));
     }
 
@@ -34,7 +35,6 @@ public class CommentAdapter extends SimpleAdapter<CommentAdapter.Holder, Comment
 
         @Bind(R.id.comment_username)
         TextView username;
-
 
         @Bind(R.id.comment_time)
         TextView time;
@@ -47,12 +47,12 @@ public class CommentAdapter extends SimpleAdapter<CommentAdapter.Holder, Comment
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(CommentBean commentBean) {
+        public void bind(CommentItem commentBean) {
             Glide.with(itemView.getContext())
-                    .load(commentBean.avatar)
+                    .load(NetManager_.DOMAIN + commentBean.avatar)
                     .into(avatar);
-            username.setText(commentBean.username);
-            time.setText(commentBean.time);
+            username.setText(commentBean.authorName);
+            time.setText(commentBean.addtime);
             content.setText(commentBean.content);
         }
     }

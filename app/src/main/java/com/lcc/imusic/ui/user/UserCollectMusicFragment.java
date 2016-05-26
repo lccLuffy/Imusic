@@ -6,20 +6,36 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.lcc.imusic.R;
+import com.lcc.imusic.adapter.LoadMoreAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
-import com.lcc.imusic.model.LocalMusicProvider;
+import com.lcc.imusic.bean.Msg;
+import com.lcc.imusic.bean.MusicItem;
+import com.lcc.imusic.bean.SongsBean;
+import com.lcc.imusic.manager.NetManager_;
+import com.lcc.imusic.model.RemoteMusicProvider;
+import com.lcc.imusic.wiget.StateLayout;
+
+import java.util.List;
 
 import butterknife.Bind;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class UserCollectMusicFragment extends AttachFragment {
+public class UserCollectMusicFragment extends AttachFragment implements LoadMoreAdapter.LoadMoreListener,
+        SwipeRefreshLayout.OnRefreshListener {
+
+    @Bind(R.id.stateLayout)
+    StateLayout stateLayout;
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -27,36 +43,85 @@ public class UserCollectMusicFragment extends AttachFragment {
     @Bind(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
-    SimpleMusicListAdapter simpleMusicListAdapter;
+    SimpleMusicListAdapter adapter;
+
+    private int currentPage = 1;
 
     @Override
     public void initialize(@Nullable Bundle savedInstanceState) {
-        refreshLayout.setEnabled(false);
-
+        stateLayout.setInfoContentViewMargin(0, -275, 0, 0);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        simpleMusicListAdapter = new SimpleMusicListAdapter();
-        recyclerView.setAdapter(simpleMusicListAdapter);
+        adapter = new SimpleMusicListAdapter();
+        recyclerView.setAdapter(adapter);
 
-        simpleMusicListAdapter.setData(LocalMusicProvider.getMusicProvider(context).provideMusics());
-        simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
+        adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 playMusic(position);
             }
         });
+        adapter.setLoadMoreListener(this);
+        refreshLayout.setOnRefreshListener(this);
+        stateLayout.setErrorAndEmptyAction(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRefresh();
+            }
+        });
+        getData(1);
     }
 
     @Override
     public void onPlayingIndexChange(int index) {
         super.onPlayingIndexChange(index);
-        simpleMusicListAdapter.playingIndexChangeTo(index);
+        adapter.playingIndexChangeTo(index);
+    }
+
+    private void getData(final int pageNum) {
+        if (adapter.isDataEmpty())
+            stateLayout.showProgressView();
+        NetManager_.API().collectedSongs(pageNum).enqueue(new Callback<Msg<SongsBean>>() {
+            @Override
+            public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
+                SongsBean songsBean = response.body().Result;
+                refreshLayout.setRefreshing(false);
+                if (songsBean != null) {
+                    stateLayout.showContentView();
+                    List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
+                    if (pageNum == 1) {
+                        adapter.canLoadMore();
+                        adapter.setData(list);
+                    } else {
+                        if (list.isEmpty()) {
+                            adapter.noMoreData();
+                        } else {
+                            adapter.addData(list);
+                        }
+                    }
+
+                    if (adapter.isDataEmpty()) {
+                        stateLayout.showEmptyView();
+                    } else {
+                        stateLayout.showContentView();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Msg<SongsBean>> call, Throwable t) {
+                if (adapter.isDataEmpty()) {
+                    stateLayout.showErrorView("网络出错");
+                }
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        simpleMusicListAdapter.onDestroy();
-        simpleMusicListAdapter = null;
+        adapter.onDestroy();
+        adapter = null;
     }
 
     @Override
@@ -69,4 +134,15 @@ public class UserCollectMusicFragment extends AttachFragment {
         return "我的收藏";
     }
 
+    @Override
+    public void onLoadMore() {
+        currentPage++;
+        getData(currentPage);
+    }
+
+    @Override
+    public void onRefresh() {
+        currentPage = 1;
+        getData(1);
+    }
 }

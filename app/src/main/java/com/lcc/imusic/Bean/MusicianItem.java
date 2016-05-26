@@ -16,5 +16,5 @@ public class MusicianItem {
     public int views;
     public int status;
 
-    public List<SongsBean.SongItem> songs;
+    public List<SongItem> songs;
 }
