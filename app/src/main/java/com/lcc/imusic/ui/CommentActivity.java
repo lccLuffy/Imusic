@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.CommentAdapter;
@@ -36,6 +37,9 @@ public class CommentActivity extends BaseActivity implements LoadMoreAdapter.Loa
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
+
+    @Bind(R.id.commentEditText)
+    EditText commentEditView;
 
 
     private CommentAdapter adapter;

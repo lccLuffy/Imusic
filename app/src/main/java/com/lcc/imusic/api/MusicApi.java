@@ -51,6 +51,11 @@ public interface MusicApi {
     @GET("song")
     Call<Msg<SongsBean>> songs(@Query("pageNum") int pageNum);
 
+    @FormUrlEncoded
+    @POST("song/comment")
+    Call<JsonObject> commentToSong(@Field("songid") long songId, @Field("content") String content);
+
+
     @GET("song")
     Call<Msg<SongsBean>> songs(@Query("musicianid") long id, @Query("pageNum") int pageNum);
 
