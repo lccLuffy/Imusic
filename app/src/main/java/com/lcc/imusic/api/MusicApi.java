@@ -33,7 +33,6 @@ public interface MusicApi {
                             @Field("safeans") String safeans
     );
 
-
     @FormUrlEncoded
     @POST("auth/login")
     Call<Msg<LoginBean>> login(@Field("username") String username, @Field("password") String password);
@@ -55,7 +54,6 @@ public interface MusicApi {
     @GET("song")
     Call<Msg<SongsBean>> songs(@Query("musicianid") long id, @Query("pageNum") int pageNum);
 
-
     @GET("song/comment")
     Call<Msg<CommentBean>> songComment(@Query("songid") long id, @Query("pageNum") int pageNum);
 
@@ -66,10 +64,8 @@ public interface MusicApi {
     @POST("collection/song")
     Call<Msg<String>> collectSong(@Field("songid") long songId);
 
-
     @GET("musician")
     Call<Msg<MusiciansBean>> musicians(@Query("pageNum") int pageNum);
-
 
     @GET("musician")
     Call<Msg<MusicianItem>> musicians(@Query("id") long id);
