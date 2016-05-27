@@ -46,7 +46,18 @@ public interface MusicApi {
     String logout(@Field("id") String id);
 
     @GET("auth/me")
-    Call<JsonObject> me();
+    Call<Msg<LoginBean>> me();
+
+    @FormUrlEncoded
+    @POST("auth/me")
+    Call<Msg<LoginBean>> updateMe(
+            @Field("safeque") String safeque,
+            @Field("safeans") String safeans,
+            @Field("realname") String realName,
+            @Field("phone") String phoneNum,
+            @Field("mail") String mail
+    );
+
 
     @GET("song")
     Call<Msg<SongsBean>> songs(@Query("pageNum") int pageNum);

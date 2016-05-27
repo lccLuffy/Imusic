@@ -38,6 +38,9 @@ public abstract class UserActivity extends PlayBarActivity {
     @Bind(R.id.userInfoWrapper)
     protected LinearLayout linearLayout;
 
+    @Bind(R.id.songsCount)
+    protected TextView songsCount;
+
     private String username;
 
     @Override

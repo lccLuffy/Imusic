@@ -89,6 +89,8 @@
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.lcc.imusic" />
+
+        <activity android:name=".ui.user.EditUserActivity"></activity>
     </application>
 
 </manifest>

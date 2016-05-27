@@ -155,7 +155,7 @@ public class CommentActivity extends BaseActivity implements LoadMoreAdapter.Loa
                         commentItem.songid = songId;
 
                         if (dateFormat == null)
-                            dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm::ss", Locale.CHINA);
+                            dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm::ss", Locale.CHINA);
                         commentItem.addtime = dateFormat.format(new Date());
                         adapter.insert(0, commentItem);
                         recyclerView.smoothScrollToPosition(0);

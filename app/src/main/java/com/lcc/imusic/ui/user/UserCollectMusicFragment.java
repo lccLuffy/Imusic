@@ -1,6 +1,7 @@
 package com.lcc.imusic.ui.user;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -87,6 +88,9 @@ public class UserCollectMusicFragment extends AttachFragment implements LoadMore
                 CollectedSongs collectedSongs = response.body().Result;
                 refreshLayout.setRefreshing(false);
                 if (collectedSongs != null) {
+                    if (userCenterActivity != null) {
+                        userCenterActivity.setCollectedSongsNum(collectedSongs.totalRow);
+                    }
                     List<MusicItem> list = new ArrayList<>();
                     for (CollectedSongs.CollectedSongItem item : collectedSongs.list) {
                         MusicItem musicItem = new MusicItem();
@@ -121,6 +125,16 @@ public class UserCollectMusicFragment extends AttachFragment implements LoadMore
                 refreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    private UserCenterActivity userCenterActivity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof UserCenterActivity) {
+            userCenterActivity = (UserCenterActivity) context;
+        }
     }
 
     @Override

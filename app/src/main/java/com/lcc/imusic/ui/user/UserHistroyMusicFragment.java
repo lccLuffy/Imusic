@@ -46,11 +46,15 @@ public class UserHistroyMusicFragment extends AttachFragment {
         });
     }
 
+
+
     @Override
     public void onPlayingIndexChange(int index) {
         super.onPlayingIndexChange(index);
         simpleMusicListAdapter.playingIndexChangeTo(index);
     }
+
+
 
     @Override
     public void onDestroy() {

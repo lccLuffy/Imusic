@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.lcc.imusic.R;
@@ -67,6 +69,27 @@ public class UserCenterActivity extends UserActivity {
 
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_user_center, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit_user:
+                startActivity(new Intent(this, EditUserActivity.class));
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setCollectedSongsNum(int num) {
+        songsCount.setText("歌曲\n" + num);
     }
 
     @Override
