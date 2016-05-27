@@ -12,6 +12,7 @@ import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.manager.NetManager_;
 import com.lcc.imusic.manager.UserManager;
 import com.lcc.imusic.wiget.StateLayout;
+import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import retrofit2.Call;
@@ -72,6 +73,10 @@ public class EditUserActivity extends BaseActivity {
                     phoneNum.setText(loginBean.phone);
                     emailAddress.setText(loginBean.mail);
                 }
+                else {
+                    Logger.i("null login bean");
+                }
+
             }
 
             @Override
