@@ -53,7 +53,7 @@ public class MusicianDetailActivity extends UserActivity {
     }
 
     private void initData() {
-        NetManager_.API().musicians(id)
+        NetManager_.API().musician(id)
                 .enqueue(new Callback<Msg<MusicianItem>>() {
                     @Override
                     public void onResponse(Call<Msg<MusicianItem>> call, Response<Msg<MusicianItem>> response) {

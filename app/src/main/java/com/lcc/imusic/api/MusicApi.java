@@ -68,9 +68,15 @@ public interface MusicApi {
     @POST("collection/song")
     Call<Msg<String>> collectSong(@Field("songid") long songId);
 
+    @DELETE("collection/song")
+    Call<Msg<String>> cancelCollectSong(@Query("songid") long songId);
+
     @GET("musician")
     Call<Msg<MusiciansBean>> musicians(@Query("pageNum") int pageNum);
 
     @GET("musician")
-    Call<Msg<MusicianItem>> musicians(@Query("id") long id);
+    Call<Msg<MusicianItem>> musician(@Query("id") long id);
+
+    @GET("collection/musician")
+    Call<Msg<MusiciansBean>> collectionMusicians(@Query("pageNum") int pageNum);
 }
