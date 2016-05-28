@@ -19,7 +19,7 @@ import butterknife.Bind;
 /**
  * Created by lcc_luffy on 2016/3/23.
  */
-public abstract class UserActivity extends PlayBarActivity {
+public abstract class UserActivity extends MusicPlayCallActivity {
     @Bind(R.id.appBarLayout)
     protected AppBarLayout appBarLayout;
 

@@ -1,6 +1,7 @@
 package com.lcc.imusic.ui.musician;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +19,7 @@ import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.bean.SongsBean;
 import com.lcc.imusic.manager.NetManager_;
 import com.lcc.imusic.model.RemoteMusicProvider;
+import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.lcc.imusic.wiget.StateLayout;
 
 import java.util.List;
@@ -69,6 +71,7 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
             @Override
             public void onItemClick(int position) {
                 playMusic(position);
+                startActivity(new Intent(context, MusicPlayerActivity.class));
             }
         });
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

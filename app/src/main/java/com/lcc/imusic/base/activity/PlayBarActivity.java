@@ -158,7 +158,8 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
 
     @Override
     public void onProgress(int second) {
-        progressBar.setProgress(second);
+        if (progressBar != null)
+            progressBar.setProgress(second);
     }
 
     @Override

@@ -110,8 +110,10 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
 
     @Override
     public void onProgress(int second) {
-        if (!(musicPlayerView.isUserSliding() || musicPlayerView.isPaused()) && canAutoProgress) {
-            musicPlayerView.setProgress(second);
+        if (musicPlayerView != null) {
+            if (!(musicPlayerView.isUserSliding() || musicPlayerView.isPaused()) && canAutoProgress) {
+                musicPlayerView.setProgress(second);
+            }
         }
     }
 

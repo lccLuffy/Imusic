@@ -3,6 +3,7 @@ package com.lcc.imusic.ui.user;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,6 +22,7 @@ import com.lcc.imusic.bean.CollectedSongs;
 import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.manager.NetManager_;
+import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.lcc.imusic.wiget.StateLayout;
 
 import java.util.ArrayList;
@@ -62,6 +64,7 @@ public class UserCollectMusicFragment extends AttachFragment implements LoadMore
             @Override
             public void onItemClick(int position) {
                 playMusic(position);
+                startActivity(new Intent(context, MusicPlayerActivity.class));
             }
         });
 
