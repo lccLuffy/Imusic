@@ -24,11 +24,9 @@ public class MusicianDetailAdapter extends FragmentPagerAdapter {
         musicianMusicFragment.musicianId = musicianId;
         fragments.add(musicianMusicFragment);
 
-
-
         MusicianFansFragment musicianFansFragment = new MusicianFansFragment();
         musicianFansFragment.musicianId = musicianId;
-        fragments.add(new MusicianFansFragment());
+        fragments.add(musicianFansFragment);
     }
 
     @Override

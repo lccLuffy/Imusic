@@ -58,6 +58,14 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
             }
         });
 
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                currentPage = 1;
+                getData(1);
+            }
+        });
+
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -66,8 +74,6 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
         });
         adapter.setLoadMoreListener(this);
         getData(1);
-
-        toast("musicianId:" + musicianId);
     }
 
     private void getData(final int pageNum) {
@@ -77,6 +83,7 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
             @Override
             public void onResponse(Call<Msg<Club>> call, Response<Msg<Club>> response) {
                 Club club = response.body().Result;
+                refreshLayout.setRefreshing(false);
                 if (club != null) {
                     if (pageNum == 1) {
                         adapter.setData(club.list);
@@ -98,6 +105,7 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
 
             @Override
             public void onFailure(Call<Msg<Club>> call, Throwable t) {
+                refreshLayout.setRefreshing(false);
                 if (adapter.isDataEmpty()) {
                     stateLayout.showErrorView(t.toString());
                 } else {

@@ -2,7 +2,6 @@ package com.lcc.imusic.manager;
 
 
 import com.lcc.imusic.api.MusicApi;
-import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 
@@ -60,12 +59,12 @@ public class NetManager_ {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request originRequest = chain.request();
-            if (UserManager.isLogin()) {
+            String token = UserManager.token();
+            if (token != null) {
                 originRequest = originRequest
                         .newBuilder()
-                        .addHeader("token", UserManager.token())
+                        .addHeader("token", token)
                         .build();
-                Logger.i("token");
             }
             return chain.proceed(originRequest);
         }

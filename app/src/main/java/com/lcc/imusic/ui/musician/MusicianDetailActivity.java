@@ -12,7 +12,6 @@ import com.lcc.imusic.base.activity.UserActivity;
 import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusicianItem;
 import com.lcc.imusic.manager.NetManager_;
-import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
 import retrofit2.Call;
@@ -50,8 +49,6 @@ public class MusicianDetailActivity extends UserActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         initData();
-
-        Logger.i("musicianId:" + id);
     }
 
     private void initData() {
