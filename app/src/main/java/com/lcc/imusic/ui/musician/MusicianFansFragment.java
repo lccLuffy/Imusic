@@ -194,7 +194,6 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-
                                 NetManager_.API().deleteTopic(adapter.getData(position).id)
                                         .enqueue(new Callback<Msg<JsonObject>>() {
                                             @Override

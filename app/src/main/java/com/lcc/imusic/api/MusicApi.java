@@ -113,9 +113,8 @@ public interface MusicApi {
                                   @Field("content") String content
     );
 
-    @FormUrlEncoded
     @DELETE("topic")
-    Call<Msg<JsonObject>> deleteTopic(@Field("id") long topicId);
+    Call<Msg<JsonObject>> deleteTopic(@Query("id") long topicId);
 
     @GET("topic/reply")
     Call<Msg<TopicReply>> topicReplies(@Query("topicid") long topicId,

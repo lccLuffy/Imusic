@@ -63,6 +63,7 @@ public class PublishTopicActivity extends BaseActivity {
             topicTitle.setText(title);
             topicContent.setText(content);
             topicPublish.setText("修改");
+            setTitle("修改话题");
         }
     }
 
