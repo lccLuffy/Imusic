@@ -18,6 +18,11 @@ public abstract class SimpleAdapter<Holder extends RecyclerView.ViewHolder, Data
     protected List<DataType> data;
     protected LayoutInflater inflater;
     protected OnItemClickListener onItemClickListener;
+    protected OnItemLongClickListener onItemLongClickListener;
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;

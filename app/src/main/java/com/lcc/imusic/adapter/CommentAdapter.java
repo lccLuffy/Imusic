@@ -24,9 +24,17 @@ public class CommentAdapter extends LoadMoreAdapter<CommentItem> {
     }
 
     @Override
-    public void onBindHolder(RecyclerView.ViewHolder holder1, int position) {
+    public void onBindHolder(RecyclerView.ViewHolder holder1, final int position) {
         Holder holder = (Holder) holder1;
         holder.bind(data.get(position));
+        if (onItemLongClickListener != null) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return onItemLongClickListener.onItemLongClick(position);
+                }
+            });
+        }
     }
 
     protected class Holder extends RecyclerView.ViewHolder {

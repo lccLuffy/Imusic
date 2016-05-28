@@ -35,6 +35,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Bind(R.id.register)
     TextView register;
 
+    @Bind(R.id.forget)
+    TextView forget;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
         bt_login.setOnClickListener(this);
         register.setOnClickListener(this);
+        forget.setOnClickListener(this);
     }
 
     @Override
@@ -60,6 +64,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             login();
         } else if (v.getId() == R.id.register) {
             startActivity(new Intent(this, RegisterActivity.class));
+        } else if (v.getId() == R.id.forget) {
+
         }
     }
 

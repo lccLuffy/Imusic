@@ -2,9 +2,11 @@ package com.lcc.imusic.ui.user;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.view.View;
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.LoadMoreAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
+import com.lcc.imusic.adapter.OnItemLongClickListener;
 import com.lcc.imusic.adapter.SimpleMusicListAdapter;
 import com.lcc.imusic.base.fragment.AttachFragment;
 import com.lcc.imusic.bean.CollectedSongs;
@@ -61,6 +64,32 @@ public class UserCollectMusicFragment extends AttachFragment implements LoadMore
                 playMusic(position);
             }
         });
+
+        adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(final int position) {
+
+                new AlertDialog.Builder(context)
+                        .setMessage("取消收藏?")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                cancelCollectSong(adapter.getData(position).id, position);
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+                return true;
+            }
+        });
+
         adapter.setLoadMoreListener(this);
         refreshLayout.setOnRefreshListener(this);
         stateLayout.setErrorAndEmptyAction(new View.OnClickListener() {
@@ -70,6 +99,25 @@ public class UserCollectMusicFragment extends AttachFragment implements LoadMore
             }
         });
         getData(1);
+    }
+
+    private void cancelCollectSong(long songId, final int position) {
+        NetManager_.API().cancelCollectSong(songId).enqueue(new Callback<Msg<String>>() {
+            @Override
+            public void onResponse(Call<Msg<String>> call, Response<Msg<String>> response) {
+                if (response.body().Code == 100) {
+                    toast("删除成功");
+                    adapter.remove(position);
+                } else {
+                    toast("删除失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Msg<String>> call, Throwable t) {
+                toast("删除失败");
+            }
+        });
     }
 
     @Override

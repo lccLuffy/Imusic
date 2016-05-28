@@ -61,25 +61,34 @@ public class SimpleMusicListAdapter extends LoadMoreAdapter<MusicItem> {
         final MusicItemViewHolder holder = (MusicItemViewHolder) holder1;
 
         holder.onBindData(data.get(position), position);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentPlayingIndex == NO_POSITION) {
-                    currentPlayingIndex = holder.getAdapterPosition();
-                    CurrentMusicProviderImpl.getMusicProvider().overrideToMe(data);
-                    playingIndexChangeTo(currentPlayingIndex);
-                    if (onItemClickListener != null)
+        if (onItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (currentPlayingIndex == NO_POSITION) {
+                        currentPlayingIndex = holder.getAdapterPosition();
+                        CurrentMusicProviderImpl.getMusicProvider().overrideToMe(data);
+                        playingIndexChangeTo(currentPlayingIndex);
                         onItemClickListener.onItemClick(holder.getAdapterPosition());
-                    for (SimpleMusicListAdapter adapter : simpleMusicListAdapters) {
-                        if (adapter != SimpleMusicListAdapter.this && !adapter.alwaysPlaying) {
-                            adapter.notPlayAnyMore();
+                        for (SimpleMusicListAdapter adapter : simpleMusicListAdapters) {
+                            if (adapter != SimpleMusicListAdapter.this && !adapter.alwaysPlaying) {
+                                adapter.notPlayAnyMore();
+                            }
                         }
+                    } else {
+                        onItemClickListener.onItemClick(holder.getAdapterPosition());
                     }
-                } else if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(holder.getAdapterPosition());
                 }
-            }
-        });
+            });
+        }
+        if (onItemLongClickListener != null) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return onItemLongClickListener.onItemLongClick(holder.getAdapterPosition());
+                }
+            });
+        }
     }
 
     @Override

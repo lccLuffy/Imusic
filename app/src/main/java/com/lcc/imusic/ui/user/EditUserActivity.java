@@ -1,5 +1,6 @@
 package com.lcc.imusic.ui.user;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -59,6 +60,7 @@ public class EditUserActivity extends BaseActivity {
                 me();
             }
         });
+        me();
     }
 
     private void me() {
@@ -69,11 +71,8 @@ public class EditUserActivity extends BaseActivity {
                 stateLayout.showContentView();
                 LoginBean loginBean = response.body().Result;
                 if (loginBean != null) {
-                    realName.setText(loginBean.realname);
-                    phoneNum.setText(loginBean.phone);
-                    emailAddress.setText(loginBean.mail);
-                }
-                else {
+                    setupInfo(loginBean);
+                } else {
                     Logger.i("null login bean");
                 }
 
@@ -86,7 +85,21 @@ public class EditUserActivity extends BaseActivity {
         });
     }
 
+    private void setupInfo(LoginBean loginBean) {
+        realName.setText(loginBean.realname);
+        phoneNum.setText(loginBean.phone);
+        emailAddress.setText(loginBean.mail);
+    }
+
+    private ProgressDialog progressDialog;
+
     private void updateMe() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("正在更新");
+        }
+        progressDialog.show();
+        updateMe.setEnabled(false);
         NetManager_.API().updateMe(
                 et_safe_ques.getText().toString(),
                 et_safe_ans.getText().toString(),
@@ -96,8 +109,12 @@ public class EditUserActivity extends BaseActivity {
         ).enqueue(new Callback<Msg<LoginBean>>() {
             @Override
             public void onResponse(Call<Msg<LoginBean>> call, Response<Msg<LoginBean>> response) {
+                updateMe.setEnabled(true);
+                progressDialog.dismiss();
                 if (response.body() != null && response.body().Code == 100) {
                     LoginBean loginBean = response.body().Result;
+                    setupInfo(loginBean);
+                    toast("更新成功");
                 } else {
                     toast("更新失败");
                 }
@@ -105,6 +122,8 @@ public class EditUserActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<Msg<LoginBean>> call, Throwable t) {
+                updateMe.setEnabled(true);
+                progressDialog.dismiss();
                 toast("更新失败");
             }
         });

@@ -1,10 +1,14 @@
 package com.lcc.imusic.ui;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -20,6 +24,7 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.CommentAdapter;
 import com.lcc.imusic.adapter.LoadMoreAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
+import com.lcc.imusic.adapter.OnItemLongClickListener;
 import com.lcc.imusic.base.activity.BaseActivity;
 import com.lcc.imusic.bean.CommentBean;
 import com.lcc.imusic.bean.CommentItem;
@@ -112,6 +117,29 @@ public class CommentActivity extends BaseActivity implements LoadMoreAdapter.Loa
             @Override
             public void onItemClick(int position) {
                 showCommentDialog(adapter.getData(position));
+            }
+        });
+
+        adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(final int position) {
+                new AlertDialog
+                        .Builder(CommentActivity.this)
+                        .setItems(new String[]{"复制"}, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                                        clipboardManager.setPrimaryClip(ClipData.newPlainText("comment", adapter.getData(position).content));
+                                        toast("已复制到粘贴板");
+                                        break;
+                                }
+                            }
+                        })
+                        .create()
+                        .show();
+                return true;
             }
         });
 
