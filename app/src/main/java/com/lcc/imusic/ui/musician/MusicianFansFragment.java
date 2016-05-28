@@ -106,6 +106,7 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
     private void publishTopic() {
         Intent intent = new Intent(context, PublishTopicActivity.class);
         intent.putExtra("musicianId", musicianId);
+        intent.putExtra("type", PublishTopicActivity.TYPE_PUBLISH);
         startActivityForResult(intent, 1234);
     }
 
@@ -188,7 +189,7 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
     public boolean onItemLongClick(final int position) {
         AlertDialog dialog = new AlertDialog
                 .Builder(context)
-                .setItems(new String[]{"删除"}, new DialogInterface.OnClickListener() {
+                .setItems(new String[]{"删除", "修改"}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
@@ -212,6 +213,15 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
                                             }
                                         });
 
+                                break;
+                            case 1:
+                                Club.TopicItem topicItem = adapter.getData(position);
+                                Intent intent = new Intent(context, PublishTopicActivity.class);
+                                intent.putExtra("topicId", topicItem.id);
+                                intent.putExtra("title", topicItem.title);
+                                intent.putExtra("content", topicItem.text);
+                                intent.putExtra("type", PublishTopicActivity.TYPE_UPDATE);
+                                startActivityForResult(intent, 1234);
                                 break;
                         }
                         dialog.dismiss();
