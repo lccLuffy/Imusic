@@ -1,6 +1,7 @@
 package com.lcc.imusic.ui.musician;
 
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,6 +62,11 @@ public class TopicActivity extends BaseActivity implements LoadMoreAdapter.LoadM
     @Bind(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
+
+    @Bind(R.id.collapsingToolbarLayout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
+
     private long topicId;
 
     private int currentPage = 1;
@@ -79,6 +85,8 @@ public class TopicActivity extends BaseActivity implements LoadMoreAdapter.LoadM
         adapter = new TopicReplyAdapter();
         adapter.setLoadMoreListener(this);
         recyclerView.setAdapter(adapter);
+
+        collapsingToolbarLayout.setContentScrim(null);
 
         stateLayout.setErrorAndEmptyAction(new View.OnClickListener() {
             @Override

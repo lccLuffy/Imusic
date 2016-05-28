@@ -35,6 +35,14 @@ public class ClubAdapter extends LoadMoreAdapter<Club.TopicItem> {
                 }
             });
         }
+        if (onItemLongClickListener != null) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return onItemLongClickListener.onItemLongClick(position);
+                }
+            });
+        }
     }
 
     class Holder extends RecyclerView.ViewHolder {

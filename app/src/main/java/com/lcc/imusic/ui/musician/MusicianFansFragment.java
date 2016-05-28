@@ -1,19 +1,23 @@
 package com.lcc.imusic.ui.musician;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.google.gson.JsonObject;
 import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.ClubAdapter;
 import com.lcc.imusic.adapter.LoadMoreAdapter;
 import com.lcc.imusic.adapter.OnItemClickListener;
+import com.lcc.imusic.adapter.OnItemLongClickListener;
 import com.lcc.imusic.base.fragment.AttachFragment;
 import com.lcc.imusic.bean.Club;
 import com.lcc.imusic.bean.Msg;
@@ -29,7 +33,7 @@ import retrofit2.Response;
 /**
  * Created by lcc_luffy on 2016/3/8.
  */
-public class MusicianFansFragment extends AttachFragment implements LoadMoreAdapter.LoadMoreListener {
+public class MusicianFansFragment extends AttachFragment implements LoadMoreAdapter.LoadMoreListener, OnItemLongClickListener {
 
     @Bind(R.id.stateLayout)
     StateLayout stateLayout;
@@ -91,6 +95,9 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
                 startActivity(intent);
             }
         });
+
+        adapter.setOnItemLongClickListener(this);
+
         adapter.setLoadMoreListener(this);
         getData(1);
     }
@@ -175,5 +182,45 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
     public void onLoadMore() {
         currentPage++;
         getData(currentPage);
+    }
+
+    @Override
+    public boolean onItemLongClick(final int position) {
+        AlertDialog dialog = new AlertDialog
+                .Builder(context)
+                .setItems(new String[]{"删除"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+
+                                NetManager_.API().deleteTopic(adapter.getData(position).id)
+                                        .enqueue(new Callback<Msg<JsonObject>>() {
+                                            @Override
+                                            public void onResponse(Call<Msg<JsonObject>> call, Response<Msg<JsonObject>> response) {
+                                                if (response.body().Code == 100) {
+                                                    toast("删除成功");
+                                                    adapter.remove(position);
+                                                } else {
+                                                    toast("删除失败," + response.body().Msg);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<Msg<JsonObject>> call, Throwable t) {
+                                                toast("删除失败," + t.toString());
+                                            }
+                                        });
+
+                                break;
+                        }
+                        dialog.dismiss();
+                    }
+                })
+
+                .create();
+        dialog.show();
+
+        return true;
     }
 }
