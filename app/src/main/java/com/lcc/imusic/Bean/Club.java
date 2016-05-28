@@ -1,5 +1,6 @@
 package com.lcc.imusic.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -38,14 +39,14 @@ public class Club {
      * replycount : 0
      */
 
-    public List<ClubItem> list;
+    public List<TopicItem> list;
 
-    public static class ClubItem {
+    public static class TopicItem implements Serializable {
         public String addtime;
         public int enable;
         public String musicianName;
         public int musicianid;
-        public int id;
+        public long id;
         public String text;
         public String avatar;
         public String title;

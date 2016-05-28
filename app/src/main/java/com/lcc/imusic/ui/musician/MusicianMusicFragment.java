@@ -42,7 +42,7 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
     @Bind(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
-    SimpleMusicListAdapter simpleMusicListAdapter;
+    SimpleMusicListAdapter adapter;
 
     public long musicianId;
 
@@ -63,9 +63,9 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        simpleMusicListAdapter = new SimpleMusicListAdapter();
-        recyclerView.setAdapter(simpleMusicListAdapter);
-        simpleMusicListAdapter.setOnItemClickListener(new OnItemClickListener() {
+        adapter = new SimpleMusicListAdapter();
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 playMusic(position);
@@ -78,32 +78,32 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
                 getData(1);
             }
         });
-        simpleMusicListAdapter.setLoadMoreListener(this);
+        adapter.setLoadMoreListener(this);
         getData(currentPageNum);
     }
 
     private void getData(final int pageNum) {
-        if (simpleMusicListAdapter.isDataEmpty())
+        if (adapter.isDataEmpty())
             stateLayout.showProgressView();
-        NetManager_.API().songs(musicianId, pageNum)
+        NetManager_.API().musicianSongs(musicianId, pageNum)
                 .enqueue(new Callback<Msg<SongsBean>>() {
                     @Override
                     public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {
                         SongsBean songsBean = response.body().Result;
                         if (songsBean != null) {
-                            if (simpleMusicListAdapter.isDataEmpty() && songsBean.list.isEmpty()) {
+                            if (adapter.isDataEmpty() && songsBean.list.isEmpty()) {
                                 stateLayout.showEmptyView();
                             } else {
                                 stateLayout.showContentView();
                                 List<MusicItem> list = RemoteMusicProvider.m2l(songsBean);
                                 if (pageNum == 1) {
-                                    simpleMusicListAdapter.canLoadMore();
-                                    simpleMusicListAdapter.setData(list);
+                                    adapter.canLoadMore();
+                                    adapter.setData(list);
                                 } else {
                                     if (list.isEmpty()) {
-                                        simpleMusicListAdapter.noMoreData();
+                                        adapter.noMoreData();
                                     } else {
-                                        simpleMusicListAdapter.addData(list);
+                                        adapter.addData(list);
                                     }
                                 }
                             }
@@ -123,14 +123,14 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
     @Override
     public void onPlayingIndexChange(int index) {
         super.onPlayingIndexChange(index);
-        simpleMusicListAdapter.playingIndexChangeTo(index);
+        adapter.playingIndexChangeTo(index);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        simpleMusicListAdapter.onDestroy();
-        simpleMusicListAdapter = null;
+        adapter.onDestroy();
+        adapter = null;
     }
 
     @Override

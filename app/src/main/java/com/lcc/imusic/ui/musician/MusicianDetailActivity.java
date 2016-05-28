@@ -60,7 +60,7 @@ public class MusicianDetailActivity extends UserActivity {
                         if (musicianItem != null) {
                             setAvatar(NetManager_.DOMAIN + musicianItem.avatar);
                             setUsername(musicianItem.nickname);
-                            Glide.with(MusicianDetailActivity.this).load(NetManager_.DOMAIN + musicianItem.IDphotopath).into(user_bg);
+                            Glide.with(MusicianDetailActivity.this).load(NetManager_.DOMAIN + musicianItem.avatar).into(user_bg);
                         }
                     }
 

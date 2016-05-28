@@ -17,16 +17,24 @@ import butterknife.ButterKnife;
 /**
  * Created by lcc_luffy on 2016/5/28.
  */
-public class ClubAdapter extends LoadMoreAdapter<Club.ClubItem> {
+public class ClubAdapter extends LoadMoreAdapter<Club.TopicItem> {
     @Override
     public RecyclerView.ViewHolder onCreateHolder(ViewGroup parent, int viewType) {
         return new Holder(inflater.inflate(R.layout.item_club, parent, false));
     }
 
     @Override
-    public void onBindHolder(RecyclerView.ViewHolder holder1, int position) {
+    public void onBindHolder(RecyclerView.ViewHolder holder1, final int position) {
         Holder holder = (Holder) holder1;
         holder.bind(data.get(position));
+        if (onItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(position);
+                }
+            });
+        }
     }
 
     class Holder extends RecyclerView.ViewHolder {
@@ -58,16 +66,16 @@ public class ClubAdapter extends LoadMoreAdapter<Club.ClubItem> {
             ButterKnife.bind(this, itemView);
         }
 
-        private void bind(Club.ClubItem clubItem) {
-            clubName.setText(clubItem.title);
-            clubText.setText(clubItem.text);
-            club_replyCount.setText("回复:" + clubItem.replycount);
-            club_viewCount.setText("查看次数:" + clubItem.viewscount);
-            club_time.setText(clubItem.addtime);
-            auth_name.setText(clubItem.authorNmae);
+        private void bind(Club.TopicItem topicItem) {
+            clubName.setText(topicItem.title);
+            clubText.setText(topicItem.text);
+            club_replyCount.setText("回复:" + topicItem.replycount);
+            club_viewCount.setText("查看次数:" + topicItem.viewscount);
+            club_time.setText(topicItem.addtime);
+            auth_name.setText(topicItem.authorNmae);
 
             Glide.with(itemView.getContext())
-                    .load(NetManager_.DOMAIN + clubItem.avatar)
+                    .load(NetManager_.DOMAIN + topicItem.avatar)
                     .into(club_avatar);
         }
     }

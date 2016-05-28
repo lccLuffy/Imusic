@@ -67,7 +67,7 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
                 getData(1);
             }
         });
-
+        stateLayout.setEmptyClickNotice("轻触屏幕添加");
         stateLayout.setEmptyAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +86,9 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-
+                Intent intent = new Intent(context, TopicActivity.class);
+                intent.putExtra("topic", adapter.getData(position));
+                startActivity(intent);
             }
         });
         adapter.setLoadMoreListener(this);
@@ -130,7 +132,7 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
                 }
 
                 if (adapter.isDataEmpty()) {
-                    stateLayout.showEmptyView("TA还没有粉丝团呢,点击添加");
+                    stateLayout.showEmptyView("TA还没有粉丝团呢");
                 } else {
                     stateLayout.showContentView();
                 }

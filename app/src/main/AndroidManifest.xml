@@ -91,7 +91,10 @@
             android:value="com.lcc.imusic" />
 
         <activity android:name=".ui.user.EditUserActivity" />
-        <activity android:name=".ui.musician.PublishTopicActivity"></activity>
+        <activity
+            android:name=".ui.musician.PublishTopicActivity"
+            android:label="添加话题" />
+        <activity android:name=".ui.musician.TopicActivity"></activity>
     </application>
 
 </manifest>

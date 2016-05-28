@@ -31,7 +31,9 @@ public class StateLayout extends FrameLayout {
     private View progressContentView;
 
     private TextView emptyTextView;
+    private TextView emptyClickInfoView;
     private TextView errorTextView;
+    private TextView errorClickInfoTextView;
     private TextView progressTextView;
 
     private ImageView errorImageView;
@@ -97,6 +99,7 @@ public class StateLayout extends FrameLayout {
 
         errorView = inflater.inflate(R.layout.view_error, this, false);
         errorContentView = errorView.findViewById(R.id.error_content);
+        errorClickInfoTextView = (TextView) errorView.findViewById(R.id.error_click_info);
         errorTextView = (TextView) errorView.findViewById(R.id.errorTextView);
         errorImageView = (ImageView) errorView.findViewById(R.id.errorImageView);
         if (errorDrawable != null) {
@@ -111,6 +114,7 @@ public class StateLayout extends FrameLayout {
 
         emptyView = inflater.inflate(R.layout.view_empty, this, false);
         emptyContentView = emptyView.findViewById(R.id.empty_content);
+        emptyClickInfoView = (TextView) emptyView.findViewById(R.id.empty_click_info);
         emptyTextView = (TextView) emptyView.findViewById(R.id.emptyTextView);
         emptyImageView = (ImageView) emptyView.findViewById(R.id.emptyImageView);
         if (emptyDrawable != null) {
@@ -219,6 +223,13 @@ public class StateLayout extends FrameLayout {
         emptyView.setOnClickListener(onEmptyButtonClickListener);
     }
 
+    public void setEmptyClickNotice(String notice) {
+        emptyClickInfoView.setText(notice);
+    }
+
+    public void setErrorClickNotice(String notice) {
+        errorClickInfoTextView.setText(notice);
+    }
 
     public void setErrorAndEmptyAction(final OnClickListener errorAndEmptyAction) {
         errorView.setOnClickListener(errorAndEmptyAction);

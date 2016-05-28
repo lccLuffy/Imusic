@@ -9,6 +9,7 @@ import com.lcc.imusic.bean.Msg;
 import com.lcc.imusic.bean.MusicianItem;
 import com.lcc.imusic.bean.MusiciansBean;
 import com.lcc.imusic.bean.SongsBean;
+import com.lcc.imusic.bean.TopicReply;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -68,7 +69,7 @@ public interface MusicApi {
     Call<Msg<JsonObject>> commentToSong(@Field("songid") long songId, @Field("content") String content);
 
     @GET("song")
-    Call<Msg<SongsBean>> songs(@Query("musicianid") long musicianId, @Query("pageNum") int pageNum);
+    Call<Msg<SongsBean>> musicianSongs(@Query("musicianid") long musicianId, @Query("pageNum") int pageNum);
 
     @GET("song/comment")
     Call<Msg<CommentBean>> songComment(@Query("songid") long id, @Query("pageNum") int pageNum);
@@ -95,10 +96,18 @@ public interface MusicApi {
     @GET("club")
     Call<Msg<Club>> club(@Query("musicianid") long musicianId, @Query("pageNum") int pageNum);
 
+    @GET("topic")
+    Call<Msg<Club.TopicItem>> topic(@Query("id") long topicId);
+
     @FormUrlEncoded
     @POST("topic")
     Call<Msg<JsonObject>> publishTopic(@Field("musicianid") long musicianId,
-                                 @Field("title") String title,
-                                 @Field("content") String content
+                                       @Field("title") String title,
+                                       @Field("content") String content
+    );
+
+    @GET("topic/reply")
+    Call<Msg<TopicReply>> topicReplies(@Query("topicid") long topicId,
+                                     @Query("pageNum") int pageNum
     );
 }
