@@ -1,6 +1,5 @@
 package com.lcc.imusic.adapter;
 
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,11 +50,6 @@ public class MusicianRankAdapter extends LoadMoreAdapter<MusicianItem> {
         @Bind(R.id.musicianRank_subtitle)
         TextView subtitle;
 
-        @Bind(R.id.musicianRank_pos)
-        TextView musicianRank_pos;
-
-        @Bind(R.id.musicianRank_upDown)
-        TextView upDown;
 
         public Holder(View itemView) {
             super(itemView);
@@ -63,24 +57,11 @@ public class MusicianRankAdapter extends LoadMoreAdapter<MusicianItem> {
         }
 
         public void bindData(MusicianItem musicianItem, int pos) {
-            musicianRank_pos.setText(String.valueOf(pos + 1));
             title.setText(musicianItem.nickname);
             subtitle.setText(String.format(Locale.CHINA, "查看次数:%d", musicianItem.views));
             Glide.with(itemView.getContext())
                     .load(musicianItem.avatar)
                     .into(avatar);
-            if (pos <= 2) {
-                musicianRank_pos.setTextColor(itemView.getResources().getColor(R.color.selectedRed));
-                musicianRank_pos.setTypeface(Typeface.SERIF);
-            } else {
-                musicianRank_pos.setTextColor(itemView.getResources().getColor(R.color.musicTextColorSecondary));
-                musicianRank_pos.setTypeface(Typeface.DEFAULT);
-            }
-            if (random.nextInt(100) < 50) {
-                upDown.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.list_icn_up, 0, 0, 0);
-            } else {
-                upDown.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.list_icn_down, 0, 0, 0);
-            }
         }
     }
 
