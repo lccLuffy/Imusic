@@ -44,7 +44,7 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
 
     SimpleMusicListAdapter simpleMusicListAdapter;
 
-    public long id;
+    public long musicianId;
 
     private int currentPageNum = 1;
 
@@ -85,7 +85,7 @@ public class MusicianMusicFragment extends AttachFragment implements LoadMoreAda
     private void getData(final int pageNum) {
         if (simpleMusicListAdapter.isDataEmpty())
             stateLayout.showProgressView();
-        NetManager_.API().songs(id, pageNum)
+        NetManager_.API().songs(musicianId, pageNum)
                 .enqueue(new Callback<Msg<SongsBean>>() {
                     @Override
                     public void onResponse(Call<Msg<SongsBean>> call, Response<Msg<SongsBean>> response) {

@@ -1,6 +1,7 @@
 package com.lcc.imusic.api;
 
 import com.google.gson.JsonObject;
+import com.lcc.imusic.bean.Club;
 import com.lcc.imusic.bean.CollectedSongs;
 import com.lcc.imusic.bean.CommentBean;
 import com.lcc.imusic.bean.LoginBean;
@@ -67,7 +68,7 @@ public interface MusicApi {
     Call<Msg<JsonObject>> commentToSong(@Field("songid") long songId, @Field("content") String content);
 
     @GET("song")
-    Call<Msg<SongsBean>> songs(@Query("musicianid") long id, @Query("pageNum") int pageNum);
+    Call<Msg<SongsBean>> songs(@Query("musicianid") long musicianId, @Query("pageNum") int pageNum);
 
     @GET("song/comment")
     Call<Msg<CommentBean>> songComment(@Query("songid") long id, @Query("pageNum") int pageNum);
@@ -90,4 +91,8 @@ public interface MusicApi {
 
     @GET("collection/musician")
     Call<Msg<MusiciansBean>> collectionMusicians(@Query("pageNum") int pageNum);
+
+
+    @GET("club")
+    Call<Msg<Club>> club(@Query("musicianid") long musicianId, @Query("pageNum") int pageNum);
 }
