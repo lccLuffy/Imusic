@@ -1,8 +1,10 @@
 package com.lcc.imusic.ui.musician;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +42,9 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
 
     ClubAdapter adapter;
 
+    @Bind(R.id.add_topic)
+    FloatingActionButton add_topic;
+
     public long musicianId;
     private int currentPage = 1;
 
@@ -50,11 +55,23 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new ClubAdapter();
         recyclerView.setAdapter(adapter);
-
-        stateLayout.setErrorAndEmptyAction(new View.OnClickListener() {
+        add_topic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                publishTopic();
+            }
+        });
+        stateLayout.setEmptyAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getData(1);
+            }
+        });
+
+        stateLayout.setEmptyAction(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                publishTopic();
             }
         });
 
@@ -74,6 +91,22 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
         });
         adapter.setLoadMoreListener(this);
         getData(1);
+    }
+
+
+    private void publishTopic() {
+        Intent intent = new Intent(context, PublishTopicActivity.class);
+        intent.putExtra("musicianId", musicianId);
+        startActivityForResult(intent, 1234);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1234) {
+            recyclerView.smoothScrollToPosition(0);
+            currentPage = 1;
+            getData(1);
+        }
     }
 
     private void getData(final int pageNum) {
@@ -97,7 +130,7 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
                 }
 
                 if (adapter.isDataEmpty()) {
-                    stateLayout.showEmptyView("TA还没有粉丝团呢");
+                    stateLayout.showEmptyView("TA还没有粉丝团呢,点击添加");
                 } else {
                     stateLayout.showContentView();
                 }
@@ -128,7 +161,7 @@ public class MusicianFansFragment extends AttachFragment implements LoadMoreAdap
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_list;
+        return R.layout.fragment_musician_fans;
     }
 
     @Override

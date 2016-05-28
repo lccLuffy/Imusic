@@ -90,7 +90,8 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.lcc.imusic" />
 
-        <activity android:name=".ui.user.EditUserActivity"></activity>
+        <activity android:name=".ui.user.EditUserActivity" />
+        <activity android:name=".ui.musician.PublishTopicActivity"></activity>
     </application>
 
 </manifest>

@@ -92,7 +92,13 @@ public interface MusicApi {
     @GET("collection/musician")
     Call<Msg<MusiciansBean>> collectionMusicians(@Query("pageNum") int pageNum);
 
-
     @GET("club")
     Call<Msg<Club>> club(@Query("musicianid") long musicianId, @Query("pageNum") int pageNum);
+
+    @FormUrlEncoded
+    @POST("topic")
+    Call<Msg<JsonObject>> publishTopic(@Field("musicianid") long musicianId,
+                                 @Field("title") String title,
+                                 @Field("content") String content
+    );
 }

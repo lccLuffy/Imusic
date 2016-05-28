@@ -37,6 +37,15 @@ public class ClubAdapter extends LoadMoreAdapter<Club.ClubItem> {
         @Bind(R.id.club_text)
         TextView clubText;
 
+        @Bind(R.id.club_viewCount)
+        TextView club_viewCount;
+
+        @Bind(R.id.club_replyCount)
+        TextView club_replyCount;
+
+        @Bind(R.id.club_time)
+        TextView club_time;
+
         @Bind(R.id.auth_name)
         TextView auth_name;
 
@@ -52,7 +61,11 @@ public class ClubAdapter extends LoadMoreAdapter<Club.ClubItem> {
         private void bind(Club.ClubItem clubItem) {
             clubName.setText(clubItem.title);
             clubText.setText(clubItem.text);
+            club_replyCount.setText("回复:" + clubItem.replycount);
+            club_viewCount.setText("查看次数:" + clubItem.viewscount);
+            club_time.setText(clubItem.addtime);
             auth_name.setText(clubItem.authorNmae);
+
             Glide.with(itemView.getContext())
                     .load(NetManager_.DOMAIN + clubItem.avatar)
                     .into(club_avatar);
