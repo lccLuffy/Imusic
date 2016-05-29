@@ -38,6 +38,9 @@ public class LocalMusicProvider extends SimpleMusicProviderImpl {
 
     private LocalMusicProvider(@NonNull Context context) {
         super();
+        if (true)
+            return;
+
         Cursor cursor = context.getContentResolver().query(Media.EXTERNAL_CONTENT_URI,
                 projection, Media.DURATION + " > 20000", null, Media.DEFAULT_SORT_ORDER);
         if (cursor == null)

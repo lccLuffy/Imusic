@@ -18,7 +18,6 @@ import com.lcc.imusic.adapter.OnItemClickListener;
 import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.model.CurrentMusicProvider;
 import com.lcc.imusic.model.CurrentMusicProviderImpl;
-import com.lcc.imusic.model.LocalMusicProvider;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.MusicPlayerActivity;
 import com.lcc.imusic.wiget.MusicListDialog;
@@ -66,10 +65,9 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
         super.onCreate(savedInstanceState);
         currentMusicProvider = CurrentMusicProviderImpl.getMusicProvider();
 
-        if (currentMusicProvider.provideMusics().isEmpty()) {
+        /*if (currentMusicProvider.provideMusics().isEmpty()) {
             currentMusicProvider.copyToMe(LocalMusicProvider.getMusicProvider(this).provideMusics());
-        }
-
+        }*/
         progressBar.setProgress(0);
 
         playBar_wrap.setOnClickListener(this);
@@ -192,6 +190,10 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (musicServiceBind != null) {
+            if (currentMusicProvider.provideMusics().isEmpty()) {
+                toast("先选择播放列表播放吧");
+                return;
+            }
             if (isChecked) {
                 musicServiceBind.startPlayOrResume();
             } else {
@@ -203,7 +205,6 @@ public abstract class PlayBarActivity extends MusicProgressCallActivity
     @Override
     public void onCurrentPlayingListChange(@NonNull List<MusicItem> musicItems) {
         if (musicListDialog != null) {
-
             Logger.i("musicItems size:" + musicItems.size() + ",index:" + currentMusicProvider.getPlayingMusicIndex());
 
             musicListDialog.getAdapter().setData(musicItems, currentMusicProvider.getPlayingMusicIndex());

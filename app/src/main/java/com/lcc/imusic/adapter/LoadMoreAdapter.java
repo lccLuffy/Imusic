@@ -21,7 +21,7 @@ public abstract class LoadMoreAdapter<DataType> extends SimpleAdapter<RecyclerVi
     private FooterViewHolder footerViewHolder;
 
     private String loadMoreMsg = "Loading";
-    private String noMoreMsg = " - - - - - - - - - - - - - - - - - - - - ";
+    private String noMoreMsg = ""/*" - - - - - - - - - - - - - - - - - - - - "*/;
 
     public LoadMoreAdapter() {
         registerAdapterDataObserver(new DataObserver());

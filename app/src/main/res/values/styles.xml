@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/md_red_600</item>
         <item name="colorPrimaryDark">@color/md_red_700</item>
-        <item name="colorAccent">@color/md_green_500</item>
+        <item name="colorAccent">@color/md_red_500</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="material_drawer_selected_text">@color/md_red_600</item>
         <!--<item name="android:windowAnimationStyle">@style/activityOpenCloseAnimation</item>-->
