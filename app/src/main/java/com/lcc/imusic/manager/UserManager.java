@@ -13,7 +13,7 @@ public class UserManager {
         private static final UserManager USER_MANAGER = new UserManager();
     }
 
-    public static final String KEY = "USER";
+    private static final String KEY = "USER";
     private LoginBean loginBean;
 
     private UserManager() {
@@ -24,7 +24,7 @@ public class UserManager {
         return instance().loginBean != null ? instance().loginBean.token : null;
     }
 
-    public static UserManager instance() {
+    private static UserManager instance() {
         return ClassHolder.USER_MANAGER;
     }
 
