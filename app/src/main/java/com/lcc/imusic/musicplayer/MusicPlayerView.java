@@ -46,6 +46,9 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
     private MusicPlayerCallBack musicPlayerCallBack;
 
+    private View panel_playImage;
+    private View panel_volume;
+
     public MusicPlayerView(Context context) {
         super(context);
         init();
@@ -74,6 +77,12 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     private void init() {
         View panel = LayoutInflater.from(getContext()).inflate(R.layout.view_music_player, this, false);
         addView(panel);
+        panel_playImage = panel.findViewById(R.id.panel_playImage);
+        panel_volume = panel.findViewById(R.id.panel_volume);
+
+        panel_playImage.setOnClickListener(this);
+        panel_volume.setOnClickListener(this);
+
 
         musicView_love = (CheckBox) panel.findViewById(R.id.musicView_love);
 
@@ -137,7 +146,9 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         seekBar_volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                if (fromUser && musicPlayerCallBack != null) {
+                    musicPlayerCallBack.onVolumeChange(progress);
+                }
             }
 
             @Override
@@ -300,11 +311,24 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
                 case R.id.musicView_cmt:
                     musicPlayerCallBack.onComment();
                     break;
+                case R.id.panel_playImage:
+                    panel_playImage.setVisibility(GONE);
+                    panel_volume.setVisibility(VISIBLE);
+                    break;
+                case R.id.panel_volume:
+                    panel_playImage.setVisibility(VISIBLE);
+                    panel_volume.setVisibility(GONE);
+                    break;
             }
         }
     }
 
     public static class MusicPlayerCallBackAdapter implements MusicPlayerCallBack {
+        @Override
+        public void onVolumeChange(int volume) {
+
+        }
+
         @Override
         public void onLike(boolean like) {
 
@@ -362,6 +386,8 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     }
 
     public interface MusicPlayerCallBack {
+
+        void onVolumeChange(int volume);
 
         void onLike(boolean like);
 

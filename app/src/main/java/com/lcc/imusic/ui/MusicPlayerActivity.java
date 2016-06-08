@@ -76,6 +76,8 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
         musicPlayerView.setPlayBtnState(musicServiceBind.isPlaying());
         musicPlayerView.setPlayType(musicServiceBind.getPlayType());
         musicPlayerView.setMusicPlayerCallBack(new MusicPlayerCallBackImpl());
+        musicPlayerView.setMaxVolume(musicServiceBind.getMaxVolume());
+        musicPlayerView.setCurrentVolume(musicServiceBind.getCurrentVolume());
     }
 
     private boolean canAutoProgress = true;
@@ -200,6 +202,12 @@ public class MusicPlayerActivity extends MusicProgressCallActivity {
             canAutoProgress = false;
             musicPlayerView.setProgress(0);
             musicServiceBind.next();
+        }
+
+        @Override
+        public void onVolumeChange(int volume) {
+            if (isBind())
+                musicServiceBind.setVolume(volume);
         }
 
         @Override

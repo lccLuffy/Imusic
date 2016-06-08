@@ -208,6 +208,10 @@ public class MusicPlayService extends Service {
             return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         }
 
+        public void setVolume(int volume) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
+        }
+
         public void volumeDown() {
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER,
                     AudioManager.FX_FOCUS_NAVIGATION_UP);

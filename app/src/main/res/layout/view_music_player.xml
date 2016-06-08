@@ -11,29 +11,36 @@
         android:layout_centerHorizontal="true">
 
 
-        <com.lcc.imusic.wiget.RotateImageView
-            android:id="@+id/musicView_cover"
-            android:layout_width="260dp"
-            android:layout_height="260dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="50dp"
-            android:src="@mipmap/placeholder_disk_play_song"
-            app:civ_border_color="#30ffffff"
-            app:civ_border_width="5dp" />
+        <FrameLayout
+            android:id="@+id/panel_playImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <com.lcc.imusic.wiget.NeedleImageView
-            android:id="@+id/musicView_needleImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="29dp"
-            android:layout_marginTop="-20dp"
-            android:src="@mipmap/play_needle" />
+            <com.lcc.imusic.wiget.NeedleImageView
+                android:id="@+id/musicView_needleImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="29dp"
+                android:layout_marginTop="-20dp"
+                android:src="@mipmap/play_needle" />
+
+            <com.lcc.imusic.wiget.RotateImageView
+                android:id="@+id/musicView_cover"
+                android:layout_width="260dp"
+                android:layout_height="260dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:src="@mipmap/placeholder_disk_play_song"
+                app:civ_border_color="#30ffffff"
+                app:civ_border_width="5dp" />
+        </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/ccc"
+            android:id="@+id/panel_volume"
             android:layout_width="match_parent"
-            android:layout_height="260dp">
+            android:layout_height="260dp"
+            android:visibility="gone">
 
             <SeekBar
                 android:id="@+id/volume_value"
@@ -43,8 +50,8 @@
                 android:padding="5dp"
                 android:progress="50" />
         </FrameLayout>
-
     </FrameLayout>
+
 
     <LinearLayout
         android:id="@+id/linearLayout"
