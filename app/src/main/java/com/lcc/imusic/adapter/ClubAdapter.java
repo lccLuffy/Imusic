@@ -45,7 +45,7 @@ public class ClubAdapter extends LoadMoreAdapter<Club.TopicItem> {
         }
     }
 
-    class Holder extends RecyclerView.ViewHolder {
+    protected class Holder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.club_name)
         TextView clubName;
@@ -69,7 +69,7 @@ public class ClubAdapter extends LoadMoreAdapter<Club.TopicItem> {
         @Bind(R.id.club_avatar)
         ImageView club_avatar;
 
-        public Holder(View itemView) {
+        Holder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

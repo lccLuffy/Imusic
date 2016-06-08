@@ -44,6 +44,8 @@ public class MusicPlayService extends Service {
 
     private CurrentMusicProvider musicProvider;
 
+    private AudioManager audioManager;
+
     private boolean lockPrepared = false;
 
     @Override
@@ -65,38 +67,13 @@ public class MusicPlayService extends Service {
 
     private void initMediaPlayer() {
         mediaPlayer = new MediaPlayer();
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 
         wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "music_play_lock");
         wifiLock.acquire();
-
-        AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        audioManager.requestAudioFocus(new AudioManager.OnAudioFocusChangeListener() {
-            @Override
-            public void onAudioFocusChange(int focusChange) {
-                if (mediaPlayer == null)
-                    return;
-                switch (focusChange) {
-                    case AudioManager.AUDIOFOCUS_GAIN:
-                        if (!mediaPlayer.isPlaying())
-                            mediaPlayer.start();
-                        break;
-                    case AudioManager.AUDIOFOCUS_LOSS:
-                        if (mediaPlayer.isPlaying())
-                            mediaPlayer.stop();
-                        mediaPlayer.release();
-                        break;
-
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                        pauseMusic();
-                        break;
-                }
-
-            }
-        }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-
 
         MediaListener mediaListener = new MediaListener();
         mediaPlayer.setOnPreparedListener(mediaListener);
@@ -223,6 +200,23 @@ public class MusicPlayService extends Service {
             prevMusic();
         }
 
+        public int getMaxVolume() {
+            return audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        }
+
+        public int getCurrentVolume() {
+            return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        }
+
+        public void volumeDown() {
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER,
+                    AudioManager.FX_FOCUS_NAVIGATION_UP);
+        }
+
+        public void volumeUp() {
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE,
+                    AudioManager.FX_FOCUS_NAVIGATION_UP);
+        }
 
         public void seekTo(int second) {
             mediaPlayer.seekTo(second * 1000);
@@ -308,7 +302,7 @@ public class MusicPlayService extends Service {
     private class ProgressTask extends TimerTask {
         private Handler handler;
 
-        public ProgressTask() {
+        ProgressTask() {
             handler = new Handler(Looper.getMainLooper());
         }
 
@@ -337,6 +331,8 @@ public class MusicPlayService extends Service {
 
         wifiLock.release();
         wifiLock = null;
+
+        audioManager = null;
 
         binder = null;
         progressTask = null;

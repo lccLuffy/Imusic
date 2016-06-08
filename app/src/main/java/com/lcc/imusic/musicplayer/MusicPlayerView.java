@@ -31,7 +31,9 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
 
     private RotateImageView cover;
 
-    private SeekBar seekBar;
+    private SeekBar seekBar_play_progress;
+
+    private SeekBar seekBar_volume;
 
     private CheckBox musicView_love;
 
@@ -80,7 +82,9 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         tv_totalTime = (TextView) panel.findViewById(R.id.musicView_totalTime);
         tv_currentTime = (TextView) panel.findViewById(R.id.musicView_currentTime);
 
-        seekBar = (SeekBar) panel.findViewById(R.id.musicView_seekBar);
+        seekBar_play_progress = (SeekBar) panel.findViewById(R.id.musicView_seekBar);
+        seekBar_volume = (SeekBar) panel.findViewById(R.id.volume_value);
+
 
         cb_play = (CheckBox) panel.findViewById(R.id.musicView_play);
         ImageView iv_prev = (ImageView) panel.findViewById(R.id.musicView_prev);
@@ -110,7 +114,7 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
         cb_play.setOnCheckedChangeListener(this);
         musicView_love.setOnCheckedChangeListener(this);
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBar_play_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser && musicPlayerCallBack != null) {
@@ -129,7 +133,34 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
                 musicPlayerCallBack.onSliderFinished(seekBar.getProgress());
             }
         });
+
+        seekBar_volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
     }
+
+    public void setMaxVolume(int maxVolume) {
+        seekBar_volume.setMax(maxVolume);
+    }
+
+    public void setCurrentVolume(int currentVolume) {
+        seekBar_volume.setProgress(currentVolume);
+    }
+
 
     /**
      * in second
@@ -178,16 +209,16 @@ public class MusicPlayerView extends FrameLayout implements CompoundButton.OnChe
     }
 
     public void setProgress(int second) {
-        seekBar.setProgress(second);
+        seekBar_play_progress.setProgress(second);
         setCurrentTime(second);
     }
 
     public void setSecondaryProgress(int percent) {
-        seekBar.setSecondaryProgress((int) (percent * 1.0f / 100 * seekBar.getMax()));
+        seekBar_play_progress.setSecondaryProgress((int) (percent * 1.0f / 100 * seekBar_play_progress.getMax()));
     }
 
     public void setTotalProgress(int totalProgress) {
-        seekBar.setMax(totalProgress);
+        seekBar_play_progress.setMax(totalProgress);
         setTotalTime(totalProgress);
     }
 

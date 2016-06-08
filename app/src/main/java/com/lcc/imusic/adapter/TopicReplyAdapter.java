@@ -50,7 +50,7 @@ public class TopicReplyAdapter extends LoadMoreAdapter<TopicReply.TopicReplyItem
         @Bind(R.id.comment_content)
         TextView content;
 
-        public Holder(View itemView) {
+        Holder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

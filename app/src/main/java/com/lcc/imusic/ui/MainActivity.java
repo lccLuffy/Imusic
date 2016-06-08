@@ -110,10 +110,11 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         List<IDrawerItem> list = new ArrayList<>();
         list.add(new PrimaryDrawerItem().withName("Home").withIcon(FontAwesome.Icon.faw_home));
         list.add(new PrimaryDrawerItem().withName("下载管理").withIcon(FontAwesome.Icon.faw_cloud_download));
-        if (UserManager.isLogin()) {
-            list.add(new PrimaryDrawerItem().withName("退出登录").withIcon(FontAwesome.Icon.faw_sign_out));
-        }
+        list.add(new PrimaryDrawerItem().withName("退出登录").withIcon(FontAwesome.Icon.faw_sign_out));
         list.add(new PrimaryDrawerItem().withName("退出").withIcon(FontAwesome.Icon.faw_sign_out));
+        list.add(new PrimaryDrawerItem().withName("减小音量").withIcon(FontAwesome.Icon.faw_sign_out));
+        list.add(new PrimaryDrawerItem().withName("增大音量").withIcon(FontAwesome.Icon.faw_sign_out));
+
         return list;
     }
 
@@ -137,45 +138,40 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
     @Override
     public boolean onDrawerMenuSelected(View view, int position, IDrawerItem drawerItem) {
         accountDelegate.close();
-        if (UserManager.isLogin()) {
-            switch (position) {
-                case 1:
-                    ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                    clipboardManager.setPrimaryClip(ClipData.newPlainText("token", UserManager.token()));
-                    toast(UserManager.token());
-                    break;
-                case 2:
-                    startActivity(new Intent(this, DownLoadActivity.class));
-                    break;
-                case 3:
-                    Snackbar.make(toolbar, "确定退出吗？", Snackbar.LENGTH_LONG).setAction("确定", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (UserManager.logout()) {
-                                accountDelegate.setUsername("点击登录");
-                                toast("已退出登录");
-                            } else {
-                                toast("退出登录失败");
-                            }
+        switch (position) {
+            case 1:
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(ClipData.newPlainText("token", UserManager.token()));
+                toast(UserManager.token());
+                break;
+            case 2:
+                startActivity(new Intent(this, DownLoadActivity.class));
+                break;
+            case 3:
+                Snackbar.make(toolbar, "确定退出吗？", Snackbar.LENGTH_LONG).setAction("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (UserManager.logout()) {
+                            accountDelegate.setUsername("点击登录");
+                            toast("已退出登录");
+                        } else {
+                            toast("退出登录失败");
                         }
-                    }).show();
-                    break;
-                case 4:
-                    finish();
-                    stopService(new Intent(this, MusicPlayService.class));
-                    break;
-            }
-        } else {
-            switch (position) {
-
-                case 2:
-                    startActivity(new Intent(this, DownLoadActivity.class));
-                    break;
-                case 3:
-                    finish();
-                    stopService(new Intent(this, MusicPlayService.class));
-                    break;
-            }
+                    }
+                }).show();
+                break;
+            case 4:
+                finish();
+                stopService(new Intent(this, MusicPlayService.class));
+                break;
+            case 5:
+                if (isBind())
+                    musicServiceBind.volumeDown();
+                break;
+            case 6:
+                if (isBind())
+                    musicServiceBind.volumeUp();
+                break;
         }
 
         return true;

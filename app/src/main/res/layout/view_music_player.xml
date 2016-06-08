@@ -29,6 +29,21 @@
             android:layout_marginStart="29dp"
             android:layout_marginTop="-20dp"
             android:src="@mipmap/play_needle" />
+
+        <FrameLayout
+            android:id="@+id/ccc"
+            android:layout_width="match_parent"
+            android:layout_height="260dp">
+
+            <SeekBar
+                android:id="@+id/volume_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:progress="50" />
+        </FrameLayout>
+
     </FrameLayout>
 
     <LinearLayout
