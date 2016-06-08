@@ -42,13 +42,27 @@
             android:layout_height="260dp"
             android:visibility="gone">
 
-            <SeekBar
-                android:id="@+id/volume_value"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="5dp"
-                android:progress="50" />
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/tmp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_volume" />
+
+                <SeekBar
+                    android:id="@+id/volume_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_toEndOf="@id/tmp"
+                    android:padding="5dp"
+                    android:progress="50" />
+            </RelativeLayout>
         </FrameLayout>
     </FrameLayout>
 
