@@ -19,7 +19,12 @@ import com.lcc.imusic.R;
 import com.lcc.imusic.adapter.FragmentAdapter;
 import com.lcc.imusic.base.activity.AccountDelegate;
 import com.lcc.imusic.base.activity.PlayBarActivity;
+import com.lcc.imusic.bean.DlBean;
+import com.lcc.imusic.bean.MusicItem;
 import com.lcc.imusic.manager.UserManager;
+import com.lcc.imusic.model.CurrentMusicProviderImpl;
+import com.lcc.imusic.service.DownLoadHelper;
+import com.lcc.imusic.service.DownloadService;
 import com.lcc.imusic.service.MusicPlayService;
 import com.lcc.imusic.ui.home.MusicNewsFragment;
 import com.lcc.imusic.ui.home.MusicianListFragment;
@@ -114,6 +119,7 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
         list.add(new PrimaryDrawerItem().withName("退出").withIcon(FontAwesome.Icon.faw_sign_out));
         list.add(new PrimaryDrawerItem().withName("减小音量").withIcon(FontAwesome.Icon.faw_sign_out));
         list.add(new PrimaryDrawerItem().withName("增大音量").withIcon(FontAwesome.Icon.faw_sign_out));
+        list.add(new PrimaryDrawerItem().withName("下载所有").withIcon(FontAwesome.Icon.faw_sign_out));
 
         return list;
     }
@@ -171,6 +177,22 @@ public class MainActivity extends PlayBarActivity implements AccountDelegate.Acc
             case 6:
                 if (isBind())
                     musicServiceBind.volumeUp();
+                break;
+            case 7:
+                if(!CurrentMusicProviderImpl.getMusicProvider().provideMusics().isEmpty())
+                {
+                    for (MusicItem item : CurrentMusicProviderImpl.getMusicProvider().provideMusics())
+                    {
+                        DlBean<MusicItem> dlBean = new DlBean<>(item.data, item.title.trim() + "-" + item.artist.trim() + ".mp3", item);
+                        DownLoadHelper.get().enqueue(dlBean);
+                    }
+                    Intent intent = new Intent(this, DownloadService.class);
+                    startService(intent);
+                    toast("开始下载");
+                } else {
+                    toast("列表为空");
+                }
+
                 break;
         }
 
